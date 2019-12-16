@@ -7,10 +7,15 @@
 namespace iman{
 
     bool ChunkHeader::isKnown() const {
-        int chunk_code = operator int();
+        int chunk_code = operator uint32_t();
 
         for (int i=0; i < CHUNK_CODE_NUMBER; ++i){
             if (CHUNK_CODE_LIST[i] == chunk_code){
+                if (CHUNK_SIZE_LIST[i] > 0){
+                    if (CHUNK_SIZE_LIST[i] != getChunkSize()){
+                        throw chunk_size_mismatch_exception(getChunkIdRaw());
+                    }
+                }
                 return true;
             }
         }

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "cpp/source_files/SourceFile.h"
+#include "cpp/source_files/Chunk.h"
 
 int main() {
     using namespace std;
@@ -16,6 +17,9 @@ int main() {
         throw std::runtime_error("Old file format is still not supported");
     }
     auto softChunkHeader = sourceFile.findChunkHeader("SOFT");
+    if (softChunkHeader.isInvalid()){
+        throw std::runtime_error("Can't find the SOFT chunk");
+    }
 
     cout << "File path: " << sourceFile.getFilePath() << endl;
     cout << "File name: " << sourceFile.getFileName() << endl;

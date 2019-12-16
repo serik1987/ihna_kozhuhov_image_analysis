@@ -10,11 +10,25 @@
 #include <cstring>
 #include "../core.h"
 
+#include "FramChunk.h"
+#include "FramCostChunk.h"
+#include "FramEpstChunk.h"
+#include "HardChunk.h"
+#include "SoftChunk.h"
+#include "CostChunk.h"
+#include "EpstChunk.h"
+#include "GreenChunk.h"
+#include "SyncChunk.h"
+#include "RoisChunk.h"
+#include "CompChunk.h"
+
 namespace iman {
 
     /**
      * This is the base class to represent the chunk header and create the chunk based on
      * the chunk header
+     *
+     * See Chunk help for details
      */
     class ChunkHeader {
     public:
@@ -28,27 +42,27 @@ namespace iman {
         };
 #pragma PACK(pop)
 
-        static constexpr int FRAM_CHUNK_CODE = 1296126534;
-        static constexpr int cost_CHUNK_CODE = 1953722211;
-        static constexpr int ISOI_CHUNK_CODE = 1229935433;
-        static constexpr int SOFT_CHUNK_CODE = 1413893971;
-        static constexpr int DATA_CHUNK_CODE = 1096040772;
-        static constexpr int COST_CHUNK_CODE = 1414745923;
-        static constexpr int COMP_CHUNK_CODE = 1347243843;
-        static constexpr int HARD_CHUNK_CODE = 1146241352;
-        static constexpr int ROIS_CHUNK_CODE = 1397313362;
-        static constexpr int SYNC_CHUNK_CODE = 1129208147;
-        static constexpr int epst_CHUNK_CODE = 1953722469;
-        static constexpr int EPST_CHUNK_CODE = 1414746181;
-        static constexpr int GREE_CHUNK_CODE = 1162170951;
-        static constexpr int INVALID_CHUNK_CODE = -1;
+        static constexpr uint32_t FRAM_CHUNK_CODE = 1296126534;
+        static constexpr uint32_t cost_CHUNK_CODE = 1953722211;
+        static constexpr uint32_t ISOI_CHUNK_CODE = 1229935433;
+        static constexpr uint32_t SOFT_CHUNK_CODE = 1413893971;
+        static constexpr uint32_t DATA_CHUNK_CODE = 1096040772;
+        static constexpr uint32_t COST_CHUNK_CODE = 1414745923;
+        static constexpr uint32_t COMP_CHUNK_CODE = 1347243843;
+        static constexpr uint32_t HARD_CHUNK_CODE = 1146241352;
+        static constexpr uint32_t ROIS_CHUNK_CODE = 1397313362;
+        static constexpr uint32_t SYNC_CHUNK_CODE = 1129208147;
+        static constexpr uint32_t epst_CHUNK_CODE = 1953722469;
+        static constexpr uint32_t EPST_CHUNK_CODE = 1414746181;
+        static constexpr uint32_t GREE_CHUNK_CODE = 1162170951;
+        static constexpr uint32_t INVALID_CHUNK_CODE = 4294967295;
 
     private:
         DATA_CHUNK header;
 
         static constexpr int CHUNK_CODE_NUMBER = 14;
 
-        static constexpr int CHUNK_CODE_LIST[] = {
+        static constexpr uint32_t CHUNK_CODE_LIST[] = {
                 FRAM_CHUNK_CODE,
                 cost_CHUNK_CODE,
                 ISOI_CHUNK_CODE,
@@ -65,7 +79,25 @@ namespace iman {
                 INVALID_CHUNK_CODE
         };
 
+        static constexpr uint32_t CHUNK_SIZE_LIST[] = {
+                sizeof(FramChunk::FRAM_CHUNK),
+                sizeof(FramCostChunk::FRAM_COST_CHUNK),
+                0,
+                sizeof(SoftChunk::SOFT_CHUNK),
+                0,
+                sizeof(CostChunk::COST_CHUNK),
+                sizeof(CompChunk::COMP_CHUNK),
+                sizeof(HardChunk::HARD_CHUNK),
+                sizeof(RoisChunk::ROIS_CHUNK),
+                sizeof(SyncChunk::SYNC_CHUNK),
+                sizeof(FramEpstChunk::FRAM_EPST_CHUNK),
+                sizeof(EpstChunk::EPST_CHUNK),
+                sizeof(GreenChunk::GREE_CHUNK),
+                0
+        };
+
     public:
+
         /**
          * Creates new chunk header
          *
@@ -102,7 +134,7 @@ namespace iman {
 
         /**
          *
-         * @return chunk size in bytes
+         * @return size of the chunk body in bytes
          */
         [[nodiscard]] uint32_t getChunkSize() const{
             return header.size;
@@ -147,7 +179,7 @@ namespace iman {
          * @return true if the chunk code is the same as a given argument
          */
         bool operator==(int chunk_code) const{
-            return operator int() == chunk_code;
+            return operator uint32_t() == chunk_code;
         }
 
         /**
@@ -189,14 +221,14 @@ namespace iman {
          * @return true if the chunk code is not the same as a given argument
          */
         bool operator!=(int chunk_code) const{
-            return operator int() != chunk_code;
+            return operator uint32_t() != chunk_code;
         }
 
         /**
          *
          * @return the so called "chunk code" Chunk code is a chunk header transformed to integer
          */
-        explicit operator int() const{
+        explicit operator uint32_t() const{
             return *((int*)header.ID);
         }
 
@@ -231,7 +263,7 @@ namespace iman {
          * @return true if the chunk is not valid
          */
         [[nodiscard]] bool isValid() {
-            return operator int() != INVALID_CHUNK_CODE;
+            return operator uint32_t() != INVALID_CHUNK_CODE;
         }
 
         /**
@@ -239,7 +271,7 @@ namespace iman {
          * @return true if the chunk is not valid
          */
         [[nodiscard]] bool isInvalid(){
-            return operator int() == INVALID_CHUNK_CODE;
+            return operator uint32_t() == INVALID_CHUNK_CODE;
         }
 
         /**
@@ -249,6 +281,16 @@ namespace iman {
         public:
             explicit unsupported_chunk_exception(const char* chunk):
                 iman_exception("Unknown or unsupported chunk: " + std::string(chunk, CHUNK_ID_SIZE)) {};
+        };
+
+        /**
+         * Throws when the actual chunk size defined by the Size field in the chunk header is not the same
+         * as the desired chunk size defined total size of all data placed into this chunk
+         */
+        class chunk_size_mismatch_exception: public iman_exception{
+        public:
+            explicit chunk_size_mismatch_exception(const char* chunkName):
+                iman_exception("Incorrect or corrupter chunk " + std::string(chunkName, CHUNK_ID_SIZE)) {};
         };
 
         static ChunkHeader InvalidChunk() { return ChunkHeader("\xFF\xFF\xFF\xFF", 0); }

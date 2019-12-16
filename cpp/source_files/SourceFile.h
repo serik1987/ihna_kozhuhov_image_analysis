@@ -115,6 +115,8 @@ namespace iman {
         /**
          * Reads the chunk header and move the file to the initial position
          *
+         * See Chunk help for details
+         *
          * @param return_position
          * @return reference to the chunk header
          */
@@ -126,6 +128,8 @@ namespace iman {
          * When the chunk is not found, the function returns an invalid chunk.
          * The file shall be positioned at the beginning of any chunk header. Otherwise, no chunks can be found.
          * All chunks before the current position will be ignored
+         *
+         * See Chunk help for details
          *
          * @param name chunk name as string
          * @param pointer defines the place where the pointer shall be located:

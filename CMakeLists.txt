@@ -3,4 +3,4 @@ project(ihna_kozhuhov_image_analysis)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(ihna_kozhuhov_image_analysis main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/ChunkHeader.cpp)
+add_executable(ihna_kozhuhov_image_analysis main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/ChunkHeader.cpp cpp/source_files/Chunk.cpp cpp/source_files/Chunk.h cpp/source_files/FramChunk.cpp cpp/source_files/FramChunk.h cpp/source_files/FramCostChunk.cpp cpp/source_files/FramCostChunk.h cpp/source_files/FramEpstChunk.cpp cpp/source_files/FramEpstChunk.h cpp/source_files/IsoiChunk.cpp cpp/source_files/IsoiChunk.h cpp/source_files/HardChunk.cpp cpp/source_files/HardChunk.h cpp/source_files/SoftChunk.cpp cpp/source_files/SoftChunk.h cpp/source_files/CostChunk.cpp cpp/source_files/CostChunk.h cpp/source_files/EpstChunk.cpp cpp/source_files/EpstChunk.h cpp/source_files/GreenChunk.cpp cpp/source_files/GreenChunk.h cpp/source_files/DataChunk.cpp cpp/source_files/DataChunk.h cpp/source_files/SyncChunk.cpp cpp/source_files/SyncChunk.h cpp/source_files/RoisChunk.cpp cpp/source_files/RoisChunk.h cpp/source_files/CompChunk.cpp cpp/source_files/CompChunk.h)
