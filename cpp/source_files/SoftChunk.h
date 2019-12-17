@@ -68,6 +68,8 @@ namespace iman {
          */
         [[nodiscard]] const char* getTag() const { return info.Tag; }
 
+        [[nodiscard]] SourceFile::FileType getFileType() const;
+
         /**
          *
          * @return Actual date and time where the data were recorded
@@ -114,7 +116,7 @@ namespace iman {
          *
          * @return file type
          */
-        [[nodiscard]] uint32_t getFileType() const { return info.FileType; }
+        [[nodiscard]] uint32_t getFileSubtype() const { return info.FileType; }
 
         /**
          *

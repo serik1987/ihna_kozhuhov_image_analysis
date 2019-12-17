@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include "SourceFile.h"
+#include "SoftChunk.h"
 
 namespace iman{
 
@@ -19,6 +20,7 @@ namespace iman{
     }
 
     SourceFile::~SourceFile() {
+        delete softChunk;
         if (isOpened()){
             close();
         }
@@ -163,5 +165,82 @@ namespace iman{
         }
 
         return chunk;
+    }
+
+    std::ostream &operator<<(std::ostream &out, const SourceFile &file) {
+        using std::endl;
+
+        out << "===== " << file.getFileName() << " =====\n";
+        out << "File path: " << file.getFilePath() << endl;
+        out << "File status: ";
+        if (file.isOpened()){
+            out << "opened";
+        } else {
+            out << "closed";
+        }
+        if (file.isLoaded()){
+            out << ", loaded\n";
+        } else {
+            out << "\n";
+        }
+        out << "Desired file type: " << file.getFileTypeDescription();
+        if (file.isLoaded()){
+            out << endl;
+            out << "Frame header size: " << file.getFrameHeaderSize() << endl;
+            out << "File header size: " << file.getFileHeaderSize() << endl;
+            out << "Actual file type: ";
+            switch (file.getFileType()){
+                case SourceFile::AnalysisFile:
+                    out << "Analysis file";
+                    break;
+                case SourceFile::CompressedFile:
+                    out << "Compressed file";
+                    break;
+                case SourceFile::GreenFile:
+                    out << "Green file";
+                    break;
+                case SourceFile::StreamFile:
+                    out << "Stream file";
+                    break;
+                case SourceFile::UnknownFile:
+                    out << "Unknown or unsupported file";
+                    break;
+                default:
+                    out << "[TO-DO: UPDATE operator<<(std::ostream&, const iman::SourceFile&) IN SourceFile.cpp]";
+                    break;
+            }
+        }
+
+        return out;
+    }
+
+    SoftChunk& SourceFile::getSoftChunk() {
+        if (softChunk == nullptr){
+            throw file_not_loaded_exception("getSoftChunk", this);
+        }
+        return *softChunk;
+    }
+
+    void SourceFile::loadFileInfo() {
+        if (!isOpened()){
+            throw file_not_opened(this, "loadFileInfo");
+        }
+        fileStream.seekg(0, std::ios_base::beg);
+        if (fileStream.fail()){
+            throw file_read_exception(this);
+        }
+        auto header = readChunkHeader(true);
+        if (header != ChunkHeader::ISOI_CHUNK_CODE){
+            throw file_not_isoi_exception(this);
+        }
+        softChunk = (SoftChunk*)findChunk("SOFT");
+        frameHeaderSize = softChunk->getFrameHeaderSize();
+        header = findChunkHeader("DATA");
+        if (header != ChunkHeader::DATA_CHUNK_CODE){
+            throw data_chunk_not_found_exception(this);
+        }
+        fileHeaderSize = fileStream.tellg();
+        fileType = softChunk->getFileType();
+        loaded = true;
     }
 }

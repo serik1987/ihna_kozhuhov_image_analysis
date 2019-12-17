@@ -10,15 +10,21 @@
 #include "../core.h"
 #include "ChunkHeader.h"
 
+
 namespace iman {
 
     class ChunkHeader;
     class Chunk;
+    class SoftChunk;
 
     /**
      * This is the base class for the IMAN source file
      */
     class SourceFile {
+    public:
+        enum ChunkPositionPointer {PositionStartHeader, PositionFinishHeader, PositionFinishChunk};
+        enum FileType {AnalysisFile, CompressedFile, GreenFile, StreamFile, UnknownFile};
+
     private:
         std::ifstream fileStream;
         bool fileStatus;
@@ -26,16 +32,22 @@ namespace iman {
         std::string fileName;
         std::string fullName;
 
+        static const int CHUNK_ID_SIZE;
+
+        SoftChunk* softChunk = nullptr;
+        bool loaded = false;
+
+        uint32_t frameHeaderSize = -1;
+        std::ios::pos_type fileHeaderSize = -1;
+        FileType fileType = FileType::UnknownFile;
+
+    protected:
         void setName(const std::string& newName){
             fileName = newName;
             fullName = filePath + fileName;
         }
 
-        static const int CHUNK_ID_SIZE;
-
     public:
-        enum ChunkPositionPointer {PositionStartHeader, PositionFinishHeader, PositionFinishChunk};
-
         class source_file_exception: public io_exception{
         public:
             source_file_exception(const std::string& message, SourceFile* parent):
@@ -72,6 +84,32 @@ namespace iman {
         public:
             chunk_not_found_exception(SourceFile* parent, const std::string& name):
                 source_file_exception("Chunk '" + name + "' was not found in the source file", parent) {};
+        };
+
+        class file_not_opened: public source_file_exception{
+        public:
+            file_not_opened(SourceFile* parent, const std::string& operation):
+                source_file_exception(operation + " method was applied before the file opening for", parent) {};
+        };
+
+        class file_not_isoi_exception: public source_file_exception{
+        public:
+            file_not_isoi_exception(SourceFile* parent):
+                source_file_exception("The file doesn't relate to the IMAN source file because of errors in ISOI chunk",
+                        parent) {};
+        };
+
+        class file_not_loaded_exception: public source_file_exception{
+        public:
+            file_not_loaded_exception(const std::string& methodName, SourceFile* parent):
+                source_file_exception("The method " + methodName + " can be applied until the file info will be loaded"
+                                      " by means of loadFileInfo", parent) {};
+        };
+
+        class data_chunk_not_found_exception: public source_file_exception{
+        public:
+            explicit data_chunk_not_found_exception(SourceFile* parent):
+                source_file_exception("No DATA chunk was found in the file", parent) {};
         };
 
         /**
@@ -185,6 +223,84 @@ namespace iman {
          * be delete during finish of the method execution. This is your responsibility to delete an object
          */
         Chunk* findChunk(const std::string& name, bool originalReturnOnFail = false, bool chunkIsOptional = false);
+
+        /**
+         *
+         * @return true if the file has been loaded. The file is considered to be loaded if its general information
+         * is loaded
+         */
+        bool isLoaded() const { return loaded; }
+
+        /**
+         * Loads the general info from the file (generally, loads information from SOFT and DATA chunks).
+         */
+        virtual void loadFileInfo();
+
+        /**
+         *
+         * @return description of the current file type. The current file reflects the base class this method belongs
+         * to, not value within the SOFT chunk.
+         *
+         * EXAMPLE:
+         * SourceFile f("", "T_1BF.0A01z");
+         * sourceFile.open();
+         * sourceFile.loadFileInfo();
+         * Will get the file type called "based file". No operations except reading the file header are possible.
+         * This is because you used 'SourceFile'. Use another class derived from the 'SourceFile' is you want
+         * more functions.
+         *
+         * Yes, don't try to call: train.addFile(*(StreamFile*)&f);
+         * The program will be simply crashed!
+         *
+         * EXAMPLE 2:
+         * StreamFile f("", "T_1BF.0A01z");
+         * f.open();
+         * has a type "stream file", even though the T_1BF.0A01z's type is defined as "compressed file. The following
+         * code will through an exception:
+         * f.laodFileInfo();
+         *
+         * EXAMPLE 3:
+         * CompressedFile f("", "T_1BF.0A01z");
+         * f.open();
+         * f.loadFileInfo();
+         * will have a type "compressed file", the code above will not generate an exception
+         */
+        virtual std::string getFileTypeDescription() const { return "base file [available file view only]"; }
+
+        /**
+         * Prints general information about the file into arbitrary stream
+         *
+         * @param out the stream that accepts information about the file
+         * @param file the file itself
+         * @return reference to out
+         */
+        friend std::ostream& operator<<(std::ostream& out, const SourceFile& file);
+
+        /**
+         *
+         * @return reference to the SOFT chunk
+         */
+        SoftChunk& getSoftChunk();
+
+        /**
+         *
+         * @return size of the frame header. When the file is not loaded by means of loadFileInfo the function
+         * returns -1
+         */
+        [[nodiscard]] uint32_t getFrameHeaderSize() const { return frameHeaderSize; }
+
+        /**
+         *
+         * @return size of the file header. When the file is not loaded by means of loadFileInfo the function
+         * returns -1
+         */
+        [[nodiscard]] std::ios::pos_type getFileHeaderSize() const { return fileHeaderSize; }
+
+        /**
+         *
+         * @return the file type or UnknownFileType is the file is not loaded by means of loadFileinfo function
+         */
+        [[nodiscard]] FileType getFileType() const { return fileType; }
     };
 
 }
