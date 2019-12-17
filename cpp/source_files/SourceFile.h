@@ -34,7 +34,6 @@ namespace iman {
 
         static const int CHUNK_ID_SIZE;
 
-        SoftChunk* softChunk = nullptr;
         bool loaded = false;
 
         uint32_t frameHeaderSize = -1;
@@ -42,6 +41,7 @@ namespace iman {
         FileType fileType = FileType::UnknownFile;
 
     protected:
+        SoftChunk* softChunk = nullptr;
         void setName(const std::string& newName){
             fileName = newName;
             fullName = filePath + fileName;
