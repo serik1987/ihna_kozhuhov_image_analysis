@@ -6,8 +6,12 @@
 #define IHNA_KOZHUHOV_IMAGE_ANALYSIS_CHUNK_H
 
 #include <string>
+#include <iostream>
+#include "SourceFile.h"
 
 namespace iman {
+
+    class SourceFile;
 
     /**
      * This is a base class for all chunks
@@ -73,6 +77,25 @@ namespace iman {
             auto s = pre_s.substr(0, pos);
             return s;
         }
+
+        /**
+         * Reads the chunk from the source file. Your current position within the file is assumed to be
+         * at the end of the chunk header. After the reading will be finished, the file position will be moved
+         * to the end.
+         * The function is overriden in the DATA and ISOI chunks. See help on these chunks for details
+         *
+         * @param file reference to the SourceFile& from which the chunk shall be read
+         */
+        virtual void readFromFile(SourceFile& file);
+
+        /**
+         * Prints text information about the chunk to the output stream.
+         *
+         * @param out the output stream
+         * @param chunk reference to the chunk
+         * @return reference to the out
+         */
+        friend std::ostream& operator<<(std::ostream& out, const Chunk& chunk);
     };
 
 }

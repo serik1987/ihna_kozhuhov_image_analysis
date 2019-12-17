@@ -223,6 +223,8 @@ namespace iman {
          * @return filter width in nm
          */
         [[nodiscard]] uint32_t getFilterWidth() const { return info.FilterWidth; }
+
+        friend std::ostream& operator<<(std::ostream& out, const SoftChunk& chunk);
     };
 
 }

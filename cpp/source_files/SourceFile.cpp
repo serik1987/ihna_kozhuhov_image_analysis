@@ -8,6 +8,8 @@
 
 namespace iman{
 
+    const int SourceFile::CHUNK_ID_SIZE = ChunkHeader::CHUNK_ID_SIZE;
+
 
     SourceFile::SourceFile(const std::string &path, const std::string &name) {
         filePath = path;
@@ -79,12 +81,16 @@ namespace iman{
         std::cout << "==============================\n";
 #endif
         while (!fileStream.eof()){
-            auto local_header = readChunkHeader(false);
+            auto local_header = readChunkHeader(false); // @throws file_read_exception
 #ifdef DEBUG_CHUNK_LIST_DISPLAY
             std::cout << local_header.getChunkId() << "\t" << local_header.getChunkSize() << "\n";
 #endif
-            if (!local_header.isKnown()){
-                throw unsupported_chunk_exception(this, local_header.getChunkIdRaw());
+            try {
+                if (!local_header.isKnown()) {
+                    throw unsupported_chunk_exception(this, local_header.getChunkIdRaw());
+                }
+            } catch (ChunkHeader::chunk_size_mismatch_exception& e){
+                throw chunk_size_mismatch_exception(this, local_header.getChunkIdRaw());
             }
             if (local_header == ChunkHeader::ISOI_CHUNK_CODE){
                 if (name == "ISOI"){
@@ -143,5 +149,19 @@ namespace iman{
         }
 
         return header;
+    }
+
+    Chunk *SourceFile::findChunk(const std::string &name, bool originalReturnOnFail, bool chunkIsOptional) {
+        Chunk* chunk = nullptr;
+        auto chunk_header = findChunkHeader(name, PositionFinishHeader, originalReturnOnFail);
+        chunk = chunk_header.createChunk();
+        if (chunk == nullptr && !chunkIsOptional){
+            throw chunk_not_found_exception(this, name);
+        }
+        if (chunk != nullptr) {
+            chunk->readFromFile(*this);
+        }
+
+        return chunk;
     }
 }

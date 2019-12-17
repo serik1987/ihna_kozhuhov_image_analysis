@@ -9,20 +9,11 @@
 #include <string>
 #include <cstring>
 #include "../core.h"
-
-#include "FramChunk.h"
-#include "FramCostChunk.h"
-#include "FramEpstChunk.h"
-#include "HardChunk.h"
-#include "SoftChunk.h"
-#include "CostChunk.h"
-#include "EpstChunk.h"
-#include "GreenChunk.h"
-#include "SyncChunk.h"
-#include "RoisChunk.h"
-#include "CompChunk.h"
+#include "Chunk.h"
 
 namespace iman {
+
+    class Chunk;
 
     /**
      * This is the base class to represent the chunk header and create the chunk based on
@@ -79,22 +70,7 @@ namespace iman {
                 INVALID_CHUNK_CODE
         };
 
-        static constexpr uint32_t CHUNK_SIZE_LIST[] = {
-                sizeof(FramChunk::FRAM_CHUNK),
-                sizeof(FramCostChunk::FRAM_COST_CHUNK),
-                0,
-                sizeof(SoftChunk::SOFT_CHUNK),
-                0,
-                sizeof(CostChunk::COST_CHUNK),
-                sizeof(CompChunk::COMP_CHUNK),
-                sizeof(HardChunk::HARD_CHUNK),
-                sizeof(RoisChunk::ROIS_CHUNK),
-                sizeof(SyncChunk::SYNC_CHUNK),
-                sizeof(FramEpstChunk::FRAM_EPST_CHUNK),
-                sizeof(EpstChunk::EPST_CHUNK),
-                sizeof(GreenChunk::GREE_CHUNK),
-                0
-        };
+        static const uint32_t CHUNK_SIZE_LIST[CHUNK_CODE_NUMBER];
 
     public:
 
@@ -237,6 +213,7 @@ namespace iman {
          * The chunk is treated to be supported if this is within the list of known chunks
          *
          * @return true if the chunk is known
+         * @throws chunk_size_mismatch_exception if the chunk has non-standard size
          */
         [[nodiscard]] bool isKnown() const;
 
@@ -270,30 +247,48 @@ namespace iman {
          *
          * @return true if the chunk is not valid
          */
-        [[nodiscard]] bool isInvalid(){
+        [[nodiscard]] bool isInvalid() const{
             return operator uint32_t() == INVALID_CHUNK_CODE;
         }
+
+        class chunk_header_exception: public iman_exception{
+        public:
+            explicit chunk_header_exception(const std::string& what): iman_exception(what) {};
+        };
 
         /**
          * Shall be thrown when the chunk name presented in the input argument is unknown or invalid
          */
-        class unsupported_chunk_exception: public iman_exception{
+        class unsupported_chunk_exception: public chunk_header_exception{
         public:
             explicit unsupported_chunk_exception(const char* chunk):
-                iman_exception("Unknown or unsupported chunk: " + std::string(chunk, CHUNK_ID_SIZE)) {};
+                    chunk_header_exception("Unknown or unsupported chunk: " + std::string(chunk, CHUNK_ID_SIZE)) {};
         };
 
         /**
          * Throws when the actual chunk size defined by the Size field in the chunk header is not the same
          * as the desired chunk size defined total size of all data placed into this chunk
          */
-        class chunk_size_mismatch_exception: public iman_exception{
+        class chunk_size_mismatch_exception: public chunk_header_exception{
         public:
             explicit chunk_size_mismatch_exception(const char* chunkName):
-                iman_exception("Incorrect or corrupter chunk " + std::string(chunkName, CHUNK_ID_SIZE)) {};
+                    chunk_header_exception("Incorrect or corrupter chunk " + std::string(chunkName, CHUNK_ID_SIZE)) {};
         };
 
+        /**
+         *
+         * @return an invalid chunk
+         */
         static ChunkHeader InvalidChunk() { return ChunkHeader("\xFF\xFF\xFF\xFF", 0); }
+
+        /**
+         * Creates new chunk. The chunk size is assumed to be the value given in the Size field
+         * The function just creates the chunk. It doesn't read the chunk from file or buffer
+         *
+         * @return pointer to the object containing a certain chunk. This is your responsibility to delete such
+         * an object. If the chunk is invalid or unsupported the function returns nullptr
+         */
+        [[nodiscard]] Chunk* createChunk() const;
     };
 
 }
