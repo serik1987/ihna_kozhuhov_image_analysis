@@ -23,6 +23,7 @@ namespace iman {
     class TrainSourceFile: public SourceFile {
     public:
         enum NotInHead {NotInHeadIgnore, NotInHeadFail, NotInHeadTraverse};
+        int offsetFrame;
 
     private:
         NotInHead loadFileInfoMode;

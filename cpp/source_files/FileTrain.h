@@ -33,6 +33,7 @@ namespace iman {
         size_t xySize = -1, frameImageSize = -1, frameSize = -1;
         std::vector<int> synchChannelMax;
         int dataType = -1;
+        int totalFrames;
 
         /**
          * Loads all scalar train properties from the file
@@ -62,6 +63,23 @@ namespace iman {
         virtual TrainSourceFile* createFile(const std::string& path, const std::string& filename,
                 TrainSourceFile::NotInHead notInHead) = 0;
 
+        /**
+         * Checks for train consistency
+         */
+        virtual void sanityCheck();
+
+        /**
+         *
+         * @return the desired size of the ISOI chunk
+         */
+        virtual uint32_t getDesiredIsoiChunkSize(TrainSourceFile& file) = 0;
+
+        /**
+         *
+         * @return difference between the desired and the actual file size
+         */
+        virtual uint32_t getFileSizeChecksum(TrainSourceFile& file) = 0;
+
     public:
         class train_exception: public io_exception{
         public:
@@ -80,6 +98,77 @@ namespace iman {
         public:
             explicit synchronization_channel_number_exception(const FileTrain* train):
                 train_exception("The number of synchronization channel passed is out of range", train) {};
+        };
+
+        class unsupported_experiment_mode_exception: public train_exception{
+        public:
+            explicit unsupported_experiment_mode_exception(const FileTrain* train):
+                train_exception("The stimulation protocol is unknown or unsupported by this version of the program",
+                        train) {};
+        };
+
+        class frame_number_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit frame_number_mismatch(SourceFile* file):
+                SourceFile::source_file_exception("Total number of frames written in ISOI chunk is no the same as "
+                                                  "total number of frames found in the whole record", file) {};
+        };
+
+        class data_chunk_size_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit data_chunk_size_mismatch(SourceFile* file):
+                    SourceFile::source_file_exception("The DATA chunk size is not enough to encompass all frames"
+                                                      "", file) {};
+        };
+
+        class isoi_chunk_size_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit isoi_chunk_size_mismatch(SourceFile* file):
+                    SourceFile::source_file_exception("The ISOI chunk size is not enough to encompass all chunks"
+                                                      "", file) {};
+        };
+
+        class file_size_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit file_size_mismatch(SourceFile* file):
+                    SourceFile::source_file_exception("The file size is not enough to encompass the ISOI chunk"
+                                                      "", file) {};
+        };
+
+        class experimental_chunk_not_found: public SourceFile::source_file_exception{
+        public:
+            explicit experimental_chunk_not_found(SourceFile* file):
+                    SourceFile::source_file_exception("Necessary experimental chunk (COST for continuous stimulation,"
+                                                      "EPST for episodic stimulation) is absent in the following file"
+                                                      "", file) {};
+        };
+
+        class file_header_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit file_header_mismatch(SourceFile* file):
+                    SourceFile::source_file_exception("Size of the file header is not the same as header size of the "
+                                                      "head file", file) {};
+        };
+
+        class frame_header_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit frame_header_mismatch(SourceFile* file):
+                    SourceFile::source_file_exception("Frame header for the file is not the same as frame header for "
+                                                      "the head file", file) {};
+        };
+
+        class map_dimensions_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit map_dimensions_mismatch(SourceFile* file):
+                    SourceFile::source_file_exception("Frame resolution for this file is not the same as frame "
+                                                      "resolution for the head file", file) {};
+        };
+
+        class data_type_mismatch: public SourceFile::source_file_exception{
+        public:
+            explicit data_type_mismatch(SourceFile* file):
+                    SourceFile::source_file_exception("Data type for this file is not the same as data type for "
+                                                      "the head file", file) {};
         };
 
         /**
@@ -230,6 +319,14 @@ namespace iman {
             } else {
                 throw experiment_mode_exception(this);
             }
+        }
+
+        /**
+         *
+         * @return total number of frames within the record
+         */
+        [[nodiscard]] int getTotalFrames() const {
+            return totalFrames;
         }
 
         /**

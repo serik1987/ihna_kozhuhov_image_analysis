@@ -14,11 +14,5 @@ int main() {
     CompressedFileTrain train("/home/serik1987/vasomotor-oscillations/sample_data/c022z/", "T_1BF.0A01z", true);
     train.open();
 
-    cout << train << endl;
-    for (auto pfile: train){
-        cout << *pfile << endl;
-        cout << pfile->getIsoiChunk() << endl;
-    }
-
     return 0;
 }

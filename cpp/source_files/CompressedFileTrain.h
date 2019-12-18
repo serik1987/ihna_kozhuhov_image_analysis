@@ -23,9 +23,27 @@ namespace iman {
             return new CompressedSourceFile(path, filename, notInHead);
         }
 
+        /**
+         *
+         * @return the desired size of the ISOI chunk
+         */
+        uint32_t getDesiredIsoiChunkSize(TrainSourceFile& file) override;
+
+        /**
+         *
+         * @return difference between the desired and the actual file size
+         */
+        uint32_t getFileSizeChecksum(TrainSourceFile& file) override { return 0; };
+
     public:
         CompressedFileTrain(const std::string& path, const std::string& filename, bool traverse):
             FileTrain(path, filename, traverse) {};
+
+        class comp_chunk_not_exist_exception: public SourceFile::source_file_exception{
+        public:
+            explicit comp_chunk_not_exist_exception(SourceFile* file):
+                    SourceFile::source_file_exception("The following file doesn't contain COMP chunk", file) {};
+        };
     };
 
 }

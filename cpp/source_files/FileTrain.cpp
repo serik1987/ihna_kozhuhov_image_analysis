@@ -4,6 +4,9 @@
 
 #include "FileTrain.h"
 #include "SoftChunk.h"
+#include "IsoiChunk.h"
+#include "CostChunk.h"
+#include "EpstChunk.h"
 
 
 namespace iman{
@@ -23,6 +26,8 @@ namespace iman{
 
         out << "===== " << train.getFilename() << " =====\n";
         out << "Full path to the file train: " << train.getFilePath() << endl;
+        out << "Number of files in the train: " << train.getFileNumber() << "\n";
+        out << "Total number of frames: " << train.getTotalFrames() << "\n";
         out << "Data type: " << train.getDataType() << endl;
         out << "Frame size on X, pixels: " << train.getXSize() << endl;
         out << "Frame size on Y, pixels: " << train.getYSize() << endl;
@@ -45,11 +50,10 @@ namespace iman{
         }
         out << "Train status: ";
         if (train.isOpened()){
-            out << "opened\n";
+            out << "opened";
         } else {
-            out << "closed\n";
+            out << "closed";
         }
-        out << "Number of files in the train: " << train.getFileNumber();
 
         return out;
     }
@@ -69,14 +73,19 @@ namespace iman{
         file->open();
         file->loadFileInfo();
         loadTrainProperties(*file);
+        file->offsetFrame = 0;
+        totalFrames = file->getSoftChunk().getFramesThisFile();
 
         while (file->getSoftChunk().getNextFilename() != ""){
             file = createFile(getFilePath(), file->getSoftChunk().getNextFilename(), TrainSourceFile::NotInHeadIgnore);
             push_back(file);
             file->open();
             file->loadFileInfo();
-
+            file->offsetFrame = totalFrames;
+            totalFrames += file->getSoftChunk().getFramesThisFile();
         }
+
+        sanityCheck();
 
         opened = true;
     }
@@ -98,5 +107,65 @@ namespace iman{
         xySize = xSize * ySize;
         frameImageSize = xySize * file.getSoftChunk().getDataTypeSize();
         frameSize = frameImageSize + frameHeaderSize;
+        auto* cost = (CostChunk*)file.getIsoiChunk().getChunkById(ChunkHeader::COST_CHUNK_CODE);
+        auto* epst = (EpstChunk*)file.getIsoiChunk().getChunkById(ChunkHeader::EPST_CHUNK_CODE);
+        if (cost != nullptr && epst != nullptr){
+            throw unsupported_experiment_mode_exception(this);
+        }
+        if (cost == nullptr && epst == nullptr){
+            throw unsupported_experiment_mode_exception(this);
+        }
+        if (cost != nullptr){
+            experimentalMode = Continuous;
+            for (int chan = 0; chan < cost->getSynchonizationChannels(); ++chan){
+                synchChannelMax.push_back(cost->getSynchronizationChannelsMax(chan));
+            }
+        }
+        if (epst != nullptr){
+            experimentalMode = Episodic;
+        }
+    }
+
+    void FileTrain::sanityCheck() {
+        using std::cout, std::endl;
+
+        for (auto& file: *this){
+            if (file->getSoftChunk().getTotalFrames() != getTotalFrames()){
+                throw frame_number_mismatch(file);
+            }
+            if (file->getSoftChunk().getFramesThisFile() * getFrameSize() !=
+                    file->getIsoiChunk().getChunkById(ChunkHeader::DATA_CHUNK_CODE)->getSize()){
+                throw data_chunk_size_mismatch(file);
+            }
+            if (getFileSizeChecksum(*file) != 0){
+                throw file_size_mismatch(file);
+            }
+            if (getDesiredIsoiChunkSize(*file) != file->getIsoiChunk().getSize()){
+                throw isoi_chunk_size_mismatch(file);
+            }
+
+            if (getExperimentalMode() == Continuous){
+                if (file->getIsoiChunk().getChunkById(ChunkHeader::COST_CHUNK_CODE) == nullptr){
+                    throw experimental_chunk_not_found(file);
+                }
+            }
+            if (getExperimentalMode() == Episodic){
+                if (file->getIsoiChunk().getChunkById(ChunkHeader::EPST_CHUNK_CODE) == nullptr){
+                    throw experimental_chunk_not_found(file);
+                }
+            }
+            if (file->getFileHeaderSize() != getFileHeaderSize()){
+                throw file_header_mismatch(file);
+            }
+            if (file->getFrameHeaderSize() != getFrameHeaderSize()){
+                throw frame_header_mismatch(file);
+            }
+            if (file->getSoftChunk().getXSize() != getXSize() || file->getSoftChunk().getYSize() != getYSize()){
+                throw map_dimensions_mismatch(file);
+            }
+            if (file->getSoftChunk().getDataType() != getDataType()){
+                throw data_type_mismatch(file);
+            }
+        }
     }
 }
