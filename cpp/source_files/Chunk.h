@@ -51,6 +51,12 @@ namespace iman {
          */
         Chunk(std::string chunk_name, uint32_t chunk_size): name(std::move(chunk_name)), chunkSize(chunk_size) {};
 
+        virtual ~Chunk(){
+#ifdef DEBUG_DELETE_CHECK
+            std::cout << "DELETE THE CHUNK\n";
+#endif
+        }
+
         /**
          *
          * @return chunk name (non-changing constant that depends on a certain file

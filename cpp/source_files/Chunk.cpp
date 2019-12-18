@@ -22,6 +22,8 @@ namespace iman{
             out << *softChunk;
         } else {
             out << "===== The chunk is unsupported or its write is not implemented =====";
+            out << "Chunk name: " << chunk.getName() << std::endl;
+            out << "Chunk size: " << chunk.getSize() << std::endl;
         }
 
         return out;

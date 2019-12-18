@@ -123,7 +123,7 @@ namespace iman {
         /**
          * Destructs the source file
          */
-        ~SourceFile();
+        virtual ~SourceFile();
 
         SourceFile(const SourceFile& other) = delete;
         SourceFile& operator=(SourceFile&) = delete;

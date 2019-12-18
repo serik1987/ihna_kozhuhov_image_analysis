@@ -22,6 +22,9 @@ namespace iman{
     SourceFile::~SourceFile() {
         delete softChunk;
         if (isOpened()){
+#ifdef DEBUG_DELETE_CHECK
+            std::cout << "CLOSING SOURCE FILE\n";
+#endif
             close();
         }
     }

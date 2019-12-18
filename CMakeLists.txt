@@ -10,4 +10,5 @@ add_executable(ihna_kozhukhov_image_analysis main.cpp cpp/source_files/SourceFil
         cpp/source_files/GreenChunk.cpp cpp/source_files/DataChunk.cpp cpp/source_files/SyncChunk.cpp
         cpp/source_files/RoisChunk.cpp cpp/source_files/CompChunk.cpp cpp/source_files/AnalysisSourceFile.cpp
         cpp/source_files/GreenSourceFile.cpp cpp/source_files/TrainSourceFile.cpp cpp/source_files/StreamSourceFile.cpp
-        cpp/source_files/CompressedSourceFile.cpp)
+        cpp/source_files/CompressedSourceFile.cpp cpp/source_files/FileTrain.cpp cpp/source_files/StreamFileTrain.cpp
+        cpp/source_files/CompressedFileTrain.cpp)
