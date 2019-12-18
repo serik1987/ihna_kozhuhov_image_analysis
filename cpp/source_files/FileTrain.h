@@ -5,6 +5,7 @@
 #ifndef IHNA_KOZHUKHOV_IMAGE_ANALYSIS_FILETRAIN_H
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS_FILETRAIN_H
 
+#include <vector>
 #include <list>
 #include "TrainSourceFile.h"
 
@@ -17,6 +18,9 @@ namespace iman {
      * a single record
      */
     class FileTrain: private std::list<TrainSourceFile*> {
+    public:
+        enum ExperimentalMode {Continuous, Episodic, Unknown};
+
     private:
         std::string path = "";
         std::string filename = "";
@@ -24,6 +28,18 @@ namespace iman {
         bool opened = false;
         uint32_t fileHeaderSize = -1;
         uint32_t frameHeaderSize = -1;
+        ExperimentalMode experimentalMode = Unknown;
+        int xSize = -1, ySize = -1;
+        size_t xySize = -1, frameImageSize = -1, frameSize = -1;
+        std::vector<int> synchChannelMax;
+        int dataType = -1;
+
+        /**
+         * Loads all scalar train properties from the file
+         *
+         * @param file the train head file
+         */
+        void loadTrainProperties(TrainSourceFile& file);
 
     protected:
         /**
@@ -47,6 +63,25 @@ namespace iman {
                 TrainSourceFile::NotInHead notInHead) = 0;
 
     public:
+        class train_exception: public io_exception{
+        public:
+            train_exception(const std::string& message, const FileTrain* train):
+                io_exception(message, train->getFilePath() + train->getFilename()) {};
+        };
+
+        class experiment_mode_exception: public train_exception{
+        public:
+            explicit experiment_mode_exception(const FileTrain* train):
+                train_exception("The function is not applicable for this stimulation mode", train) {};
+
+        };
+
+        class synchronization_channel_number_exception: public train_exception{
+        public:
+            explicit synchronization_channel_number_exception(const FileTrain* train):
+                train_exception("The number of synchronization channel passed is out of range", train) {};
+        };
+
         /**
          * Creates new file train
          *
@@ -56,7 +91,8 @@ namespace iman {
          * true - the file will be substituted to another file that is in the file head
          * false - TrainSourceFile::not_train_head will be thrown
          */
-        FileTrain(const std::string& path, const std::string& filename, bool traverse = false){
+        FileTrain(const std::string& path, const std::string& filename, bool traverse = false):
+                synchChannelMax(){
             this->path = path;
             this->filename = filename;
             this->traverse = traverse;
@@ -120,6 +156,81 @@ namespace iman {
          * @return iterator to the end of the train
          */
         [[nodiscard]] auto end() { return std::list<TrainSourceFile*>::end(); }
+
+        /**
+         *
+         * @return FileTrain:;Continuous is stimulus properties (i.e., orientation, direction etc.) are changed
+         * continuously
+         * FileTrain::Episodic is stimulus with certain properties is presented for a certain fixed time during which
+         * its properties are the same.
+         */
+        [[nodiscard]] ExperimentalMode getExperimentalMode() const { return experimentalMode; }
+
+        /**
+         *
+         * @return map size on X, in pixels
+         */
+        [[nodiscard]] int getXSize() const { return xSize; }
+
+        /**
+         *
+         * @return map size in Y, in pixels
+         */
+        [[nodiscard]] int getYSize() const { return ySize; }
+
+        /**
+         *
+         * @return total number of pixels in the single frame
+         */
+        [[nodiscard]] int getXYSize() const { return xySize; }
+
+        /**
+         *
+         * @return frame image size
+         */
+        [[nodiscard]] size_t getFrameImageSize() const { return frameImageSize; }
+
+        /**
+         *
+         * @return total frame size
+         */
+        [[nodiscard]] size_t getFrameSize() const { return frameSize; }
+
+        /**
+         *
+         * @return data type
+         */
+        [[nodiscard]] int getDataType() const { return dataType; }
+
+        /**
+         *
+         * @return total number of synchronization channels
+         */
+        [[nodiscard]] size_t getSynchnorizationChannelNumber() const{
+            if (experimentalMode == Continuous){
+                return synchChannelMax.size();
+            } else {
+                throw experiment_mode_exception(this);
+            }
+        };
+
+        /**
+         * Maximum value at a certain synchronization channel
+         *
+         * @param chan number of the synchronization channel
+         * @return
+         */
+        [[nodiscard]] int getSynchronizationChannelMax(int chan) const{
+            if (experimentalMode == Continuous){
+                if (chan >= 0 && chan < synchChannelMax.size()){
+                    return synchChannelMax[chan];
+                } else {
+                    throw synchronization_channel_number_exception(this);
+                }
+            } else {
+                throw experiment_mode_exception(this);
+            }
+        }
 
         /**
          * Opens all files within the file train
