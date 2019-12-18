@@ -5,6 +5,7 @@
 #include "Chunk.h"
 
 #include "SoftChunk.h"
+#include "IsoiChunk.h"
 
 namespace iman{
 
@@ -16,14 +17,17 @@ namespace iman{
     }
 
     std::ostream &operator<<(std::ostream &out, const Chunk &chunk) {
-        auto* softChunk = (SoftChunk*)&chunk;
+        const auto* softChunk = dynamic_cast<const SoftChunk*>(&chunk);
+        const auto* isoiChunk = dynamic_cast<const IsoiChunk*>(&chunk);
 
-        if (softChunk != nullptr){
+        if (softChunk != nullptr) {
             out << *softChunk;
+        } else if (isoiChunk != nullptr){
+            out << *isoiChunk;
         } else {
-            out << "===== The chunk is unsupported or its write is not implemented =====";
+            out << "===== The chunk is unsupported or its write is not implemented =====\n";
             out << "Chunk name: " << chunk.getName() << std::endl;
-            out << "Chunk size: " << chunk.getSize() << std::endl;
+            out << "Chunk size: " << chunk.getSize();
         }
 
         return out;

@@ -6,6 +6,7 @@
 #include <algorithm>
 #include "SourceFile.h"
 #include "SoftChunk.h"
+#include "IsoiChunk.h"
 
 namespace iman{
 
@@ -21,6 +22,7 @@ namespace iman{
 
     SourceFile::~SourceFile() {
         delete softChunk;
+        delete isoiChunk;
         if (isOpened()){
 #ifdef DEBUG_DELETE_CHECK
             std::cout << "CLOSING SOURCE FILE\n";
@@ -236,6 +238,7 @@ namespace iman{
         if (header != ChunkHeader::ISOI_CHUNK_CODE){
             throw file_not_isoi_exception(this);
         }
+        isoiChunk = (IsoiChunk*)header.createChunk();
         softChunk = (SoftChunk*)findChunk("SOFT");
         frameHeaderSize = softChunk->getFrameHeaderSize();
         header = findChunkHeader("DATA");
@@ -245,5 +248,12 @@ namespace iman{
         fileHeaderSize = fileStream.tellg();
         fileType = softChunk->getFileType();
         loaded = true;
+    }
+
+    IsoiChunk &SourceFile::getIsoiChunk() {
+        if (isoiChunk == nullptr){
+            throw file_not_loaded_exception("getIsoiChunk", this);
+        }
+        return *isoiChunk;
     }
 }

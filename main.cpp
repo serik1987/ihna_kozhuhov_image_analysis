@@ -2,10 +2,9 @@
  * This is an auxiliary file that has been created to test feasibilities of the ihna.kozhukhov.image_analysis
  */
 
-#define DELETE_CHECK
-
 #include <iostream>
 #include "cpp/source_files/CompressedFileTrain.h"
+#include "cpp/source_files/IsoiChunk.h"
 #include "cpp/source_files/SoftChunk.h"
 
 int main() {
@@ -18,7 +17,7 @@ int main() {
     cout << train << endl;
     for (auto pfile: train){
         cout << *pfile << endl;
-        cout << pfile->getSoftChunk() << endl;
+        cout << pfile->getIsoiChunk() << endl;
     }
 
     return 0;

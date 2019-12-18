@@ -106,6 +106,9 @@ namespace iman{
             case COMP_CHUNK_CODE:
                 chunk = new CompChunk(getChunkSize());
                 break;
+            case COST_CHUNK_CODE:
+                chunk = new CostChunk(getChunkSize());
+                break;
             default:
                 chunk = nullptr;
         }

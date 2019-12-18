@@ -4,6 +4,7 @@
 
 #include "TrainSourceFile.h"
 #include "SoftChunk.h"
+#include "IsoiChunk.h"
 
 namespace iman{
 
@@ -16,11 +17,14 @@ namespace iman{
             while (softChunk->getPreviousFilename() != ""){
                 setName(softChunk->getPreviousFilename());
                 delete softChunk;
+                delete isoiChunk;
                 softChunk = nullptr;
+                isoiChunk = nullptr;
                 close();
                 open();
                 SourceFile::loadFileInfo();
             }
         }
+        isoiChunk->readFromFile(*this);
     }
 }

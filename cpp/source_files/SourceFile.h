@@ -16,6 +16,7 @@ namespace iman {
     class ChunkHeader;
     class Chunk;
     class SoftChunk;
+    class IsoiChunk;
 
     /**
      * This is the base class for the IMAN source file
@@ -42,6 +43,7 @@ namespace iman {
 
     protected:
         SoftChunk* softChunk = nullptr;
+        IsoiChunk* isoiChunk = nullptr;
         void setName(const std::string& newName){
             fileName = newName;
             fullName = filePath + fileName;
@@ -281,6 +283,12 @@ namespace iman {
          * @return reference to the SOFT chunk
          */
         SoftChunk& getSoftChunk();
+
+        /**
+         *
+         * @return ISOI chunk
+         */
+        IsoiChunk& getIsoiChunk();
 
         /**
          *

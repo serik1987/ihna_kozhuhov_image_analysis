@@ -25,6 +25,17 @@ namespace iman {
         explicit DataChunk(uint32_t size): Chunk("DATA", size) {
             body = nullptr;
         };
+
+        class data_chunk_read_exception: public iman_exception{
+        public:
+            data_chunk_read_exception():
+                iman_exception("The readFromFile function allows you to read the data from file header or file footer."
+                               " Its function is not to read the data from the file body. Since the DATA chunk "
+                               "corresponds to the file body, call DataChunk::readFromFile is considered to be an "
+                               "error itself") {};
+        };
+
+        void readFromFile(SourceFile& file) override { throw data_chunk_read_exception(); };
     };
 
 }
