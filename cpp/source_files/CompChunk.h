@@ -63,6 +63,8 @@ namespace iman {
          * @return frame number in the compressed file
          */
         [[nodiscard]] uint32_t getCompressedFrameNumber() const { return info.CompressedFrameNumber; }
+
+        friend std::ostream& operator<<(std::ostream& out, const CompChunk& chunk);
     };
 
 }

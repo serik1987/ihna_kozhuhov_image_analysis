@@ -63,6 +63,8 @@ namespace iman {
          * @return stimulus period in ms
          */
         [[nodiscard]] uint32_t getStimulusPeriod(int chan) const { return info.StimulusPeriod[chan]; }
+
+        friend std::ostream& operator<<(std::ostream& out, const CostChunk& chunk);
     };
 
 }

@@ -85,6 +85,8 @@ namespace iman {
          * @return number of poststimulus frames
          */
         [[nodiscard]] uint32_t getPoststimulusFrames() const { return info.NFramesBlankPost; }
+
+        friend std::ostream& operator<<(std::ostream& out, const EpstChunk& chunk);
     };
 
 }

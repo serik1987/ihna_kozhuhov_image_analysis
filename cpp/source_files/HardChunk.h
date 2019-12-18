@@ -60,7 +60,7 @@ namespace iman {
          *
          * @return Camera name
          */
-        [[nodiscard]] std::string getCameraName() const { return info.CameraName; }
+        [[nodiscard]] std::string getCameraName() const { return readString(info.CameraName, 16); }
 
         /**
          *
@@ -175,6 +175,8 @@ namespace iman {
          * @return Hardware bits
          */
         [[nodiscard]] uint32_t getHardwareBits() const { return info.HardwareBits; }
+
+        friend std::ostream& operator<<(std::ostream& out, const HardChunk& chunk);
     };
 
 }

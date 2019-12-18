@@ -36,6 +36,8 @@ namespace iman {
         };
 
         void readFromFile(SourceFile& file) override { throw data_chunk_read_exception(); };
+
+        friend std::ostream& operator<<(std::ostream& out, const DataChunk& chunk);
     };
 
 }

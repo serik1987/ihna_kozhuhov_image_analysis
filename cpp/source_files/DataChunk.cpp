@@ -6,4 +6,10 @@
 
 namespace iman{
 
+    std::ostream &operator<<(std::ostream &out, const DataChunk &chunk) {
+        out << "===== DATA =====\n";
+        out << "Chunk size, bytes: " << chunk.getSize();
+
+        return out;
+    }
 }
