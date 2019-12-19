@@ -18,7 +18,7 @@
 #include "RoisChunk.h"
 #include "CompChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     const uint32_t ChunkHeader::CHUNK_SIZE_LIST[] = {
             sizeof(FramChunk::FRAM_CHUNK),

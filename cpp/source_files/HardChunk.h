@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * Defines properties of an experimental setup

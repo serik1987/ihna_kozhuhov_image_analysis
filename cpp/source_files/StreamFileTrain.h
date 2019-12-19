@@ -8,7 +8,7 @@
 #include "FileTrain.h"
 #include "StreamSourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * A base class for all file trains.

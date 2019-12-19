@@ -7,7 +7,7 @@
 
 #include "TrainSourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * File that stores the imaging data in the compressed mode

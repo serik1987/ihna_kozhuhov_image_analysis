@@ -4,7 +4,7 @@
 
 #include "CostChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     std::ostream &operator<<(std::ostream &out, const CostChunk &chunk) {
         out << "===== COST =====\n";

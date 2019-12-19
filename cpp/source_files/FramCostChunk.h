@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * The chunk contains information about the frame related to continuous (sine-wave) stimulation

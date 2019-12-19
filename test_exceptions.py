@@ -5,7 +5,7 @@ import imageanalysis.sourcefiles as io
 if __name__ == "__main__":
     print(dir(io))
     try:
-        raise io.SourceFileError()
+        raise io.NoCompressedFileError()
     except io.TrainError as exc:
         help(exc)
         print("Exception: {0}".format(exc))

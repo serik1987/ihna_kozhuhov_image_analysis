@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * Defines general properties of the recorded signal.

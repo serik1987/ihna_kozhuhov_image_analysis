@@ -4,7 +4,7 @@
 
 #include "CompChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     std::ostream &operator<<(std::ostream &out, const CompChunk &chunk) {
         using std::endl;

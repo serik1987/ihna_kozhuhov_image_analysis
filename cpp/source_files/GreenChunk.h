@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * This chunk contains properties specific for so called "green image"

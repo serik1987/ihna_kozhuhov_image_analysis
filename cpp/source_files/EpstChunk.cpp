@@ -4,7 +4,7 @@
 
 #include "EpstChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     std::ostream &operator<<(std::ostream &out, const EpstChunk &chunk) {
         using std::endl;

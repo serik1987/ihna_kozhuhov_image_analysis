@@ -7,7 +7,7 @@
 
 #include "TrainSourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * Represents a regular file where imaging data were stored in their original

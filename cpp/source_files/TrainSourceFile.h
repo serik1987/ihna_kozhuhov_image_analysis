@@ -7,7 +7,7 @@
 
 #include "SourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * Base class for so called "train files".

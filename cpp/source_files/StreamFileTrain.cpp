@@ -5,7 +5,7 @@
 #include "StreamFileTrain.h"
 #include "IsoiChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     uint32_t StreamFileTrain::getDesiredIsoiChunkSize(TrainSourceFile &file) {
         uint32_t desired_size;

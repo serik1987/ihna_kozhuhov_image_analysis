@@ -8,7 +8,7 @@
 #include "SoftChunk.h"
 #include "IsoiChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     const int SourceFile::CHUNK_ID_SIZE = ChunkHeader::CHUNK_ID_SIZE;
 

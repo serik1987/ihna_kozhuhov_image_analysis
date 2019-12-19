@@ -4,6 +4,6 @@
 
 #include "SyncChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
 }

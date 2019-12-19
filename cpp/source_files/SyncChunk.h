@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * I actually don't have any idea why this chunk is needed

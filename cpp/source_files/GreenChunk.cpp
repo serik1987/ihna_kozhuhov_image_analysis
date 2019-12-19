@@ -4,6 +4,6 @@
 
 #include "GreenChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
 }

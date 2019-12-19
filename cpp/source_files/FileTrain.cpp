@@ -9,7 +9,7 @@
 #include "EpstChunk.h"
 
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     FileTrain::~FileTrain() {
         using namespace std;

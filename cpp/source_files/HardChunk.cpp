@@ -5,7 +5,7 @@
 #include <bitset>
 #include "HardChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     std::ostream &operator<<(std::ostream &out, const HardChunk &chunk) {
         out << "===== HARD =====\n";

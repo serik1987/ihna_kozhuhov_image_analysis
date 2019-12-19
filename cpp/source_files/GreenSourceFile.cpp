@@ -4,7 +4,7 @@
 
 #include "GreenSourceFile.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     void GreenSourceFile::loadFileInfo(){
         SourceFile::loadFileInfo();

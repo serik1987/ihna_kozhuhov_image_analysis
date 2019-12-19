@@ -8,7 +8,7 @@
 #include "Chunk.h"
 
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
 
     class CostChunk: public Chunk {

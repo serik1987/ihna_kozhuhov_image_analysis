@@ -9,7 +9,7 @@
 #include <iostream>
 #include "SourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     class SourceFile;
 

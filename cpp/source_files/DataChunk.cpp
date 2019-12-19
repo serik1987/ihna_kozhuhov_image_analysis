@@ -4,7 +4,7 @@
 
 #include "DataChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     std::ostream &operator<<(std::ostream &out, const DataChunk &chunk) {
         out << "===== DATA =====\n";

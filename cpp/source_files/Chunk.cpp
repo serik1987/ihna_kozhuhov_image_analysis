@@ -11,7 +11,7 @@
 #include "CostChunk.h"
 #include "EpstChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     void Chunk::readFromFile(SourceFile &file) {
         file.getFileStream().read(body, getSize());

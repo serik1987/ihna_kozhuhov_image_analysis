@@ -4,7 +4,7 @@
 
 #include "IsoiChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     void IsoiChunk::readFromFile(SourceFile &file) {
         ChunkHeader chunkHeader = ChunkHeader::InvalidChunk();

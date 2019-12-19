@@ -4,6 +4,6 @@
 
 #include "FramEpstChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
 }

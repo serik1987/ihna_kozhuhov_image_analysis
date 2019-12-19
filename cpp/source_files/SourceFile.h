@@ -7,11 +7,11 @@
 
 
 #include <fstream>
-#include "../core.h"
+#include "../exceptions.h"
 #include "ChunkHeader.h"
 
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     class ChunkHeader;
     class Chunk;

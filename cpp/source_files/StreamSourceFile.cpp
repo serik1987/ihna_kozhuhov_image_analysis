@@ -4,7 +4,7 @@
 
 #include "StreamSourceFile.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     void StreamSourceFile::loadFileInfo() {
         TrainSourceFile::loadFileInfo();

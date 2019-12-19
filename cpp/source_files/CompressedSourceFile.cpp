@@ -4,7 +4,7 @@
 
 #include "CompressedSourceFile.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     void CompressedSourceFile::loadFileInfo() {
         TrainSourceFile::loadFileInfo();

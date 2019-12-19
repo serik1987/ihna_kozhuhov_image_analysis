@@ -4,7 +4,7 @@
 
 #include "SoftChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
     std::ostream &operator<<(std::ostream &out, const SoftChunk &chunk) {
         using std::endl;

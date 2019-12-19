@@ -4,6 +4,6 @@
 
 #include "FramChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
 }

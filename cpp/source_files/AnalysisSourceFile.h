@@ -7,7 +7,7 @@
 
 #include "SourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * This is the base class for IMAN source file containing analysis results

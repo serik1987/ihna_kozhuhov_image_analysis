@@ -7,7 +7,7 @@
 
 #include "SourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     class GreenSourceFile: public SourceFile {
     public:

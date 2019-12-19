@@ -1,0 +1,397 @@
+//
+// Created by serik1987 on 19.12.2019.
+//
+
+#include "Python.h"
+
+#define FULL_ERROR_NAME_PREFIX "ihna.kozhukhov.imageanalysis.sourcefiles."
+#define ERR_NAME(x) x, FULL_ERROR_NAME_PREFIX x
+
+extern "C" {
+
+    static PyObject *PyExc_ImanError = NULL;
+    static PyObject* PyExc_ImanIoError = NULL;
+    static PyObject* PyExc_TrainError = NULL;
+    static PyObject* PyExc_ExperimentModeError = NULL;
+    static PyObject* PyExc_SynchronizationChannelNumberError = NULL;
+    static PyObject* PyExc_UnsupportedExperimentModeError = NULL;
+    static PyObject* PyExc_SourceFileError = NULL;
+    static PyObject* PyExc_FrameNumberError = NULL;
+    static PyObject* PyExc_DataChunkSizeMismatchError = NULL;
+    static PyObject* PyExc_IsoiChunkSizeMismatchError = NULL;
+    static PyObject* PyExc_FileSizeMismatchError = NULL;
+    static PyObject* PyExc_ExperimentChunkMismatch = NULL;
+    static PyObject* PyExc_FileHeaderMismatchError = NULL;
+    static PyObject* PyExc_FrameHeaderMismatchError = NULL;
+    static PyObject* PyExc_FrameDimensionsMismatch = NULL;
+    static PyObject* PyExc_DataTypeMismatch = NULL;
+    static PyObject* PyExc_CompChunkNotExistError = NULL;
+    static PyObject* PyExc_FileOpenError = NULL;
+    static PyObject* PyExc_FileReadError = NULL;
+    static PyObject* PyExc_ChunkError = NULL;
+    static PyObject* PyExc_UnsupportedChunkError = NULL;
+    static PyObject* PyExc_ChunkSizeMismatchError = NULL;
+    static PyObject* PyExc_ChunkNotFoundError = NULL;
+    static PyObject* PyExc_FileNotOpenedError = NULL;
+    static PyObject* PyExc_IsoiChunkNotFoundError = NULL;
+    static PyObject* PyExc_FileNotLoadedError = NULL;
+    static PyObject* PyExc_DataChunkNotFoundError = NULL;
+    static PyObject* PyExc_NotAnalysisFileError = NULL;
+    static PyObject* PyExc_NotGreenFileError = NULL;
+    static PyObject* PyExc_NotTrainHeadError = NULL;
+    static PyObject* PyExc_NotStreamFileError = NULL;
+    static PyObject* PyExc_NoCompressedFileError = NULL;
+
+    static struct PyMethodDef core_methods[] = {
+            {NULL}
+    };
+
+    static struct PyModuleDef core = {
+            PyModuleDef_HEAD_INIT,
+            .m_name = "_exceptions",
+            .m_doc = "This module is to import all exception that can be thrown during the generation of the code.",
+            .m_size = -1,
+            .m_methods = core_methods
+    };
+
+    /**
+     * Imports a single exception to the module
+     *
+     * @param module pointer to the module (created by PyModule_Create function)
+     * @param exception_name class name corresponds to the exception
+     * @param exception_full_name full exception name like packagename.modulename.ClassName
+     * @param exception_doc short exception documentation
+     * @param base_exception reference to the base exception class
+     * @param exception_object reference to the reference to the exception object. When the exception
+     * will be successfully created its reference will be written to the *exception_object
+     * @param var_name name of an ultimate exception parameter that is not inherited by the base exception
+     * or NULL if there is no such parameters
+     * @return 0 on success, -1 on failure
+     */
+    static int import_exception(PyObject* module,
+            const char* exception_name,
+            const char* exception_full_name, const char* exception_doc,
+            PyObject* base_exception,
+            PyObject** exception_object,
+            const char* var_name){
+
+        PyObject* variables = NULL;
+        PyObject* value = NULL;
+
+        if (var_name != NULL){
+            variables = PyDict_New();
+            if (variables == NULL){
+                printf("Trying to create the dictionary\n");
+                return -1;
+            }
+
+            value = Py_BuildValue("");
+            if (value == NULL){
+                printf("Try to create the dictionary value\n");
+                Py_DECREF(variables);
+                return -1;
+            }
+
+            if (PyDict_SetItemString(variables, var_name, value) < 0){
+                printf("Try to set the dictionary item\n");
+                Py_DECREF(variables);
+                return -1;
+            }
+        }
+
+        *exception_object = PyErr_NewExceptionWithDoc(exception_full_name, exception_doc, base_exception, variables);
+        if (*exception_object == NULL){
+            Py_XDECREF(variables);
+            Py_XDECREF(value);
+            printf("Error in creating the following exception: %s\n", exception_name);
+            return -1;
+        }
+        if (PyModule_AddObject(module, exception_name, *exception_object) < 0){
+            Py_XDECREF(variables);
+            Py_XDECREF(value);
+            Py_DECREF(*exception_object);
+            printf("Error in adding the following exception to the object: %s\n", exception_name);
+            return -1;
+        }
+
+        return 0;
+    }
+
+    /**
+     * Creates all exceptions necessary for ihna.kozhukhov.imageanalysis.sourcefiles module and adds them to
+     * the module
+     *
+     * @param module reference to the module
+     * @return 0 on success, -1 on failure
+     */
+    static int import_exceptions(PyObject* module){
+        if (import_exception(module, ERR_NAME("ImanError"),
+                "The is the base class for all exceptions in the imageanalysis module", NULL, &PyExc_ImanError,
+                NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, ERR_NAME("IoError"),
+                "This is the base class for all exceptions in the imageanalysis.sourcefiles module",
+                PyExc_ImanError, &PyExc_ImanIoError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "TrainError", "ihna.kozhukhov.imageanalysis.sourcefiles.TrainError",
+                "The is the base class for all I/O exceptions generated within the file train",
+                PyExc_ImanIoError, &PyExc_TrainError, "train_name") < 0){
+            return -1;
+        }
+        if (import_exception(module, "ExperimentModeError",
+                "ihna.kozhukhov.imageanalysis.sourcefiles.ExperimentModeError",
+                "This exception is thrown when you try to read the train property or call the train method that is"
+                " absolutely meaningless for the current stimulation protocol. Also, when you try to call this method "
+                "before the opening of the train, you will get this exception",
+                PyExc_TrainError, &PyExc_ExperimentModeError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "SynchronizationChannelNumberError",
+                             FULL_ERROR_NAME_PREFIX"SynchronizationChannelNumberError",
+                "The exception is thrown when you try to access the non-existent synchronization channel or "
+                "channel that was not used in the experiment",
+                PyExc_TrainError, &PyExc_SynchronizationChannelNumberError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "UnsupportedExperimentModeError",
+                             FULL_ERROR_NAME_PREFIX"UnsupportedExperimentModeError",
+                "The exception is thrown when image analysis have no idea or very confused about what stimulation"
+                "protocol is used in your experiment. At the moment of creating an exception trying to read the"
+                "file where both COST and EPST chunks were presented or where both of them are absent will"
+                "throw this error",
+                PyExc_TrainError, &PyExc_UnsupportedExperimentModeError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "SourceFileError",
+                             FULL_ERROR_NAME_PREFIX"SourceFileError",
+                "The is the base class for all exceptions that are connected to a certain particular file",
+                PyExc_TrainError, &PyExc_SourceFileError, "file_name") < 0){
+            return -1;
+        }
+        if (import_exception(module, "FrameNumberError",
+                             FULL_ERROR_NAME_PREFIX"FrameNumberError",
+                "In order to check the data consistency total number of recorded frames shall be written to the "
+                "SOFT chunk. During the load such a number is compared with sum of all frames presented in all files "
+                "within the train."
+                " If these values don't mismatch to each other this exception will be thrown",
+                PyExc_SourceFileError, &PyExc_FrameNumberError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "DataChunkSizeMismatchError",
+                             FULL_ERROR_NAME_PREFIX"DataChunkSizeMismatchError",
+                "This exception will be thrown is size of the file body is not the same as size of a single frame "
+                "multiplied by total number of frames in this file. Maybe, this happens due to the data loss.",
+                PyExc_SourceFileError, &PyExc_DataChunkSizeMismatchError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "IsoiChunkSizeMismatchError",
+                             FULL_ERROR_NAME_PREFIX"IsoiChunkSizeMismatchError",
+                "In the valid imaging data file the size of the ISOI chunk shall correspond to the size of "
+                "the data chunk plus the size of the file header (footers are not supported by this package, their "
+                "presence will definitely throw this error). If this is not true, this exception will be thrown.",
+                PyExc_SourceFileError, &PyExc_IsoiChunkSizeMismatchError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FileSizeMismatchError",
+                             FULL_ERROR_NAME_PREFIX"FileSizeMismatchError",
+                "The exception will be thrown during an attempt to read the train from uncompressed (native) "
+                "data. In such a data the actual file size detected by the operating system shall be the same"
+                "as the size of the ISOI chunk. Failure to do this will raise this error",
+                PyExc_SourceFileError, &PyExc_FileSizeMismatchError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "ExperimentChunkMismatch",
+                             FULL_ERROR_NAME_PREFIX"ExperimentChunkMismatch",
+                "The stimulation protocol (continuous or episodic) shall be the same during the whole record. Because "
+                "such a protocol is defined by so called 'experiment chunk' (either 'COST' or 'EPST') this means "
+                "that the same experiment chunk shall be present in all files in the file train",
+                PyExc_SourceFileError, &PyExc_ExperimentChunkMismatch, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FileHeaderMismatchError",
+                             FULL_ERROR_NAME_PREFIX"FileHeaderMismatchError",
+                "The program will work correctly when the header size if the same for all files in the chain. "
+                "If this is not true this exception will be thrown",
+                PyExc_SourceFileError, &PyExc_FileHeaderMismatchError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FrameHeaderMismatchError",
+                             FULL_ERROR_NAME_PREFIX"FrameHeaderMismatchError",
+                "The program will work correctly when all frames in the within the record shall have headers of the "
+                "same size. If this is not truth, this error will be thrown",
+                PyExc_SourceFileError, &PyExc_FrameHeaderMismatchError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FrameDimensionsMismatch",
+                             FULL_ERROR_NAME_PREFIX"FrameDimensionsMismatch",
+                "This error will be thrown if frame dimensions are not constant during the whole record",
+                PyExc_SourceFileError, &PyExc_FrameDimensionsMismatch, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "DataTypeMismatch",
+                             FULL_ERROR_NAME_PREFIX"DataTypeMismatch",
+                "This error will be thrown is the data type is not the same during the whole record",
+                PyExc_SourceFileError, &PyExc_DataTypeMismatch, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "CompChunkNotExistError",
+                             FULL_ERROR_NAME_PREFIX"CompChunkNotExistError",
+                "This error will be thrown on attempt to open the compressed file that doesn't contain the COMP chunk",
+                PyExc_SourceFileError, &PyExc_CompChunkNotExistError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FileOpenError",
+                             FULL_ERROR_NAME_PREFIX"FileOpenError",
+                "This error generates when the operating system fails to open the file for reading",
+                PyExc_SourceFileError, &PyExc_FileOpenError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FileReadError",
+                             FULL_ERROR_NAME_PREFIX"FileReadError",
+                "This error generates when the operating system fails to read the requsted bytes from the file",
+                PyExc_SourceFileError, &PyExc_FileReadError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "ChunkError",
+                             FULL_ERROR_NAME_PREFIX"ChunkError",
+                "The is the base class for all errors related to a certain chunk",
+                PyExc_SourceFileError, &PyExc_ChunkError, "chunk_name") < 0){
+            return -1;
+        }
+        if (import_exception(module, "UnsupportedChunkError",
+                             FULL_ERROR_NAME_PREFIX"UnsupportedChunkError",
+                "This exception will be thrown if the file contains a chunk that can't be recognized by the module "
+                "because its type is definitely unknown for the module",
+                PyExc_ChunkError, &PyExc_UnsupportedChunkError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "ChunkSizeMismatchError",
+                             FULL_ERROR_NAME_PREFIX"ChunkSizeMismatchError",
+                "Each chunk type (except ISOI and DATA chunks) is assumed to have the same size for all data you "
+                "try to process by this package and saved by this package. Such a size is written inside this module."
+                " If you try to read the chunk with non-standard size you will receive this error",
+                PyExc_ChunkError, &PyExc_ChunkSizeMismatchError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "ChunkNotFoundError",
+                             FULL_ERROR_NAME_PREFIX"ChunkNotFoundError",
+                "This error will be thrown when the module requires a certain chunk to be presented within the file "
+                "but this chunk is absent in the given data",
+                PyExc_ChunkError, &PyExc_ChunkNotFoundError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FileNotOpenedError",
+                             FULL_ERROR_NAME_PREFIX"FileNotOpenedError",
+                "This error will be thrown when you try to call the method that requires the file to be opened "
+                "without necessity to load the file header. Open the file first and then apply this method in order "
+                "to fix this error.",
+                PyExc_SourceFileError, &PyExc_FileNotOpenedError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "IsoiChunkNotFoundError",
+                             FULL_ERROR_NAME_PREFIX"IsoiChunkNotFoundError",
+                "This error will be thrown if there is not ISOI chunk presented at the very beginning of the file",
+                PyExc_SourceFileError, &PyExc_IsoiChunkNotFoundError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, "FileNotLoadedError",
+                             FULL_ERROR_NAME_PREFIX"FileNotLoadedError",
+                "This error will be raised when you try to call the method that requires file header to be loaded. "
+                "Load the file header first, and then apply this method in order to fix this error.",
+                PyExc_SourceFileError, &PyExc_FileNotLoadedError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, ERR_NAME("DataChunkNotFoundError"),
+                "This error will be raised when you try to load the file with not DATA chunk presented",
+                PyExc_SourceFileError, &PyExc_DataChunkNotFoundError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, ERR_NAME("NotAnalysisFileError"),
+                "This error will be thrown when you try to apply AnalysisSourceFile class for loading the file "
+                "that is not an analysis file",
+                PyExc_SourceFileError, &PyExc_NotAnalysisFileError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, ERR_NAME("NotGreenFileError"),
+                "This error will be thrown when you try to apply GreenSourceFile class for loading the file "
+                "that is not a green file",
+                             PyExc_SourceFileError, &PyExc_NotGreenFileError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, ERR_NAME("NotTrainHeadError"),
+                "This error will be thrown when the loading file is not the head of the file train and you  asked "
+                "to throw an exception when you adjusted parameters of the TrainSourceFile or any of its descendants",
+                PyExc_SourceFileError, &PyExc_NotTrainHeadError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, ERR_NAME("NotStreamFileError"),
+                "This error will be thrown when you apply StreamSourceFile class for loading the file that is "
+                "not a stream file or present in the compressed mode",
+                PyExc_SourceFileError, &PyExc_NotStreamFileError, NULL) < 0){
+            return -1;
+        }
+        if (import_exception(module, ERR_NAME("NoCompressedFileError"),
+                "This error will be thrown when you try to apply CompressedSourceFile to load the file the is not "
+                "compressed or doesn't contain a native imaging signal",
+                PyExc_SourceFileError, &PyExc_NoCompressedFileError, NULL) < 0){
+            return -1;
+        }
+
+        return 0;
+    }
+
+    static void clear_all_exceptions(void){
+        Py_XDECREF(PyExc_ImanError);
+        Py_XDECREF(PyExc_ImanIoError);
+        Py_XDECREF(PyExc_TrainError);
+        Py_XDECREF(PyExc_ExperimentModeError);
+        Py_XDECREF(PyExc_SynchronizationChannelNumberError);
+        Py_XDECREF(PyExc_SourceFileError);
+        Py_XDECREF(PyExc_FrameNumberError);
+        Py_XDECREF(PyExc_DataChunkSizeMismatchError);
+        Py_XDECREF(PyExc_DataChunkSizeMismatchError);
+        Py_XDECREF(PyExc_IsoiChunkSizeMismatchError);
+        Py_XDECREF(PyExc_FileSizeMismatchError);
+        Py_XDECREF(PyExc_FileSizeMismatchError);
+        Py_XDECREF(PyExc_ExperimentChunkMismatch);
+        Py_XDECREF(PyExc_FileHeaderMismatchError);
+        Py_XDECREF(PyExc_FrameHeaderMismatchError);
+        Py_XDECREF(PyExc_FrameDimensionsMismatch);
+        Py_XDECREF(PyExc_DataTypeMismatch);
+        Py_XDECREF(PyExc_CompChunkNotExistError);
+        Py_XDECREF(PyExc_FileOpenError);
+        Py_XDECREF(PyExc_ChunkError);
+        Py_XDECREF(PyExc_UnsupportedChunkError);
+        Py_XDECREF(PyExc_ChunkSizeMismatchError);
+        Py_XDECREF(PyExc_ChunkNotFoundError);
+        Py_XDECREF(PyExc_FileNotOpenedError);
+        Py_XDECREF(PyExc_IsoiChunkNotFoundError);
+        Py_XDECREF(PyExc_FileNotLoadedError);
+        Py_XDECREF(PyExc_DataChunkNotFoundError);
+        Py_XDECREF(PyExc_NotAnalysisFileError);
+        Py_XDECREF(PyExc_NotGreenFileError);
+        Py_XDECREF(PyExc_NotTrainHeadError);
+        Py_XDECREF(PyExc_NotStreamFileError);
+        Py_XDECREF(PyExc_NoCompressedFileError);
+    }
+
+    PyMODINIT_FUNC PyInit__exceptions(void){
+        PyObject* module;
+
+        module = PyModule_Create(&core);
+        if (module == NULL){
+            printf("Error in creating the module\n");
+            return NULL;
+        }
+        if (import_exceptions(module) != 0){
+            clear_all_exceptions();
+            Py_DECREF(module);
+            return NULL;
+        }
+
+        return module;
+    }
+
+}

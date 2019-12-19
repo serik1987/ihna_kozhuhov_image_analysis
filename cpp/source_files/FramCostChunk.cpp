@@ -4,6 +4,6 @@
 
 #include "FramCostChunk.h"
 
-namespace iman{
+namespace ihna::kozhukhov::image_analysis{
 
 }

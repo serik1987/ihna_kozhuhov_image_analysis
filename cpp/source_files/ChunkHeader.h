@@ -8,10 +8,10 @@
 #include <cstdint>
 #include <string>
 #include <cstring>
-#include "../core.h"
+#include "../exceptions.h"
 #include "Chunk.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     class Chunk;
 

@@ -8,7 +8,7 @@
 #include "FileTrain.h"
 #include "CompressedSourceFile.h"
 
-namespace iman {
+namespace ihna::kozhukhov::image_analysis {
 
     /**
      * Train that contains compressed files only

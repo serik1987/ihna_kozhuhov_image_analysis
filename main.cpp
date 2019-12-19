@@ -8,7 +8,7 @@
 
 int main() {
     using namespace std;
-    using namespace iman;
+    using namespace ihna::kozhukhov::image_analysis;
 
     const uint32_t file_size[] = {1299503468, 1299503468, 1299503468, 1135885676};
 
