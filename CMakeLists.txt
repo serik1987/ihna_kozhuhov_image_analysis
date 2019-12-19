@@ -12,3 +12,7 @@ add_executable(test main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/Ch
         cpp/source_files/GreenSourceFile.cpp cpp/source_files/TrainSourceFile.cpp cpp/source_files/StreamSourceFile.cpp
         cpp/source_files/CompressedSourceFile.cpp cpp/source_files/FileTrain.cpp cpp/source_files/StreamFileTrain.cpp
         cpp/source_files/CompressedFileTrain.cpp)
+
+include_directories(/usr/include/python3.6m)
+
+add_library(core SHARED c_python/source_files/core.cpp)

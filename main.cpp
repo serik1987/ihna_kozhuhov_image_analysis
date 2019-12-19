@@ -1,5 +1,5 @@
 /**
- * This is an auxiliary file that has been created to test feasibilities of the ihna.kozhukhov.image_analysis
+ * This is an auxiliary file that has been created to test feasibilities of the ihna.kozhukhov.imageanalysis
  */
 
 #include "cpp/source_files/StreamFileTrain.h"
