@@ -256,4 +256,8 @@ namespace iman{
         }
         return *isoiChunk;
     }
+
+    uint32_t SourceFile::fileSizeCheck() {
+        return getIsoiChunk().getSize() + sizeof(ChunkHeader::DATA_CHUNK) - file_size;
+    }
 }

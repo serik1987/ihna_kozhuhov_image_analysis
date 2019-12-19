@@ -332,7 +332,7 @@ namespace iman {
         /**
          * Opens all files within the file train
          */
-        void open();
+        virtual void open();
 
         /**
          * Closes all files within the train

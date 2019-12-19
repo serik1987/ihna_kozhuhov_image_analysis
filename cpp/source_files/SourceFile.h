@@ -40,6 +40,7 @@ namespace iman {
         uint32_t frameHeaderSize = -1;
         std::ios::pos_type fileHeaderSize = -1;
         FileType fileType = FileType::UnknownFile;
+        uint32_t file_size = 0;
 
     protected:
         SoftChunk* softChunk = nullptr;
@@ -309,6 +310,24 @@ namespace iman {
          * @return the file type or UnknownFileType is the file is not loaded by means of loadFileinfo function
          */
         [[nodiscard]] FileType getFileType() const { return fileType; }
+
+        /**
+         * Sets the actual file size.
+         * The function shall be called before the train open by some platform-dependent of Python code in order
+         * to set the file size. Failure to do this will throw an exception
+         *
+         * @param size
+         */
+        void setFileSize(uint32_t size){
+            file_size = size;
+        }
+
+        /**
+         * When the function return is different from zero the program execution will be failed.
+         *
+         * @return
+         */
+        uint32_t fileSizeCheck();
     };
 
 }
