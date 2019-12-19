@@ -16,3 +16,4 @@ add_executable(test main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/Ch
 include_directories(/usr/include/python3.6m)
 
 add_library(exceptions SHARED c_python/source_files/exceptions.cpp)
+add_library(testl SHARED c_python/source_files/test.cpp)

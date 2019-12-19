@@ -3,8 +3,9 @@
 //
 
 #include "Python.h"
+#define IHNA_KOZHUKHOV_IMAGE_ANALYSIS_SOURCE_FILES_EXCEPTIONS_MODULE
+#include "exceptions.h"
 
-#define FULL_ERROR_NAME_PREFIX "ihna.kozhukhov.imageanalysis.sourcefiles."
 #define ERR_NAME(x) x, FULL_ERROR_NAME_PREFIX x
 
 extern "C" {
@@ -20,11 +21,11 @@ extern "C" {
     static PyObject* PyExc_DataChunkSizeMismatchError = NULL;
     static PyObject* PyExc_IsoiChunkSizeMismatchError = NULL;
     static PyObject* PyExc_FileSizeMismatchError = NULL;
-    static PyObject* PyExc_ExperimentChunkMismatch = NULL;
+    static PyObject* PyExc_ExperimentChunkMismatchError = NULL;
     static PyObject* PyExc_FileHeaderMismatchError = NULL;
     static PyObject* PyExc_FrameHeaderMismatchError = NULL;
-    static PyObject* PyExc_FrameDimensionsMismatch = NULL;
-    static PyObject* PyExc_DataTypeMismatch = NULL;
+    static PyObject* PyExc_FrameDimensionsMismatchError = NULL;
+    static PyObject* PyExc_DataTypeMismatchError = NULL;
     static PyObject* PyExc_CompChunkNotExistError = NULL;
     static PyObject* PyExc_FileOpenError = NULL;
     static PyObject* PyExc_FileReadError = NULL;
@@ -40,7 +41,19 @@ extern "C" {
     static PyObject* PyExc_NotGreenFileError = NULL;
     static PyObject* PyExc_NotTrainHeadError = NULL;
     static PyObject* PyExc_NotStreamFileError = NULL;
-    static PyObject* PyExc_NoCompressedFileError = NULL;
+    static PyObject* PyExc_NotCompressedFileError = NULL;
+
+    /**
+     * Transforma the C++ exception into the Python exception
+     *
+     * @param exception pointer to the C++ exception
+     * @return 0 if no any exception is set, -1 otherwise
+     */
+    static int Exception_process(void* exception){
+        printf("exception process is going on...\n");
+
+        return 0;
+    }
 
     static struct PyMethodDef core_methods[] = {
             {NULL}
@@ -202,12 +215,12 @@ extern "C" {
                 PyExc_SourceFileError, &PyExc_FileSizeMismatchError, NULL) < 0){
             return -1;
         }
-        if (import_exception(module, "ExperimentChunkMismatch",
-                             FULL_ERROR_NAME_PREFIX"ExperimentChunkMismatch",
+        if (import_exception(module, "ExperimentChunkMismatchError",
+                             FULL_ERROR_NAME_PREFIX"ExperimentChunkMismatchError",
                 "The stimulation protocol (continuous or episodic) shall be the same during the whole record. Because "
                 "such a protocol is defined by so called 'experiment chunk' (either 'COST' or 'EPST') this means "
                 "that the same experiment chunk shall be present in all files in the file train",
-                PyExc_SourceFileError, &PyExc_ExperimentChunkMismatch, NULL) < 0){
+                PyExc_SourceFileError, &PyExc_ExperimentChunkMismatchError, NULL) < 0){
             return -1;
         }
         if (import_exception(module, "FileHeaderMismatchError",
@@ -224,16 +237,16 @@ extern "C" {
                 PyExc_SourceFileError, &PyExc_FrameHeaderMismatchError, NULL) < 0){
             return -1;
         }
-        if (import_exception(module, "FrameDimensionsMismatch",
-                             FULL_ERROR_NAME_PREFIX"FrameDimensionsMismatch",
+        if (import_exception(module, "FrameDimensionsMismatchError",
+                             FULL_ERROR_NAME_PREFIX"FrameDimensionsMismatchError",
                 "This error will be thrown if frame dimensions are not constant during the whole record",
-                PyExc_SourceFileError, &PyExc_FrameDimensionsMismatch, NULL) < 0){
+                PyExc_SourceFileError, &PyExc_FrameDimensionsMismatchError, NULL) < 0){
             return -1;
         }
-        if (import_exception(module, "DataTypeMismatch",
-                             FULL_ERROR_NAME_PREFIX"DataTypeMismatch",
+        if (import_exception(module, "DataTypeMismatchError",
+                             FULL_ERROR_NAME_PREFIX"DataTypeMismatchError",
                 "This error will be thrown is the data type is not the same during the whole record",
-                PyExc_SourceFileError, &PyExc_DataTypeMismatch, NULL) < 0){
+                PyExc_SourceFileError, &PyExc_DataTypeMismatchError, NULL) < 0){
             return -1;
         }
         if (import_exception(module, "CompChunkNotExistError",
@@ -332,10 +345,10 @@ extern "C" {
                 PyExc_SourceFileError, &PyExc_NotStreamFileError, NULL) < 0){
             return -1;
         }
-        if (import_exception(module, ERR_NAME("NoCompressedFileError"),
+        if (import_exception(module, ERR_NAME("NotCompressedFileError"),
                 "This error will be thrown when you try to apply CompressedSourceFile to load the file the is not "
                 "compressed or doesn't contain a native imaging signal",
-                PyExc_SourceFileError, &PyExc_NoCompressedFileError, NULL) < 0){
+                PyExc_SourceFileError, &PyExc_NotCompressedFileError, NULL) < 0){
             return -1;
         }
 
@@ -355,11 +368,11 @@ extern "C" {
         Py_XDECREF(PyExc_IsoiChunkSizeMismatchError);
         Py_XDECREF(PyExc_FileSizeMismatchError);
         Py_XDECREF(PyExc_FileSizeMismatchError);
-        Py_XDECREF(PyExc_ExperimentChunkMismatch);
+        Py_XDECREF(PyExc_ExperimentChunkMismatchError);
         Py_XDECREF(PyExc_FileHeaderMismatchError);
         Py_XDECREF(PyExc_FrameHeaderMismatchError);
-        Py_XDECREF(PyExc_FrameDimensionsMismatch);
-        Py_XDECREF(PyExc_DataTypeMismatch);
+        Py_XDECREF(PyExc_FrameDimensionsMismatchError);
+        Py_XDECREF(PyExc_DataTypeMismatchError);
         Py_XDECREF(PyExc_CompChunkNotExistError);
         Py_XDECREF(PyExc_FileOpenError);
         Py_XDECREF(PyExc_ChunkError);
@@ -374,11 +387,14 @@ extern "C" {
         Py_XDECREF(PyExc_NotGreenFileError);
         Py_XDECREF(PyExc_NotTrainHeadError);
         Py_XDECREF(PyExc_NotStreamFileError);
-        Py_XDECREF(PyExc_NoCompressedFileError);
+        Py_XDECREF(PyExc_NotCompressedFileError);
     }
 
     PyMODINIT_FUNC PyInit__exceptions(void){
         PyObject* module;
+        static void* _exceptions_API[C_API_INSTANCE_NUMBER];
+        PyObject* _exceptions_capsule = NULL;
+
 
         module = PyModule_Create(&core);
         if (module == NULL){
@@ -386,6 +402,54 @@ extern "C" {
             return NULL;
         }
         if (import_exceptions(module) != 0){
+            clear_all_exceptions();
+            Py_DECREF(module);
+            return NULL;
+        }
+
+        _exceptions_API[C_API_Exception_process] = (void*)Exception_process;
+        _exceptions_API[C_API_ImanError] = PyExc_ImanError;
+        _exceptions_API[C_API_IoError] = PyExc_ImanIoError;
+        _exceptions_API[C_API_TrainError] = PyExc_TrainError;
+        _exceptions_API[C_API_ExperimentModeError] = PyExc_ExperimentModeError;
+        _exceptions_API[C_API_SynchronizationChannelNumberError] = PyExc_SynchronizationChannelNumberError;
+        _exceptions_API[C_API_UnsupportedExperimentModeError] = PyExc_UnsupportedExperimentModeError;
+        _exceptions_API[C_API_SourceFileError] = PyExc_SourceFileError;
+        _exceptions_API[C_API_FrameNumberError] = PyExc_FrameNumberError;
+        _exceptions_API[C_API_DataChunkNotFoundError] = PyExc_DataChunkNotFoundError;
+        _exceptions_API[C_API_IsoiChunkSizeMismatchError] = PyExc_IsoiChunkSizeMismatchError;
+        _exceptions_API[C_API_FileSizeMismatchError] = PyExc_FileSizeMismatchError;
+        _exceptions_API[C_API_ExperimentChunkMismatchError] = PyExc_ExperimentChunkMismatchError;
+        _exceptions_API[C_API_FileHeaderMismatchError] = PyExc_FileHeaderMismatchError;
+        _exceptions_API[C_API_FrameHeaderMismatchError] = PyExc_FrameHeaderMismatchError;
+        _exceptions_API[C_API_FrameDimensionsMismatchError] = PyExc_FrameDimensionsMismatchError;
+        _exceptions_API[C_API_DataTypeMismatchError] = PyExc_DataTypeMismatchError;
+        _exceptions_API[C_API_CompChunkNotExistError] = PyExc_CompChunkNotExistError;
+        _exceptions_API[C_API_FileNotOpenedError] = PyExc_FileNotOpenedError;
+        _exceptions_API[C_API_FileOpenError] = PyExc_FileOpenError;
+        _exceptions_API[C_API_FileReadError] = PyExc_FileReadError;
+        _exceptions_API[C_API_ChunkError] = PyExc_ChunkError;
+        _exceptions_API[C_API_UnsupportedChunkError] = PyExc_UnsupportedChunkError;
+        _exceptions_API[C_API_ChunkSizeMismatchError] = PyExc_ChunkSizeMismatchError;
+        _exceptions_API[C_API_ChunkNotFoundError] = PyExc_ChunkNotFoundError;
+        _exceptions_API[C_API_IsoiChunkNotFoundError] = PyExc_IsoiChunkNotFoundError;
+        _exceptions_API[C_API_FileNotLoadedError] = PyExc_FileNotLoadedError;
+        _exceptions_API[C_API_DataChunkSizeMismatchError] = PyExc_DataChunkSizeMismatchError;
+        _exceptions_API[C_API_FileNotLoadedError] = PyExc_FileNotLoadedError;
+        _exceptions_API[C_API_NotAnalysisFileError] = PyExc_NotAnalysisFileError;
+        _exceptions_API[C_API_NotGreenFileError] = PyExc_NotGreenFileError;
+        _exceptions_API[C_API_NotCompressedFileError] = PyExc_NotCompressedFileError;
+        _exceptions_API[C_API_NotStreamFileError] = PyExc_NotStreamFileError;
+        _exceptions_API[C_API_NotTrainHeadError] = PyExc_NotTrainHeadError;
+
+        _exceptions_capsule = PyCapsule_New(_exceptions_API, FULL_ERROR_NAME_PREFIX"_exceptions._c_API", NULL);
+        if (_exceptions_capsule == NULL){
+            clear_all_exceptions();
+            Py_DECREF(module);
+            return NULL;
+        }
+        if (PyModule_AddObject(module, "_c_API", _exceptions_capsule) < 0){
+            Py_DECREF(_exceptions_capsule);
             clear_all_exceptions();
             Py_DECREF(module);
             return NULL;
