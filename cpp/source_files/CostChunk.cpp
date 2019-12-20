@@ -4,7 +4,7 @@
 
 #include "CostChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     std::ostream &operator<<(std::ostream &out, const CostChunk &chunk) {
         out << "===== COST =====\n";

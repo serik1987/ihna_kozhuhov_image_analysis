@@ -5,10 +5,13 @@
 #include "Python.h"
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS_SOURCE_FILES_EXCEPTIONS_MODULE
 #include "exceptions.h"
+#include "../../cpp/source_files/CompressedFileTrain.h"
 
 #define ERR_NAME(x) x, FULL_ERROR_NAME_PREFIX x
 
 extern "C" {
+
+    static const int CHUNK_ID_SIZE = GLOBAL_NAMESPACE::ChunkHeader::CHUNK_ID_SIZE;
 
     static PyObject *PyExc_ImanError = NULL;
     static PyObject* PyExc_ImanIoError = NULL;
@@ -44,15 +47,222 @@ extern "C" {
     static PyObject* PyExc_NotCompressedFileError = NULL;
 
     /**
-     * Transforma the C++ exception into the Python exception
+     * Transforms the C++ exception into the Python exception
      *
-     * @param exception pointer to the C++ exception
+     * @param exception pointer to the C++ exception. The exception shall be an instance of iman_exception.
      * @return 0 if no any exception is set, -1 otherwise
      */
     static int Exception_process(void* exception){
-        printf("exception process is going on...\n");
+        if (exception == NULL) return 0;
+        auto* base = (GLOBAL_NAMESPACE::iman_exception*)exception;
+        auto* io = dynamic_cast<GLOBAL_NAMESPACE::io_exception*>(base);
+        auto* train = dynamic_cast<GLOBAL_NAMESPACE::FileTrain::train_exception*>(base);
+        auto* experiment_mode = dynamic_cast<GLOBAL_NAMESPACE::FileTrain::experiment_mode_exception*>(base);
+        auto* synch_channel_number =
+                dynamic_cast<GLOBAL_NAMESPACE::FileTrain::synchronization_channel_number_exception*>(base);
+        auto* wrong_emode =
+                        dynamic_cast<GLOBAL_NAMESPACE::FileTrain::unsupported_experiment_mode_exception*>(base);
+        auto* source_file =
+                dynamic_cast<GLOBAL_NAMESPACE::SourceFile::source_file_exception*>(base);
+        auto* data_chunk_read =
+                dynamic_cast<GLOBAL_NAMESPACE::DataChunk::data_chunk_read_exception*>(base);
 
-        return 0;
+        if (data_chunk_read != nullptr){
+            PyErr_SetString(PyExc_NotImplementedError, base->what());
+            return -1;
+        }
+
+
+        if (io == nullptr) {
+            PyErr_SetString(PyExc_ImanError, base->what());
+            return -1;
+        }
+        if (train != nullptr){
+            PyObject_SetAttrString(PyExc_TrainError, "train_name", PyUnicode_FromString(train->getFilename().c_str()));
+            if (experiment_mode != nullptr){
+                PyErr_SetString(PyExc_ExperimentModeError, experiment_mode->what());
+                return -1;
+            }
+            if (synch_channel_number != nullptr){
+                PyErr_SetString(PyExc_SynchronizationChannelNumberError, base->what());
+                return -1;
+            }
+            if (wrong_emode != nullptr){
+                PyErr_SetString(PyExc_UnsupportedExperimentModeError, base->what());
+                return -1;
+            }
+            PyErr_SetString(PyExc_TrainError, train->what());
+            return -1;
+        }
+        if (source_file != nullptr){
+            if (source_file->getTrainName() != ""){
+                PyObject_SetAttrString(PyExc_TrainError, "train_name",
+                        PyUnicode_FromString(source_file->getTrainName().c_str()));
+            } else {
+                PyObject_SetAttrString(PyExc_TrainError, "train_name", Py_BuildValue(""));
+            }
+            PyObject_SetAttrString(PyExc_SourceFileError, "file_name",
+                                   PyUnicode_FromString(source_file->getFilename().c_str()));
+            PyObject_SetAttrString(PyExc_ChunkError, "chunk_name", Py_BuildValue(""));
+            auto* frame_number_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::frame_number_mismatch*>(base);
+            auto* data_chunk_size_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::data_chunk_size_mismatch*>(base);
+            auto* isoi_chunk_size_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::isoi_chunk_size_mismatch*>(base);
+            auto* file_size_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::file_size_mismatch*>(base);
+            auto* experimental_chunk_not_found_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::experimental_chunk_not_found*>(base);
+            auto* file_header_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::file_header_mismatch*>(base);
+            auto* frame_header_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::frame_header_mismatch*>(base);
+            auto* map_dimensions_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::map_dimensions_mismatch*>(base);
+            auto* data_type_mismatch_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::FileTrain::data_type_mismatch*>(base);
+            auto* comp_chunk_not_exist =
+                    dynamic_cast<GLOBAL_NAMESPACE::CompressedFileTrain::comp_chunk_not_exist_exception*>(base);
+            auto* file_not_opened_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::file_not_opened*>(base);
+            auto* file_read =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::file_read_exception*>(base);
+            auto* unsupported_chunk =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::unsupported_chunk_exception*>(base);
+            auto* chunk_size_mismatch =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::chunk_size_mismatch_exception*>(base);
+            auto* chunk_not_found =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::chunk_not_found_exception*>(base);
+            auto* file_open_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::file_open_exception*>(base);
+            auto* file_not_isoi =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::file_not_isoi_exception*>(base);
+            auto* file_not_loaded =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::file_not_loaded_exception*>(base);
+            auto* data_chunk_not_found =
+                    dynamic_cast<GLOBAL_NAMESPACE::SourceFile::data_chunk_not_found_exception*>(base);
+            auto* not_analysis_file =
+                    dynamic_cast<GLOBAL_NAMESPACE::AnalysisSourceFile::not_analysis_file_exception*>(base);
+            auto* not_green_file =
+                    dynamic_cast<GLOBAL_NAMESPACE::GreenSourceFile::not_green_file_exception*>(base);
+            auto* not_train_head_exception =
+                    dynamic_cast<GLOBAL_NAMESPACE::TrainSourceFile::not_train_head*>(base);
+            auto* not_stream =
+                    dynamic_cast<GLOBAL_NAMESPACE::StreamSourceFile::not_stream_file*>(base);
+            auto* not_compressed =
+                    dynamic_cast<GLOBAL_NAMESPACE::CompressedSourceFile::not_compressed_file_exception*>(base);
+
+            if (frame_number_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_FrameNumberError, base->what());
+                return -1;
+            }
+            if (data_chunk_size_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_DataChunkSizeMismatchError, base->what());
+                return -1;
+            }
+            if (isoi_chunk_size_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_IsoiChunkSizeMismatchError, base->what());
+                return -1;
+            }
+            if (file_size_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_FileSizeMismatchError, base->what());
+                return -1;
+            }
+            if (experimental_chunk_not_found_exception != nullptr){
+                PyErr_SetString(PyExc_ExperimentChunkMismatchError, base->what());
+                return -1;
+            }
+            if (file_header_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_FileHeaderMismatchError, base->what());
+                return -1;
+            }
+            if (frame_header_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_FrameHeaderMismatchError, base->what());
+                return -1;
+            }
+            if (map_dimensions_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_FrameDimensionsMismatchError, base->what());
+                return -1;
+            }
+            if (data_type_mismatch_exception != nullptr){
+                PyErr_SetString(PyExc_DataTypeMismatchError, base->what());
+                return -1;
+            }
+            if (comp_chunk_not_exist != nullptr){
+                PyErr_SetString(PyExc_CompChunkNotExistError, base->what());
+                return -1;
+            }
+            if (file_not_opened_exception != nullptr){
+                PyErr_SetString(PyExc_FileNotOpenedError, base->what());
+                return -1;
+            }
+            if (file_read != nullptr){
+                PyErr_SetString(PyExc_FileReadError, base->what());
+                return -1;
+            }
+            if (file_open_exception != nullptr){
+                PyErr_SetString(PyExc_FileOpenError, base->what());
+                return -1;
+            }
+            if (file_not_isoi != nullptr){
+                PyErr_SetString(PyExc_IsoiChunkNotFoundError, base->what());
+                return -1;
+            }
+            if (file_not_loaded != nullptr){
+                PyErr_SetString(PyExc_FileNotLoadedError, base->what());
+                return -1;
+            }
+            if (data_chunk_not_found != nullptr){
+                PyErr_SetString(PyExc_DataChunkNotFoundError, base->what());
+                return -1;
+            }
+            if (not_analysis_file != nullptr){
+                PyErr_SetString(PyExc_NotAnalysisFileError, base->what());
+                return -1;
+            }
+            if (not_green_file != nullptr){
+                PyErr_SetString(PyExc_NotGreenFileError, base->what());
+                return -1;
+            }
+            if (not_train_head_exception != nullptr){
+                PyErr_SetString(PyExc_NotTrainHeadError, base->what());
+                return -1;
+            }
+            if (not_stream != nullptr){
+                PyErr_SetString(PyExc_NotStreamFileError, base->what());
+                return -1;
+            }
+            if (not_compressed != nullptr){
+                PyErr_SetString(PyExc_NotCompressedFileError, base->what());
+                return -1;
+            }
+            const char* chunk_id = NULL;
+            char chunk_id_supp[] = "\x00\x00\x00\x00";
+            if (unsupported_chunk != nullptr){
+                PyErr_SetString(PyExc_UnsupportedChunkError, base->what());
+                chunk_id = unsupported_chunk->getChunkName();
+                strncpy(chunk_id_supp, chunk_id, CHUNK_ID_SIZE);
+            }
+            if (chunk_size_mismatch != nullptr){
+                PyErr_SetString(PyExc_ChunkSizeMismatchError, base->what());
+                chunk_id = chunk_size_mismatch->getChunkName();
+                strncpy(chunk_id_supp, chunk_id, CHUNK_ID_SIZE);
+            }
+            if (chunk_not_found != nullptr){
+                PyErr_SetString(PyExc_ChunkNotFoundError, base->what());
+                chunk_id = chunk_not_found->getChunkName();
+                strncpy(chunk_id_supp, chunk_id, CHUNK_ID_SIZE);
+            }
+            if (chunk_id != NULL){
+                PyObject_SetAttrString(PyExc_ChunkError, "chunk_name", PyUnicode_FromString(chunk_id_supp));
+                return -1;
+            }
+            PyErr_SetString(PyExc_SourceFileError, base->what());
+            return -1;
+        }
+        PyErr_SetString(PyExc_ImanIoError, io->what());
+        return -1;
     }
 
     static struct PyMethodDef core_methods[] = {

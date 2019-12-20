@@ -7,7 +7,7 @@
 
 #include "SourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     class GreenSourceFile: public SourceFile {
     public:
@@ -23,7 +23,9 @@ namespace ihna::kozhukhov::image_analysis {
         class not_green_file_exception: public source_file_exception{
         public:
             explicit not_green_file_exception(GreenSourceFile* parent):
-                source_file_exception("The file is not a green source file", parent) {};
+                source_file_exception(MSG_GREEN_FILE_EXCEPTION, parent) {};
+            explicit not_green_file_exception(const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_GREEN_FILE_EXCEPTION, filename, trainname) {};
         };
 
         void loadFileInfo() override;

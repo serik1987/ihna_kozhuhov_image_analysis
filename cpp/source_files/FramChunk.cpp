@@ -4,6 +4,6 @@
 
 #include "FramChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
 }

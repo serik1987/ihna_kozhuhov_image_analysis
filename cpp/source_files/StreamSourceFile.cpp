@@ -4,7 +4,7 @@
 
 #include "StreamSourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     void StreamSourceFile::loadFileInfo() {
         TrainSourceFile::loadFileInfo();

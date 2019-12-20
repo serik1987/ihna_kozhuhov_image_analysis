@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * The chunk which body contains sequence of frames that goes one to another without
@@ -29,10 +29,7 @@ namespace ihna::kozhukhov::image_analysis {
         class data_chunk_read_exception: public iman_exception{
         public:
             data_chunk_read_exception():
-                iman_exception("The readFromFile function allows you to read the data from file header or file footer."
-                               " Its function is not to read the data from the file body. Since the DATA chunk "
-                               "corresponds to the file body, call DataChunk::readFromFile is considered to be an "
-                               "error itself") {};
+                iman_exception(MSG_DATA_CHUNK_NOT_READ_EXCEPTION) {};
         };
 
         void readFromFile(SourceFile& file) override { throw data_chunk_read_exception(); };

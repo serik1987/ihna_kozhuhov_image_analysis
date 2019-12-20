@@ -7,7 +7,7 @@
 
 #include "SourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * Base class for so called "train files".
@@ -47,14 +47,18 @@ namespace ihna::kozhukhov::image_analysis {
          * NotInHeadTraverse - will traverse to the beginning of the file. This option
          * is suitable when the file train (FileTrain) tries to add its first file and assumes
          * that this is the beginning of the train
+         * @param trainName parameter that defines exceptions text
          */
-        TrainSourceFile(const std::string& path, const std::string& filename, NotInHead notInHead = NotInHeadFail):
-            SourceFile(path, filename), loadFileInfoMode(notInHead) {};
+        TrainSourceFile(const std::string& path, const std::string& filename, NotInHead notInHead = NotInHeadFail,
+                const std::string& trainName = ""):
+            SourceFile(path, filename, trainName), loadFileInfoMode(notInHead) {};
 
         class not_train_head: public source_file_exception{
         public:
             explicit not_train_head(TrainSourceFile* file):
-                source_file_exception("The file is not the first file in the train", file) {};
+                source_file_exception(MSG_NOT_TRAIN_HEAD, file) {};
+            explicit not_train_head(const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_NOT_TRAIN_HEAD, filename, trainname) {};
         };
 
         void loadFileInfo() override;

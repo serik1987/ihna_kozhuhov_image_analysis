@@ -5,7 +5,7 @@
 #include <bitset>
 #include "HardChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     std::ostream &operator<<(std::ostream &out, const HardChunk &chunk) {
         out << "===== HARD =====\n";

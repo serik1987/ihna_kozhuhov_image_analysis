@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * This chunk contains properties specific for so called "green image"

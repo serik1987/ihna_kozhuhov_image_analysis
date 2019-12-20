@@ -7,7 +7,7 @@
 
 #include "TrainSourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * Represents a regular file where imaging data were stored in their original
@@ -33,14 +33,18 @@ namespace ihna::kozhukhov::image_analysis {
          * NotInHeadTraverse - will traverse to the beginning of the file. This option
          * is suitable when the file train (FileTrain) tries to add its first file and assumes
          * that this is the beginning of the train
+         * @param trainName - parameter that influence on the text of the error messages only
          */
-        StreamSourceFile(const std::string& path, const std::string& filename, NotInHead notInHead = NotInHeadFail):
-            TrainSourceFile(path, filename, notInHead) {};
+        StreamSourceFile(const std::string& path, const std::string& filename, NotInHead notInHead = NotInHeadFail,
+                const std::string& trainName = ""):
+            TrainSourceFile(path, filename, notInHead, trainName) {};
 
         class not_stream_file: public source_file_exception{
         public:
             explicit not_stream_file(StreamSourceFile* file):
-                source_file_exception("This file is not a stream source file", file) {};
+                source_file_exception(MSG_NOT_STREAM_FILE, file) {};
+            explicit not_stream_file(const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_NOT_STREAM_FILE, filename, trainname) {};
         };
 
         /**

@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * The chunk relates frame information related only to the episodic stimulation

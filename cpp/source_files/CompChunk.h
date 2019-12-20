@@ -5,9 +5,11 @@
 #ifndef IHNA_KOZHUHOV_IMAGE_ANALYSIS_COMPCHUNK_H
 #define IHNA_KOZHUHOV_IMAGE_ANALYSIS_COMPCHUNK_H
 
+#include "../../init.h"
+
 #include "Chunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * This chunk is presented in compressed files only. Such a chunk

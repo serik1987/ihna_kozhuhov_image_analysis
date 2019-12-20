@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * The chunk contains general information about the stimulus  in case

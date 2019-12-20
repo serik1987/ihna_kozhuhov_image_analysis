@@ -7,7 +7,7 @@
 
 #include "Chunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * I actually don't have any idea why this chunk is needed

@@ -5,13 +5,23 @@
 #ifndef IHNA_KOZHUKHOV_IMAGE_ANALYSIS_SOURCE_FILES_EXCEPTIONS_H
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS_SOURCE_FILES_EXCEPTIONS_H
 
+#include "core.h"
+#include "../../cpp/exceptions.h"
+#include "../../cpp/source_files/FileTrain.h"
+#include "../../cpp/source_files/AnalysisSourceFile.h"
+#include "../../cpp/source_files/GreenSourceFile.h"
+#include "../../cpp/source_files/StreamSourceFile.h"
+#include "../../cpp/source_files/CompressedSourceFile.h"
+#include "../../cpp/source_files/DataChunk.h"
+
+#define FULL_ERROR_NAME_PREFIX FULL_NAME_PREFIX
+
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define PyImanS(x) Ihna__Kozhukhov__Image_analysis__Source_files_##x
-#define FULL_ERROR_NAME_PREFIX "ihna.kozhukhov.imageanalysis.sourcefiles."
-#define GLOBAL_NAMESPACE ihna::kozhukhov::imgeanalysis::
 
 #define C_API_Exception_process 0
 #define C_API_ImanError 1

@@ -4,7 +4,7 @@
 
 #include "GreenSourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     void GreenSourceFile::loadFileInfo(){
         SourceFile::loadFileInfo();

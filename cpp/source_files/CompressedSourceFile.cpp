@@ -4,7 +4,7 @@
 
 #include "CompressedSourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     void CompressedSourceFile::loadFileInfo() {
         TrainSourceFile::loadFileInfo();

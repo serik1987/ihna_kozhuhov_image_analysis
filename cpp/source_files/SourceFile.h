@@ -11,7 +11,7 @@
 #include "ChunkHeader.h"
 
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     class ChunkHeader;
     class Chunk;
@@ -32,6 +32,7 @@ namespace ihna::kozhukhov::image_analysis {
         std::string filePath;
         std::string fileName;
         std::string fullName;
+        std::string trainName;
 
         static const int CHUNK_ID_SIZE;
 
@@ -52,67 +53,112 @@ namespace ihna::kozhukhov::image_analysis {
 
     public:
         class source_file_exception: public io_exception{
+        private:
+            std::string train_name;
+
         public:
             source_file_exception(const std::string& message, SourceFile* parent):
-                io_exception(message, parent->getFullname()) {};
+                io_exception(message, parent->getFullname()), train_name(parent->trainName) {};
+            source_file_exception(const std::string& message, const std::string& filename,
+                    const std::string train_name = ""):
+                io_exception(message, filename), train_name(train_name) {};
+
+            [[nodiscard]] const std::string& getTrainName() const { return train_name; }
         };
 
         class file_open_exception: public source_file_exception{
         public:
             explicit file_open_exception(SourceFile* parent):
-                source_file_exception("Error in opening the file", parent) {};
+                source_file_exception(MSG_FILE_OPEN_EXCEPTION, parent) {};
+            explicit file_open_exception(const std::string& filename, const std::string& trainname = ""):
+                    source_file_exception(MSG_FILE_OPEN_EXCEPTION, filename, trainname) {};
         };
 
         class file_read_exception: public source_file_exception{
         public:
             explicit file_read_exception(SourceFile* parent):
-                source_file_exception("Error in reading the file", parent) {};
+                source_file_exception(MSG_FILE_READ_EXCEPTION, parent) {};
+            explicit file_read_exception(const std::string& filename, const std::string trainname = ""):
+                    source_file_exception(MSG_FILE_READ_EXCEPTION, filename, trainname) {};
         };
 
         class unsupported_chunk_exception: public source_file_exception{
+        private:
+            const char* chunk_name;
+
         public:
             unsupported_chunk_exception(SourceFile* parent, const char* id):
-                source_file_exception("Chunk '" + std::string(id, CHUNK_ID_SIZE) +
-                "' is presented in the file but not supported by the current version of image-analysis", parent) {};
+                source_file_exception(MSG_UNSUPPORTED_CHUNK_EXCEPTION, parent),
+                chunk_name(id){};
+            unsupported_chunk_exception(const char* id, const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_UNSUPPORTED_CHUNK_EXCEPTION,
+                filename, trainname), chunk_name(id){};
+
+            [[nodiscard]] const char* getChunkName() const { return chunk_name; }
         };
 
         class chunk_size_mismatch_exception: public source_file_exception{
+        private:
+            const char* chunk_name;
+
         public:
             chunk_size_mismatch_exception(SourceFile* parent, const char* id):
-                source_file_exception("Chunk '" + std::string(id, CHUNK_ID_SIZE) +
-                "' has an actual size that is much different than the desired size", parent) {};
+                source_file_exception(MSG_CHUNK_SIZE_MISMATCH_EXCEPTION, parent), chunk_name(id) {};
+            chunk_size_mismatch_exception(const char* id, const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_CHUNK_SIZE_MISMATCH_EXCEPTION, filename, trainname),
+                chunk_name(id) {};
+
+            [[nodiscard]] const char* getChunkName() const { return chunk_name; }
         };
 
         class chunk_not_found_exception: public source_file_exception{
+        private:
+            const char* chunk_name;
+
         public:
             chunk_not_found_exception(SourceFile* parent, const std::string& name):
-                source_file_exception("Chunk '" + name + "' was not found in the source file", parent) {};
+                source_file_exception(MSG_CHUNK_NOT_FOUND_EXCEPTION, parent),
+                chunk_name(name.c_str()) {};
+            chunk_not_found_exception(const std::string& name, const std::string& filename,
+                    const std::string& trainname = ""):
+                source_file_exception(MSG_CHUNK_NOT_FOUND_EXCEPTION, filename, trainname),
+                chunk_name(name.c_str()) {};
+
+            [[nodiscard]] const char* getChunkName() const { return chunk_name; }
         };
 
         class file_not_opened: public source_file_exception{
         public:
             file_not_opened(SourceFile* parent, const std::string& operation):
-                source_file_exception(operation + " method was applied before the file opening for", parent) {};
+                source_file_exception(MSG_FILE_NOT_OPENED_EXCEPTION, parent) {};
+            file_not_opened(const std::string& operation, const std::string& filename,
+                    const std::string& trainname = ""):
+                    source_file_exception(MSG_FILE_NOT_OPENED_EXCEPTION,
+                            filename, trainname) {};
         };
 
         class file_not_isoi_exception: public source_file_exception{
         public:
             file_not_isoi_exception(SourceFile* parent):
-                source_file_exception("The file doesn't relate to the IMAN source file because of errors in ISOI chunk",
-                        parent) {};
+                source_file_exception(MSG_FILE_NOT_ISOI_EXCEPTION, parent) {};
+            file_not_isoi_exception(const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_FILE_NOT_ISOI_EXCEPTION, filename, trainname) {};
         };
 
         class file_not_loaded_exception: public source_file_exception{
         public:
             file_not_loaded_exception(const std::string& methodName, SourceFile* parent):
-                source_file_exception("The method " + methodName + " can be applied until the file info will be loaded"
-                                      " by means of loadFileInfo", parent) {};
+                source_file_exception(MSG_FILE_NOT_LOADED_EXCEPTION, parent) {};
+            file_not_loaded_exception(const std::string& methodName, const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_FILE_NOT_LOADED_EXCEPTION, filename, trainname) {};
         };
 
         class data_chunk_not_found_exception: public source_file_exception{
         public:
             explicit data_chunk_not_found_exception(SourceFile* parent):
-                source_file_exception("No DATA chunk was found in the file", parent) {};
+                source_file_exception(MSG_DATA_CHUNK_NOT_FOUND_EXCEPTION, parent) {};
+            explicit data_chunk_not_found_exception(const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_DATA_CHUNK_NOT_FOUND_EXCEPTION, filename, trainname) {};
         };
 
         /**
@@ -120,8 +166,10 @@ namespace ihna::kozhukhov::image_analysis {
          *
          * @param path path to the source file, doesn't contain the filename
          * @param name name of the source file
+         * @param trainName if available, point out the train name. This option influences only on the information
+         * containing in error messages, the package functionality is absolutely unchangeable by this
          */
-        SourceFile(const std::string& path, const std::string& name);
+        SourceFile(const std::string& path, const std::string& name, const std::string& train_name = "");
 
         /**
          * Destructs the source file

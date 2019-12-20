@@ -5,7 +5,7 @@
 #include "CompressedFileTrain.h"
 #include "IsoiChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     uint32_t CompressedFileTrain::getDesiredIsoiChunkSize(TrainSourceFile& file) {
         uint32_t desired_size;

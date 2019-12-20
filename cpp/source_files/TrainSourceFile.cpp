@@ -6,7 +6,7 @@
 #include "SoftChunk.h"
 #include "IsoiChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     void TrainSourceFile::loadFileInfo() {
         SourceFile::loadFileInfo();

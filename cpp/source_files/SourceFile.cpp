@@ -8,15 +8,16 @@
 #include "SoftChunk.h"
 #include "IsoiChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     const int SourceFile::CHUNK_ID_SIZE = ChunkHeader::CHUNK_ID_SIZE;
 
 
-    SourceFile::SourceFile(const std::string &path, const std::string &name) {
+    SourceFile::SourceFile(const std::string &path, const std::string &name, const std::string& train_name) {
         filePath = path;
         fileName = name;
         fullName = path + name;
+        trainName = train_name;
         fileStatus = false;
     }
 

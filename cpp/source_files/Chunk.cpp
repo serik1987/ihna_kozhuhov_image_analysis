@@ -2,6 +2,8 @@
 // Created by serik1987 on 15.12.2019.
 //
 
+#include "../../init.h"
+
 #include "Chunk.h"
 
 #include "SoftChunk.h"
@@ -11,7 +13,7 @@
 #include "CostChunk.h"
 #include "EpstChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     void Chunk::readFromFile(SourceFile &file) {
         file.getFileStream().read(body, getSize());

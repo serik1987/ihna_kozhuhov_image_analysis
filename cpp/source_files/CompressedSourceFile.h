@@ -5,9 +5,11 @@
 #ifndef IHNA_KOZHUKHOV_IMAGE_ANALYSIS_COMPRESSEDSOURCEFILE_H
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS_COMPRESSEDSOURCEFILE_H
 
+#include "../../init.h"
+
 #include "TrainSourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * File that stores the imaging data in the compressed mode
@@ -32,14 +34,18 @@ namespace ihna::kozhukhov::image_analysis {
         * NotInHeadTraverse - will traverse to the beginning of the file. This option
         * is suitable when the file train (FileTrain) tries to add its first file and assumes
         * that this is the beginning of the train
+         * @param trainName parameter that influences on the text of the error messages only
         */
-        CompressedSourceFile(const std::string& path, const std::string& filename, NotInHead notInHead = NotInHeadFail):
-            TrainSourceFile(path, filename, notInHead) {};
+        CompressedSourceFile(const std::string& path, const std::string& filename, NotInHead notInHead = NotInHeadFail,
+                const std::string& trainName = ""):
+            TrainSourceFile(path, filename, notInHead, trainName) {};
 
         class not_compressed_file_exception: public source_file_exception{
         public:
             explicit not_compressed_file_exception(CompressedSourceFile* file):
-                source_file_exception("This is not a compressed source file", file) {};
+                source_file_exception(MSG_NOT_COMPRESSED_SOURCE_FILE, file) {};
+            explicit not_compressed_file_exception(const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_NOT_COMPRESSED_SOURCE_FILE, filename, trainname) {};
         };
 
         /**

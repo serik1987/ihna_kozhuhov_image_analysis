@@ -11,7 +11,7 @@
 #include "SoftChunk.h"
 #include "DataChunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * This is the Main Container Chunk that contains all other chunks

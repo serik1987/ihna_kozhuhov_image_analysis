@@ -5,13 +5,15 @@
 #ifndef IHNA_KOZHUHOV_IMAGE_ANALYSIS_CHUNKHEADER_H
 #define IHNA_KOZHUHOV_IMAGE_ANALYSIS_CHUNKHEADER_H
 
+#include "../../init.h"
+
 #include <cstdint>
 #include <string>
 #include <cstring>
 #include "../exceptions.h"
 #include "Chunk.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     class Chunk;
 

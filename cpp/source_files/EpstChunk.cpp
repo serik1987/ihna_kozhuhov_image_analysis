@@ -4,7 +4,7 @@
 
 #include "EpstChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     std::ostream &operator<<(std::ostream &out, const EpstChunk &chunk) {
         using std::endl;

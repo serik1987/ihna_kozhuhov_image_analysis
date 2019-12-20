@@ -5,10 +5,12 @@
 #ifndef IHNA_KOZHUHOV_IMAGE_ANALYSIS_COSTCHUNK_H
 #define IHNA_KOZHUHOV_IMAGE_ANALYSIS_COSTCHUNK_H
 
+#include "../../init.h"
+
 #include "Chunk.h"
 
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
 
     class CostChunk: public Chunk {

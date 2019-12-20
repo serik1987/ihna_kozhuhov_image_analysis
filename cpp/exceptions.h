@@ -5,10 +5,12 @@
 #ifndef IHNA_KOZHUHOV_IMAGE_ANALYSIS_CORE_H
 #define IHNA_KOZHUHOV_IMAGE_ANALYSIS_CORE_H
 
+#include <string>
 #include <exception>
 #include "../compile_options.h"
+#include "../init.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     class iman_exception : public std::exception {
     private:
@@ -23,9 +25,14 @@ namespace ihna::kozhukhov::image_analysis {
     };
 
     class io_exception : public iman_exception {
+    private:
+        std::string filename;
+
     public:
         io_exception(const std::string &message, const std::string &filename) :
-                iman_exception(message + ": " + filename) {};
+                iman_exception(message + ": " + filename), filename(filename) {};
+
+        [[nodiscard]] const std::string& getFilename() const { return filename; }
     };
 
 }

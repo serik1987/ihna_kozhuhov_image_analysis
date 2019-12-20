@@ -18,7 +18,7 @@
 #include "RoisChunk.h"
 #include "CompChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     const uint32_t ChunkHeader::CHUNK_SIZE_LIST[] = {
             sizeof(FramChunk::FRAM_CHUNK),

@@ -8,7 +8,7 @@
 #include "FileTrain.h"
 #include "StreamSourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * A base class for all file trains.
@@ -25,8 +25,9 @@ namespace ihna::kozhukhov::image_analysis {
 
     protected:
         TrainSourceFile* createFile(const std::string& path, const std::string& filename,
-                                            TrainSourceFile::NotInHead notInHead) override {
-            return new StreamSourceFile(path, filename, notInHead);
+                                            TrainSourceFile::NotInHead notInHead, const std::string& trainName)
+                                            override {
+            return new StreamSourceFile(path, filename, notInHead, trainName);
         };
 
         uint32_t getDesiredIsoiChunkSize(TrainSourceFile& file) override;

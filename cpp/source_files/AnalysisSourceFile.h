@@ -5,9 +5,10 @@
 #ifndef IHNA_KOZKUKHOV_IMAGE_ANALYSIS_ANALYSISSOURCEFILE_H
 #define IHNA_KOZKUKHOV_IMAGE_ANALYSIS_ANALYSISSOURCEFILE_H
 
+#include "../../init.h"
 #include "SourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * This is the base class for IMAN source file containing analysis results
@@ -26,7 +27,9 @@ namespace ihna::kozhukhov::image_analysis {
         class not_analysis_file_exception: public source_file_exception{
         public:
             explicit not_analysis_file_exception(AnalysisSourceFile* parent):
-                source_file_exception("The file is not an analysis source file", parent) {};
+                source_file_exception(MSG_NOT_ANALYSIS_FILE_EXCEPTION, parent) {};
+            explicit not_analysis_file_exception(const std::string& filename, const std::string& trainname = ""):
+                source_file_exception(MSG_NOT_ANALYSIS_FILE_EXCEPTION, filename, trainname) {};
         };
 
         /**

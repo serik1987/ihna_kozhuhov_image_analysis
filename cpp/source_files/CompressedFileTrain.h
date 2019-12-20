@@ -5,10 +5,12 @@
 #ifndef IHNA_KOZHUKHOV_IMAGE_ANALYSIS_COMPRESSEDFILETRAIN_H
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS_COMPRESSEDFILETRAIN_H
 
+#include "../../init.h"
+
 #include "FileTrain.h"
 #include "CompressedSourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     /**
      * Train that contains compressed files only
@@ -19,8 +21,8 @@ namespace ihna::kozhukhov::image_analysis {
     class CompressedFileTrain : public FileTrain {
     protected:
         TrainSourceFile* createFile(const std::string& path, const std::string& filename,
-                                    TrainSourceFile::NotInHead notInHead) override{
-            return new CompressedSourceFile(path, filename, notInHead);
+                                    TrainSourceFile::NotInHead notInHead, const std::string& trainName) override{
+            return new CompressedSourceFile(path, filename, notInHead, trainName);
         }
 
         /**
@@ -42,7 +44,10 @@ namespace ihna::kozhukhov::image_analysis {
         class comp_chunk_not_exist_exception: public SourceFile::source_file_exception{
         public:
             explicit comp_chunk_not_exist_exception(SourceFile* file):
-                    SourceFile::source_file_exception("The following file doesn't contain COMP chunk", file) {};
+                    SourceFile::source_file_exception(MSG_COMP_CHUNK_NOT_EXIST_EXCEPTION, file) {};
+            explicit comp_chunk_not_exist_exception(const std::string& filename, const std::string& trainname = ""):
+                        SourceFile::source_file_exception(MSG_COMP_CHUNK_NOT_EXIST_EXCEPTION,
+                                filename, trainname) {};
         };
     };
 

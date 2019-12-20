@@ -5,11 +5,13 @@
 #ifndef IHNA_KOZHUHOV_IMAGE_ANALYSIS_CHUNK_H
 #define IHNA_KOZHUHOV_IMAGE_ANALYSIS_CHUNK_H
 
+#include "../../init.h"
+
 #include <string>
 #include <iostream>
 #include "SourceFile.h"
 
-namespace ihna::kozhukhov::image_analysis {
+namespace GLOBAL_NAMESPACE {
 
     class SourceFile;
 

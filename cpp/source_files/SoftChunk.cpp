@@ -4,7 +4,7 @@
 
 #include "SoftChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     std::ostream &operator<<(std::ostream &out, const SoftChunk &chunk) {
         using std::endl;

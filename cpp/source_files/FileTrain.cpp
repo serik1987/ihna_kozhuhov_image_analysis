@@ -9,7 +9,7 @@
 #include "EpstChunk.h"
 
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     FileTrain::~FileTrain() {
         using namespace std;
@@ -62,9 +62,9 @@ namespace ihna::kozhukhov::image_analysis{
         TrainSourceFile* file;
 
         if (isTraverse()){
-            file = createFile(getFilePath(), getFilename(), TrainSourceFile::NotInHeadTraverse);
+            file = createFile(getFilePath(), getFilename(), TrainSourceFile::NotInHeadTraverse, getFilename());
         } else {
-            file = createFile(getFilePath(), getFilename(), TrainSourceFile::NotInHeadFail);
+            file = createFile(getFilePath(), getFilename(), TrainSourceFile::NotInHeadFail, getFilename());
         }
         if (file == nullptr){
             throw std::runtime_error("FileTrain::createFile shall return non-nullptr value");
@@ -77,7 +77,11 @@ namespace ihna::kozhukhov::image_analysis{
         totalFrames = file->getSoftChunk().getFramesThisFile();
 
         while (file->getSoftChunk().getNextFilename() != ""){
-            file = createFile(getFilePath(), file->getSoftChunk().getNextFilename(), TrainSourceFile::NotInHeadIgnore);
+            file = createFile(getFilePath(), file->getSoftChunk().getNextFilename(), TrainSourceFile::NotInHeadIgnore,
+                    getFilename());
+            if (file == nullptr){
+                throw std::runtime_error("FileTrain::createFile shall return non-nullptr value");
+            }
             push_back(file);
             file->open();
             file->loadFileInfo();

@@ -4,7 +4,7 @@
 
 #include "IsoiChunk.h"
 
-namespace ihna::kozhukhov::image_analysis{
+namespace GLOBAL_NAMESPACE{
 
     void IsoiChunk::readFromFile(SourceFile &file) {
         ChunkHeader chunkHeader = ChunkHeader::InvalidChunk();
