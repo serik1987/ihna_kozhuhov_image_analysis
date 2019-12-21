@@ -26,13 +26,13 @@ namespace GLOBAL_NAMESPACE {
         std::string filename = "";
         bool traverse = false;
         bool opened = false;
-        uint32_t fileHeaderSize = -1;
-        uint32_t frameHeaderSize = -1;
+        uint32_t fileHeaderSize = 1;
+        uint32_t frameHeaderSize = 2;
         ExperimentalMode experimentalMode = Unknown;
-        int xSize = -1, ySize = -1;
-        size_t xySize = -1, frameImageSize = -1, frameSize = -1;
+        int xSize = 3, ySize = 4;
+        size_t xySize = 5, frameImageSize = 6, frameSize = 7;
         std::vector<int> synchChannelMax;
-        int dataType = -1;
+        int dataType = 8;
         int totalFrames;
 
         /**

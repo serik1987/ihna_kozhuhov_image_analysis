@@ -12,7 +12,7 @@ int main() {
 
     const uint32_t file_size[] = {1299503468, 1299503468, 1299503468, 1135885676};
 
-    StreamFileTrain train("/home/serik1987/vasomotor-oscillations/sample_data/c022z/", "T_1BF.0200", file_size, true);
+    StreamFileTrain train("/home/serik1987/vasomotor-oscillations/sample_data/c022z/", "T_1BF.0201", file_size, true);
     train.open();
 
     return 0;
