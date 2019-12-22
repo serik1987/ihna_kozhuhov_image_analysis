@@ -84,7 +84,7 @@ namespace GLOBAL_NAMESPACE {
 
         class unsupported_chunk_exception: public source_file_exception{
         private:
-            const char* chunk_name;
+            const char* chunk_name = NULL;
 
         public:
             unsupported_chunk_exception(SourceFile* parent, const char* id):
@@ -92,7 +92,7 @@ namespace GLOBAL_NAMESPACE {
                 chunk_name(id){};
             unsupported_chunk_exception(const char* id, const std::string& filename, const std::string& trainname = ""):
                 source_file_exception(MSG_UNSUPPORTED_CHUNK_EXCEPTION,
-                filename, trainname), chunk_name(id){};
+                filename, trainname), chunk_name(id) {};
 
             [[nodiscard]] const char* getChunkName() const { return chunk_name; }
         };
