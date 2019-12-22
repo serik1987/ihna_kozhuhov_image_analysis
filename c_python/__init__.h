@@ -5,6 +5,7 @@
 #ifndef IHNA_KOZHUKHOV_IMAGE_ANALYSIS___INIT___H
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS___INIT___H
 
+#include <sstream>
 #include "../cpp/exceptions.h"
 
 extern "C" {

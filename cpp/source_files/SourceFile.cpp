@@ -25,9 +25,6 @@ namespace GLOBAL_NAMESPACE{
         delete softChunk;
         delete isoiChunk;
         if (isOpened()){
-#ifdef DEBUG_DELETE_CHECK
-            std::cout << "CLOSING SOURCE FILE\n";
-#endif
             close();
         }
     }
@@ -57,6 +54,9 @@ namespace GLOBAL_NAMESPACE{
     }
 
     void SourceFile::close() {
+#ifdef DEBUG_DELETE_CHECK
+        std::cout << "CLOSING SOURCE FILE\n";
+#endif
         fileStream.close();
         fileStatus = false;
     }

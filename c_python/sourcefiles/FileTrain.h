@@ -143,6 +143,55 @@ extern "C" {
         return PyLong_FromLong(ptrain->getTotalFrames());
     }
 
+    static PyObject* PyImanS_FileTrain_Open(PyImanS_FileTrainObject* self, PyObject* args, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* ptrain = (FileTrain*)self->train_handle;
+        PyObject* status;
+
+        try{
+            ptrain->open();
+            status = Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            status = NULL;
+        }
+
+        return status;
+    }
+
+    static PyObject* PyImanS_FileTrain_Close(PyImanS_FileTrainObject* self, PyObject* args, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* ptrain = (FileTrain*)self->train_handle;
+        PyObject* status;
+
+        try{
+            ptrain->close();
+            status = Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            status = NULL;
+        }
+
+        return status;
+    }
+
+    static PyObject* PyImanS_FileTrain_Str(PyImanS_FileTrainObject* self){
+        using namespace GLOBAL_NAMESPACE;
+        auto* ptrain = (FileTrain*)self->train_handle;
+        PyObject* status;
+
+        try{
+            std::stringstream ss;
+            ss << *ptrain << std::endl;
+            status = PyUnicode_FromString(ss.str().c_str());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            status = NULL;
+        }
+
+        return status;
+    }
+
     static PyGetSetDef PyImanS_FileTrain_properties[] = {
             {"file_number", (getter)PyImanS_FileTrain_GetFileNumber, NULL,
              "Total number of opened files in the train", NULL},
@@ -179,6 +228,8 @@ extern "C" {
              "Returns the maximum value from a certain synchronization channel\n"
              "Arguments:\n"
              "\tchan - the channel number"},
+            {"open", (PyCFunction)PyImanS_FileTrain_Open, METH_NOARGS, "Opens the file train for reading"},
+            {"close", (PyCFunction)PyImanS_FileTrain_Close, METH_NOARGS, "Closes the file train"},
             {NULL, NULL, 0, NULL}
     };
 
@@ -205,6 +256,7 @@ extern "C" {
         PyImanS_FileTrainType.tp_init = PyImanS_FileTrain_Init;
         PyImanS_FileTrainType.tp_getset = PyImanS_FileTrain_properties;
         PyImanS_FileTrainType.tp_methods = PyImanS_FileTrain_methods;
+        PyImanS_FileTrainType.tp_str = (reprfunc)PyImanS_FileTrain_Str;
 
         if (PyType_Ready(&PyImanS_FileTrainType) < 0){
             return -1;
