@@ -17,6 +17,7 @@
 #include "FileTrain.h"
 #include "StreamFileTrain.h"
 #include "CompressedFileTrain.h"
+#include "SourceFile.h"
 
 extern "C" {
 
@@ -41,6 +42,14 @@ extern "C" {
         }
 
         if (PyImanS_CompressedFileTrain_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_CompressedFileTrainType);
+            Py_DECREF(&PyImanS_StreamFileTrainType);
+            Py_DECREF(&PyImanS_FileTrainType);
+            PyImanS_Destroy_exceptions();
+        }
+
+        if (PyImanS_SourceFile_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_SourceFileType);
             Py_DECREF(&PyImanS_CompressedFileTrainType);
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);

@@ -41,6 +41,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotCompress
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FileTrain as FileTrain
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamFileTrain as _StreamFileTrain
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFileTrain as _CompressedFileTrain
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SourceFile as _SourceFile
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -91,3 +92,21 @@ class CompressedFileTrain(_CompressedFileTrain):
         if len(path) > 0:
             path += os.path.sep
         super().__init__(path, file, traverse_mode)
+
+class SourceFile(_SourceFile):
+    '''
+    This class represents basic operations for all source files without
+    any extending functionality. It can be applied for a file type checking
+    '''
+
+    def __init__(self, filename):
+        '''
+        Creates a source file instance.
+
+        Arguments:
+            filename - name to the file
+        '''
+        path, file = os.path.split(filename)
+        if len(path) > 0:
+            path += os.path.sep
+        super().__init__(path, file)
