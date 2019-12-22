@@ -7,7 +7,12 @@
 
 #include "../cpp/exceptions.h"
 
+extern "C" {
+
 static PyObject *PyIman_ImanError = NULL;
+static void PyIman_Exception_process(const void *);
+
+}
 
 #include "sourcefiles/__init__.h"
 

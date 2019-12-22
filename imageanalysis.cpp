@@ -4,6 +4,7 @@
 
 // #define C_EXCEPTION_TEST
 #include "Python.h"
+#include "structmember.h"
 #include "init.h"
 #include "c_python/__init__.h"
 

@@ -38,8 +38,8 @@ namespace GLOBAL_NAMESPACE{
         out << "File header size: " << train.getFileHeaderSize() << endl;
         if (train.getExperimentalMode() == FileTrain::Continuous){
             out << "Experimental mode: continuous\n";
-            out << "Total number of synchronization channels: " << train.getSynchnorizationChannelNumber() << endl;
-            for (int chan = 0; chan < train.getSynchnorizationChannelNumber(); ++chan){
+            out << "Total number of synchronization channels: " << train.getSynchronizationChannelNumber() << endl;
+            for (int chan = 0; chan < train.getSynchronizationChannelNumber(); ++chan){
                 out << "Maximum signal value for synchronization channel " << chan << ": " <<
                     train.getSynchronizationChannelMax(chan) << " \n";
             }

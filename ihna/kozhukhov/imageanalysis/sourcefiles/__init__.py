@@ -3,6 +3,8 @@ This module contains classes responsible for reading the imaging data from the h
 the hard disk
 """
 
+import os
+
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IoError as IoError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_TrainError as TrainError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_ExperimentModeError as ExperimentModeError
@@ -36,3 +38,56 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotGreenFil
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotInTrainHeadError as NotInTrainHeadError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotStreamFileError as NotStreamFileError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotCompressedFileError as NotCompressedFileError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FileTrain as FileTrain
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamFileTrain as _StreamFileTrain
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFileTrain as _CompressedFileTrain
+
+
+class StreamFileTrain(_StreamFileTrain):
+    '''
+    The class allows to perform I/O operations on the file train
+    containing the data in the non-compressed mode.
+    See definition of the file train on help of the base class
+    '''
+
+    def __init__(self, filename, traverse_mode):
+        '''
+        Initializes the train
+
+        Arguments:
+            filename - full name to the train file
+            traverse - defines the object behaviour when filename
+            is not at the head of the train. The following options
+            are possible:
+                "traverse" - find the head of the train
+                "exception" - throw an exception
+        '''
+        path, file = os.path.split(filename)
+        if len(path) > 0:
+            path += os.path.sep
+        file_sizes = [1299503468, 1299503468, 1299503468, 1135885676]
+        super().__init__(path, file, file_sizes, traverse_mode)
+
+class CompressedFileTrain(_CompressedFileTrain):
+    '''
+    The classs allows to perform I/O operations on the file train
+    that contains the data in the compressed mode. Also, the class
+    is responsible for compression and decompression
+    '''
+
+    def __init__(self, filename, traverse_mode):
+        '''
+        Initializes the train
+
+        Arguments:
+            filename - full name to the train file
+            traverse - defines the object behaviour when filename
+            is not at the head of the train. The following options
+            are possible:
+                "traverse" - find the head of the train
+                "exception" - throw an exception
+        '''
+        path, file = os.path.split(filename)
+        if len(path) > 0:
+            path += os.path.sep
+        super().__init__(path, file, traverse_mode)

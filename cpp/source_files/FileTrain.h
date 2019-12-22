@@ -26,14 +26,14 @@ namespace GLOBAL_NAMESPACE {
         std::string filename = "";
         bool traverse = false;
         bool opened = false;
-        uint32_t fileHeaderSize = 1;
-        uint32_t frameHeaderSize = 2;
+        uint32_t fileHeaderSize = -1;
+        uint32_t frameHeaderSize = -1;
         ExperimentalMode experimentalMode = Unknown;
-        int xSize = 3, ySize = 4;
-        size_t xySize = 5, frameImageSize = 6, frameSize = 7;
+        int xSize = -1, ySize = -1;
+        size_t xySize = -1, frameImageSize = -1, frameSize = -1;
         std::vector<int> synchChannelMax;
-        int dataType = 8;
-        int totalFrames;
+        int dataType = -1;
+        int totalFrames = -1;
 
         /**
          * Loads all scalar train properties from the file
@@ -316,7 +316,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return total number of synchronization channels
          */
-        [[nodiscard]] size_t getSynchnorizationChannelNumber() const{
+        [[nodiscard]] size_t getSynchronizationChannelNumber() const{
             if (experimentalMode == Continuous){
                 return synchChannelMax.size();
             } else {

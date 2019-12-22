@@ -11,8 +11,12 @@
 #include "../../cpp/source_files/GreenSourceFile.h"
 #include "../../cpp/source_files/StreamSourceFile.h"
 #include "../../cpp/source_files/DataChunk.h"
+#include "../../cpp/source_files/StreamFileTrain.h"
 
 #include "exceptions.h"
+#include "FileTrain.h"
+#include "StreamFileTrain.h"
+#include "CompressedFileTrain.h"
 
 extern "C" {
 
@@ -22,6 +26,25 @@ extern "C" {
         if (PyImanS_Create_exceptions(imageanalysis) < 0){
             PyImanS_Destroy_exceptions();
             return -1;
+        }
+
+        if (PyImanS_FileTrain_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_FileTrainType);
+            PyImanS_Destroy_exceptions();
+            return -1;
+        }
+
+        if (PyImanS_StreamFileTrain_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_StreamFileTrainType);
+            Py_DECREF(&PyImanS_FileTrainType);
+            PyImanS_Destroy_exceptions();
+        }
+
+        if (PyImanS_CompressedFileTrain_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_CompressedFileTrainType);
+            Py_DECREF(&PyImanS_StreamFileTrainType);
+            Py_DECREF(&PyImanS_FileTrainType);
+            PyImanS_Destroy_exceptions();
         }
 
         return 0;
