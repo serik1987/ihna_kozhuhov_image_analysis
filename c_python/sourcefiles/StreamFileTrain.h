@@ -12,6 +12,17 @@ extern "C" {
         uint32_t* sizes;
     } PyImanS_StreamFileTrainObject;
 
+    typedef struct {
+        PyImanS_FileTrainIteratorObject super;
+    } PyImanS_StreamFileTrainIteratorObject;
+
+    static PyTypeObject PyImanS_SourceFileTrainIteratorType = {
+            PyVarObject_HEAD_INIT(NULL, 0)
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.StreamFileTrainIterator",
+            .tp_basicsize = sizeof(PyImanS_StreamFileTrainIteratorObject),
+            .tp_itemsize = 0,
+    };
+
     static PyImanS_StreamFileTrainObject* PyImanS_StreamFileTrain_New(PyTypeObject* cls, PyObject* args, PyObject* kwds){
         PyImanS_StreamFileTrainObject* self;
         self = (PyImanS_StreamFileTrainObject*)PyImanS_FileTrain_New(cls, args, kwds);
@@ -77,6 +88,12 @@ extern "C" {
         PyImanS_FileTrain_Destroy((PyImanS_FileTrainObject*)self);
     }
 
+    static PyImanS_StreamFileTrainIteratorObject* PyImanS_StreamFileTrain_Iter(PyImanS_StreamFileTrainObject* self){
+        auto* result = (PyImanS_StreamFileTrainIteratorObject*)PyObject_CallFunction(
+                (PyObject*)&PyImanS_SourceFileTrainIteratorType, "O", self);
+        return result;
+    }
+
     static PyTypeObject PyImanS_StreamFileTrainType = {
             PyVarObject_HEAD_INIT(NULL, 0)
             .tp_name = "ihna.kozhukhov.imageanalysis._StreamFileTrain",
@@ -92,6 +109,7 @@ extern "C" {
         PyImanS_StreamFileTrainType.tp_new = (newfunc)PyImanS_StreamFileTrain_New;
         PyImanS_StreamFileTrainType.tp_dealloc = (destructor)PyImanS_StreamFileTrain_Destroy;
         PyImanS_StreamFileTrainType.tp_init = (initproc)PyImanS_StreamFileTrain_Init;
+        PyImanS_StreamFileTrainType.tp_iter = (getiterfunc)PyImanS_StreamFileTrain_Iter;
 
         if (PyType_Ready(&PyImanS_StreamFileTrainType) < 0){
             return -1;

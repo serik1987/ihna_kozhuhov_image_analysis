@@ -12,6 +12,12 @@ extern "C" {
         void* train_handle;
     } PyImanS_FileTrainObject;
 
+    typedef struct {
+        PyObject_HEAD
+        void* iterator_handle;
+        PyObject* parent_train;
+    } PyImanS_FileTrainIteratorObject;
+
     static PyObject* PyImanS_FileTrain_New(PyTypeObject* type, PyObject*, PyObject*){
         PyImanS_FileTrainObject* self;
         self = (PyImanS_FileTrainObject*)type->tp_alloc(type, 0);

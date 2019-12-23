@@ -46,6 +46,8 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_AnalysisSou
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_GreenSourceFile as _GreenSourceFile
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_TrainSourceFile as TrainSourceFile
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamSourceFile as _StreamSourceFile
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FileTrainIterator as FileTrainIterator
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamFileTrainIterator as StreamFileTrainIterator
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -53,6 +55,10 @@ class StreamFileTrain(_StreamFileTrain):
     The class allows to perform I/O operations on the file train
     containing the data in the non-compressed mode.
     See definition of the file train on help of the base class
+
+    The object is iterable. Iteration over the object will return
+    StreamSourceFile instances corresponding to each file containing
+    in the file train
     """
 
     def __init__(self, filename, traverse_mode):

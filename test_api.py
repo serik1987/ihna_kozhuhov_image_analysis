@@ -25,12 +25,34 @@ except iman.ImanError as e:
 
 if __name__ == "__main__":
 
-    file = files.StreamSourceFile("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0201", "traverse")
-    file.open()
-    file.load_file_info()
-    print(file)
+    train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0201", "traverse")
+    train.open()
+    print(train)
 
-    print("The code execution has been completed")
+    I = iter(train)
+    print(I)
+    f1 = I.__next__()
+    print(f1)
+    f2 = I.__next__()
+    print(f2)
+    f3 = I.__next__()
+    print(f3)
+    f4 = I.__next__()
+    print(f4)
+
+    print("PY All objects were created")
+    del train
+    print("PY Train object was destroyed")
+    del f1
+    print("PY First file has been destroyed")
+    del f2
+    print("PY Second file has been destroyed")
+    del f3
+    print("PY Third file has been destoyed")
+    del f4
+    print("PY Fourth file has been destroyed")
+    del I
+    print("PY Iterator object was destroyed")
 
     '''
     # train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0201", "traverse")

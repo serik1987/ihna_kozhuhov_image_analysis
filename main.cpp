@@ -15,5 +15,9 @@ int main() {
     StreamFileTrain train("/home/serik1987/vasomotor-oscillations/sample_data/c022z/", "T_1BF.0201", file_size, true);
     train.open();
 
+    for (auto it = train.begin(); it != train.end(); ++it){
+        cout << (*it)->getFullname() << endl;
+    }
+
     return 0;
 }
