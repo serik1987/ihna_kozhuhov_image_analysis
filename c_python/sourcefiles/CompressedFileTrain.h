@@ -72,6 +72,7 @@ extern "C" {
 
         if (PyModule_AddObject(module, "_sourcefiles_CompressedFileTrain",
                 (PyObject*)&PyImanS_CompressedFileTrainType) < 0){
+            Py_DECREF(&PyImanS_CompressedFileTrainType);
             return -1;
         }
 

@@ -42,6 +42,14 @@ extern "C" {
     PyMODINIT_FUNC PyInit__imageanalysis(void) {
         PyObject *imageanalysis;
 
+        printf("(C) Valery Kalatsky, 2003\n");
+        printf("When using this program reference to the following paper is mandatory:\n");
+        printf("Kalatsky V.A., Stryker P.S. New Paradigm for Optical Imaging: Temporally\n");
+        printf("Encoded Maps of Intrinsic Signal. Neuron. 2003. V. 38. N. 4. P. 529-545\n");
+        printf("(C) Sergei Kozhukhov, 2019\n");
+        printf("(C) the Institute of Higher Nervous Activity and Neurophysiology, \n");
+        printf("Russian Academy of Sciences, 2019\n");
+
         imageanalysis = PyModule_Create(&PyIman_Description);
         if (imageanalysis == NULL) return NULL;
 

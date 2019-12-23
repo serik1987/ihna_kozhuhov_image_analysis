@@ -42,17 +42,21 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FileTrain a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamFileTrain as _StreamFileTrain
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFileTrain as _CompressedFileTrain
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SourceFile as _SourceFile
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_AnalysisSourceFile as _AnalysisSourceFile
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_GreenSourceFile as _GreenSourceFile
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_TrainSourceFile as TrainSourceFile
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamSourceFile as _StreamSourceFile
 
 
 class StreamFileTrain(_StreamFileTrain):
-    '''
+    """
     The class allows to perform I/O operations on the file train
     containing the data in the non-compressed mode.
     See definition of the file train on help of the base class
-    '''
+    """
 
     def __init__(self, filename, traverse_mode):
-        '''
+        """
         Initializes the train
 
         Arguments:
@@ -62,22 +66,23 @@ class StreamFileTrain(_StreamFileTrain):
             are possible:
                 "traverse" - find the head of the train
                 "exception" - throw an exception
-        '''
+        """
         path, file = os.path.split(filename)
         if len(path) > 0:
             path += os.path.sep
         file_sizes = [1299503468, 1299503468, 1299503468, 1135885676]
         super().__init__(path, file, file_sizes, traverse_mode)
 
+
 class CompressedFileTrain(_CompressedFileTrain):
-    '''
+    """
     The classs allows to perform I/O operations on the file train
     that contains the data in the compressed mode. Also, the class
     is responsible for compression and decompression
-    '''
+    """
 
     def __init__(self, filename, traverse_mode):
-        '''
+        """
         Initializes the train
 
         Arguments:
@@ -87,26 +92,94 @@ class CompressedFileTrain(_CompressedFileTrain):
             are possible:
                 "traverse" - find the head of the train
                 "exception" - throw an exception
-        '''
+        """
         path, file = os.path.split(filename)
         if len(path) > 0:
             path += os.path.sep
         super().__init__(path, file, traverse_mode)
 
+
 class SourceFile(_SourceFile):
-    '''
+    """
     This class represents basic operations for all source files without
     any extending functionality. It can be applied for a file type checking
-    '''
+    """
 
     def __init__(self, filename):
-        '''
+        """
         Creates a source file instance.
 
         Arguments:
             filename - name to the file
-        '''
+        """
         path, file = os.path.split(filename)
         if len(path) > 0:
             path += os.path.sep
         super().__init__(path, file)
+
+
+class AnalysisSourceFile(_AnalysisSourceFile):
+    """
+    This class provides I/O operations on a single analysis file.
+
+    The analysis files stores the analysis results
+    """
+
+    def __init__(self, filename):
+        """
+        Creates a new analysis file
+
+        Arguments:
+            filename - the full name to the file
+        """
+        path, file = os.path.split(filename)
+        if len(path) > 0:
+            path += os.path.sep
+        super().__init__(path, file)
+
+
+class GreenSourceFile(_GreenSourceFile):
+    """
+    The class provides I/O operations on the files containing so called
+    "green maps"
+    """
+
+    def __init__(self, filename):
+        """
+        Creates the file
+
+        Arguments:
+            filename - full name to the file
+        """
+        path, file = os.path.split(filename)
+        if len(path) > 0:
+            path += os.path.sep
+        super().__init__(path, file)
+
+
+class StreamSourceFile(_StreamSourceFile):
+    """
+    The class provides I/O operations on a single file that contains native
+    data in their uncompressed state
+
+    The class allows to read general information about the experiment from
+    the file header. In order to deal with particular frames, please, use
+    StreamFileTrain class.
+    """
+
+    def __init__(self, filename, traverse_mode):
+        """
+        Creates new file
+
+        Arguments:
+            filename - full name of the file
+            traverse_mode - defines the behavior when the filename
+            doesn't refer to the head of the train
+                'traverse' - find the head of the train and use it instead
+                'exception' - throw ihna.kozhukhov.imageanalysis.sourcefiles.NotInTrainHeadError
+                'ignore' - just load the file header, don't bear in mind
+        """
+        path, file = os.path.split(filename)
+        if len(path) > 0:
+            path += os.path.sep
+        super().__init__(path, file, traverse_mode, None)

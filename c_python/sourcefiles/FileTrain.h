@@ -250,7 +250,10 @@ extern "C" {
                 "represented in a sequence of separate files called 'file train'\n"
                 "Example of the file train: T_1CK.0A00, T_1CK.0A01, T_1CK.0A02\n"
                 "You can't read the data when you open a single file. Rather, you shall open the whole file train\n"
-                "Use derivatives of this class in order to open the whole file train";
+                "Use derivatives of this class in order to open the whole file train\n"
+                "\n"
+                "The file that contains the very beginning of the record is called 'train head'. The file that refers\n"
+                "to the end of the record is called the 'train tail'";
         PyImanS_FileTrainType.tp_new = PyImanS_FileTrain_New;
         PyImanS_FileTrainType.tp_dealloc = (destructor)PyImanS_FileTrain_Destroy;
         PyImanS_FileTrainType.tp_init = PyImanS_FileTrain_Init;
@@ -265,6 +268,7 @@ extern "C" {
         Py_INCREF(&PyImanS_FileTrainType);
 
         if (PyModule_AddObject(module, "_sourcefiles_FileTrain", (PyObject*)&PyImanS_FileTrainType) < 0){
+            Py_DECREF(&PyImanS_FileTrainType);
             return -1;
         }
 

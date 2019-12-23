@@ -100,6 +100,7 @@ extern "C" {
         Py_INCREF(&PyImanS_StreamFileTrainType);
 
         if (PyModule_AddObject(module, "_sourcefiles_StreamFileTrain", (PyObject*)&PyImanS_StreamFileTrainType) < 0){
+            Py_DECREF(&PyImanS_StreamFileTrainType);
             return -1;
         }
 

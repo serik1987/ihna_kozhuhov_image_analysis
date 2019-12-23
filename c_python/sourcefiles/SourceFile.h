@@ -16,6 +16,7 @@ extern "C" {
         PyImanS_SourceFileObject* self = NULL;
         self = (PyImanS_SourceFileObject*)cls->tp_alloc(cls, 0);
         if (self != NULL){
+            printf("Setting empty file handle...\n");
             self->file_handle = NULL;
         }
         return self;
@@ -217,6 +218,7 @@ extern "C" {
         Py_INCREF(&PyImanS_SourceFileType);
 
         if (PyModule_AddObject(module, "_sourcefiles_SourceFile", (PyObject*)&PyImanS_SourceFileType) < 0){
+            Py_DECREF(&PyImanS_SourceFileType);
             return -1;
         }
 
