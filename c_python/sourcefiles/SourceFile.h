@@ -16,7 +16,6 @@ extern "C" {
         PyImanS_SourceFileObject* self = NULL;
         self = (PyImanS_SourceFileObject*)cls->tp_alloc(cls, 0);
         if (self != NULL){
-            printf("Setting empty file handle...\n");
             self->file_handle = NULL;
         }
         return self;

@@ -9,14 +9,12 @@ extern "C" {
 
     static PyImanS_StreamFileTrainIteratorObject* PyImanS_StreamFileTrainIterator_New
             (PyTypeObject* cls, PyObject* args, PyObject* kwds){
-        printf("Creating the iterator...\n");
         auto* self = (PyImanS_StreamFileTrainIteratorObject*)PyImanS_FileTrainIterator_New(cls, args, kwds);
         return self;
     }
 
     static int PyImanS_StreamFileTrainIterator_Init(PyImanS_StreamFileTrainIteratorObject* self,
             PyObject* args, PyObject*){
-        printf("Initialization of the iterator...\n");
         using namespace GLOBAL_NAMESPACE;
         PyObject* parent;
 

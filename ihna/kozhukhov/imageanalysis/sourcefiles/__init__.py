@@ -48,6 +48,9 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_TrainSource
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamSourceFile as _StreamSourceFile
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FileTrainIterator as FileTrainIterator
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamFileTrainIterator as StreamFileTrainIterator
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedSourceFile as _CompressedSourceFile
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFileTrainIterator as \
+    CompressedFileTrainIterator
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -85,6 +88,13 @@ class CompressedFileTrain(_CompressedFileTrain):
     The classs allows to perform I/O operations on the file train
     that contains the data in the compressed mode. Also, the class
     is responsible for compression and decompression
+
+    The class doesn't allow any data processing. In order to process
+    the data, please, first, decompress them and then re-open them
+    with StreamFileTrain
+
+    The object is iterable. Iterations over object items will return
+    CompressedSourceFile instances within the object
     """
 
     def __init__(self, filename, traverse_mode):
@@ -185,6 +195,33 @@ class StreamSourceFile(_StreamSourceFile):
                 'exception' - throw ihna.kozhukhov.imageanalysis.sourcefiles.NotInTrainHeadError
                 'ignore' - just load the file header, don't bear in mind
         """
+        path, file = os.path.split(filename)
+        if len(path) > 0:
+            path += os.path.sep
+        super().__init__(path, file, traverse_mode, None)
+
+
+class CompressedSourceFile(_CompressedSourceFile):
+    """
+    The class provides I/O operations on a single file that contains native
+    data in their compressed state.
+
+    The class itself provides general information about the file. For detailed
+    use please, apply CompressedFileTrain
+    """
+
+    def __init__(self, filename, traverse_mode):
+        """
+       Creates new file
+
+       Arguments:
+           filename - full name of the file
+           traverse_mode - defines the behavior when the filename
+           doesn't refer to the head of the train
+               'traverse' - find the head of the train and use it instead
+               'exception' - throw ihna.kozhukhov.imageanalysis.sourcefiles.NotInTrainHeadError
+               'ignore' - just load the file header, don't bear in mind
+       """
         path, file = os.path.split(filename)
         if len(path) > 0:
             path += os.path.sep

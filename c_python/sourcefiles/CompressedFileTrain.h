@@ -11,6 +11,17 @@ extern "C" {
         PyImanS_FileTrainObject super;
     } PyImanS_CompressedFileTrainObject;
 
+    typedef struct {
+        PyImanS_FileTrainIteratorObject super;
+    } PyImanS_CompressedFileTrainIteratorObject;
+
+    static PyTypeObject PyImanS_CompressedFileTrainIteratorType = {
+            PyVarObject_HEAD_INIT(NULL, 0)
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.CompressedFileTrainIterator",
+            .tp_basicsize = sizeof(PyImanS_CompressedFileTrainIteratorObject),
+            .tp_itemsize = 0,
+    };
+
     static PyImanS_CompressedFileTrainObject* PyImanS_CompressedFileTrain_New(PyTypeObject* cls,
             PyObject* args, PyObject* kwds){
         PyImanS_CompressedFileTrainObject* self = NULL;
@@ -55,6 +66,13 @@ extern "C" {
         .tp_itemsize = 0,
     };
 
+    static PyImanS_CompressedFileTrainIteratorObject*
+        PyImanS_CompressedFileTrain_Iter(PyImanS_CompressedFileTrainObject* self){
+        auto* result = PyObject_CallFunction((PyObject*)&PyImanS_CompressedFileTrainIteratorType,
+                "O", self);
+        return (PyImanS_CompressedFileTrainIteratorObject*)result;
+    }
+
     static int PyImanS_CompressedFileTrain_Create(PyObject* module){
 
         PyImanS_CompressedFileTrainType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
@@ -63,6 +81,7 @@ extern "C" {
         PyImanS_CompressedFileTrainType.tp_init = (initproc)PyImanS_CompressedFileTrain_Init;
         PyImanS_CompressedFileTrainType.tp_dealloc = (destructor)PyImanS_CompressedFileTrain_Destroy;
         PyImanS_CompressedFileTrainType.tp_base = &PyImanS_FileTrainType;
+        PyImanS_CompressedFileTrainType.tp_iter = (getiterfunc)PyImanS_CompressedFileTrain_Iter;
 
         if (PyType_Ready(&PyImanS_CompressedFileTrainType) < 0){
             return -1;

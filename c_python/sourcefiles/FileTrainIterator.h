@@ -8,7 +8,6 @@
 extern "C" {
 
     static PyImanS_FileTrainIteratorObject* PyImanS_FileTrainIterator_New(PyTypeObject* cls, PyObject*, PyObject*){
-        printf("New file train iterator...\n");
         PyImanS_FileTrainIteratorObject* self;
         self = (PyImanS_FileTrainIteratorObject*)cls->tp_alloc(cls, 0);
         if (self != NULL){
@@ -28,7 +27,6 @@ extern "C" {
         using namespace GLOBAL_NAMESPACE;
 
         if (self->iterator_handle != NULL){
-            printf("Destruction of the C++ file train iterator handle...\n");
             auto* iterator = (std::list<TrainSourceFile*>::iterator*)self->iterator_handle;
             delete iterator;
             self->iterator_handle = NULL;

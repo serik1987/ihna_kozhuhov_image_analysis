@@ -23,7 +23,6 @@ extern "C" {
 
         if (super_self != NULL){
             self = (PyImanS_TrainSourceFileObject*)super_self;
-            printf("Setting empty parent train...\n");
             self->parent_train = NULL;
         }
 
@@ -79,7 +78,6 @@ extern "C" {
         }
 
         PyImanS_SourceFile_Destroy((PyImanS_SourceFileObject*)self);
-        printf("Train source file destruction is in the process...\n");
     }
 
     static int PyImanS_TrainSourceFile_Create(PyObject* module){

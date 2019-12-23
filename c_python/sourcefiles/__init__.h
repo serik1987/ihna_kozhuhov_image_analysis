@@ -24,6 +24,8 @@
 #include "StreamSourceFile.h"
 #include "FileTrainIterator.h"
 #include "StreamFileTrainIterator.h"
+#include "CompressedSourceFile.h"
+#include "CompressedFileTrainIterator.h"
 
 extern "C" {
 
@@ -109,6 +111,35 @@ extern "C" {
         }
 
         if (PyImanS_StreamFileTrainIterator_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_FileTrainIteratorType);
+            Py_DECREF(&PyImanS_StreamSourceFileType);
+            Py_DECREF(&PyImanS_TrainSourceFileType);
+            Py_DECREF(&PyImanS_GreenSourceFileType);
+            Py_DECREF(&PyImanS_AnalysisSourceFileType);
+            Py_DECREF(&PyImanS_SourceFileType);
+            Py_DECREF(&PyImanS_CompressedFileTrainType);
+            Py_DECREF(&PyImanS_StreamFileTrainType);
+            Py_DECREF(&PyImanS_FileTrainType);
+            PyImanS_Destroy_exceptions();
+        }
+
+        if (PyImanS_CompressedSourceFile_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_SourceFileTrainIteratorType);
+            Py_DECREF(&PyImanS_FileTrainIteratorType);
+            Py_DECREF(&PyImanS_StreamSourceFileType);
+            Py_DECREF(&PyImanS_TrainSourceFileType);
+            Py_DECREF(&PyImanS_GreenSourceFileType);
+            Py_DECREF(&PyImanS_AnalysisSourceFileType);
+            Py_DECREF(&PyImanS_SourceFileType);
+            Py_DECREF(&PyImanS_CompressedFileTrainType);
+            Py_DECREF(&PyImanS_StreamFileTrainType);
+            Py_DECREF(&PyImanS_FileTrainType);
+            PyImanS_Destroy_exceptions();
+        }
+
+        if (PyImanS_CompressedFileTrainIterator_Create(imageanalysis) < 0){
+            Py_DECREF(&PyImanS_CompressedFileTrainType);
+            Py_DECREF(&PyImanS_SourceFileTrainIteratorType);
             Py_DECREF(&PyImanS_FileTrainIteratorType);
             Py_DECREF(&PyImanS_StreamSourceFileType);
             Py_DECREF(&PyImanS_TrainSourceFileType);
