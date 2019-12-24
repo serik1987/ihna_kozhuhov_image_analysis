@@ -13,6 +13,12 @@
 #include "../../cpp/source_files/DataChunk.h"
 #include "../../cpp/source_files/StreamFileTrain.h"
 
+extern "C" {
+    static int PyImanS_TotalChunksAdded = 0;
+    static const int PyImanS_TotalChunksExisted = 1;
+    static PyObject* PyImanS_ChunkTypes[PyImanS_TotalChunksExisted];
+};
+
 #include "exceptions.h"
 #include "FileTrain.h"
 #include "StreamFileTrain.h"
@@ -26,8 +32,32 @@
 #include "StreamFileTrainIterator.h"
 #include "CompressedSourceFile.h"
 #include "CompressedFileTrainIterator.h"
+#include "Chunk.h"
 
 extern "C" {
+
+    static void PyImanS_DeleteSourceFileClasses(){
+        Py_DECREF(&PyImanS_CompressedFileTrainIteratorType);
+        Py_DECREF(&PyImanS_CompressedFileTrainType);
+        Py_DECREF(&PyImanS_SourceFileTrainIteratorType);
+        Py_DECREF(&PyImanS_FileTrainIteratorType);
+        Py_DECREF(&PyImanS_StreamSourceFileType);
+        Py_DECREF(&PyImanS_TrainSourceFileType);
+        Py_DECREF(&PyImanS_GreenSourceFileType);
+        Py_DECREF(&PyImanS_AnalysisSourceFileType);
+        Py_DECREF(&PyImanS_SourceFileType);
+        Py_DECREF(&PyImanS_CompressedFileTrainType);
+        Py_DECREF(&PyImanS_StreamFileTrainType);
+        Py_DECREF(&PyImanS_FileTrainType);
+        PyImanS_Destroy_exceptions();
+    }
+
+    static void PyImanS_Destroy(){
+        for (int i=0; i < PyImanS_TotalChunksAdded; ++i){
+            Py_DECREF(PyImanS_ChunkTypes[i]);
+        }
+        PyImanS_DeleteSourceFileClasses();
+    }
 
 
     static int PyImanS_Init(PyObject* imageanalysis){
@@ -45,12 +75,14 @@ extern "C" {
         if (PyImanS_StreamFileTrain_Create(imageanalysis) < 0){
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_CompressedFileTrain_Create(imageanalysis) < 0){
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_SourceFile_Create(imageanalysis) < 0){
@@ -58,6 +90,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_AnalysisSourceFile_Create(imageanalysis) < 0){
@@ -66,6 +99,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_GreenSourceFile_Create(imageanalysis) < 0){
@@ -75,6 +109,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_TrainSourceFile_Create(imageanalysis) < 0){
@@ -85,6 +120,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_StreamSourceFile_Create(imageanalysis) < 0){
@@ -96,6 +132,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_FileTrainIterator_Create(imageanalysis) < 0){
@@ -108,6 +145,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_StreamFileTrainIterator_Create(imageanalysis) < 0){
@@ -121,6 +159,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_CompressedSourceFile_Create(imageanalysis) < 0){
@@ -135,6 +174,7 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
         }
 
         if (PyImanS_CompressedFileTrainIterator_Create(imageanalysis) < 0){
@@ -150,6 +190,12 @@ extern "C" {
             Py_DECREF(&PyImanS_StreamFileTrainType);
             Py_DECREF(&PyImanS_FileTrainType);
             PyImanS_Destroy_exceptions();
+            return -1;
+        }
+
+        if (PyImanS_Chunk_Create(imageanalysis) < 0){
+            PyImanS_DeleteSourceFileClasses();
+            return -1;
         }
 
         return 0;

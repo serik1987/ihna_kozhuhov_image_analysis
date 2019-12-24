@@ -32,4 +32,15 @@ if __name__ == "__main__":
     for file in train:
         print(file)
 
+    chunk = files.Chunk()
+
+    del train
+    print("PY File train has been deleted")
+
+    del file
+    print("PY File has been deleted")
+
+    del chunk
+    print("PY Chunk has been destroyed")
+
     print("PY Test end")

@@ -52,6 +52,8 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedS
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFileTrainIterator as \
     CompressedFileTrainIterator
 
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_Chunk as Chunk
+
 
 class StreamFileTrain(_StreamFileTrain):
     """

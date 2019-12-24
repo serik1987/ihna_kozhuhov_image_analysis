@@ -35,6 +35,8 @@ namespace GLOBAL_NAMESPACE {
         };
 #pragma PACK(pop)
 
+        static constexpr int CHUNK_CODE_NUMBER = 14;
+
         static constexpr uint32_t FRAM_CHUNK_CODE = 1296126534;
         static constexpr uint32_t cost_CHUNK_CODE = 1953722211;
         static constexpr uint32_t ISOI_CHUNK_CODE = 1229935433;
@@ -49,11 +51,6 @@ namespace GLOBAL_NAMESPACE {
         static constexpr uint32_t EPST_CHUNK_CODE = 1414746181;
         static constexpr uint32_t GREE_CHUNK_CODE = 1162170951;
         static constexpr uint32_t INVALID_CHUNK_CODE = 4294967295;
-
-    private:
-        DATA_CHUNK header;
-
-        static constexpr int CHUNK_CODE_NUMBER = 14;
 
         static constexpr uint32_t CHUNK_CODE_LIST[] = {
                 FRAM_CHUNK_CODE,
@@ -73,6 +70,9 @@ namespace GLOBAL_NAMESPACE {
         };
 
         static const uint32_t CHUNK_SIZE_LIST[CHUNK_CODE_NUMBER];
+
+    private:
+        DATA_CHUNK header;
 
     public:
 
