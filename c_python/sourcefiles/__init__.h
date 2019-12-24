@@ -15,7 +15,7 @@
 
 extern "C" {
     static int PyImanS_TotalChunksAdded = 0;
-    static const int PyImanS_TotalChunksExisted = 1;
+    static const int PyImanS_TotalChunksExisted = 2;
     static PyObject* PyImanS_ChunkTypes[PyImanS_TotalChunksExisted];
 };
 
@@ -33,6 +33,7 @@ extern "C" {
 #include "CompressedSourceFile.h"
 #include "CompressedFileTrainIterator.h"
 #include "Chunk.h"
+#include "SoftChunk.h"
 
 extern "C" {
 
@@ -195,6 +196,11 @@ extern "C" {
 
         if (PyImanS_Chunk_Create(imageanalysis) < 0){
             PyImanS_DeleteSourceFileClasses();
+            return -1;
+        }
+
+        if (PyImanS_SoftChunk_Create(imageanalysis) < 0){
+            PyImanS_Destroy();
             return -1;
         }
 

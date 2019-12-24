@@ -53,6 +53,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedF
     CompressedFileTrainIterator
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_Chunk as Chunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SoftChunk as _SoftChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -228,3 +229,21 @@ class CompressedSourceFile(_CompressedSourceFile):
         if len(path) > 0:
             path += os.path.sep
         super().__init__(path, file, traverse_mode, None)
+
+
+class SoftChunk(_SoftChunk):
+    """
+    The class represents the data that relates to the single SOFT chunk
+
+    chunk = SoftChunk() will create new chunk. This constructor will not read an existent chunk from the
+    hard disk
+
+    Another option to create the SOFT chunk is to use method and properties from SourceFile object
+    All SOFT chunks returned by these properties/methods will be read from the hard disk
+    """
+
+    def __init__(self):
+        """
+        Initializes the chunk
+        """
+        super().__init__()

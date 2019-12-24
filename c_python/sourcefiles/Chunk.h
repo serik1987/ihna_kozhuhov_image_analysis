@@ -111,7 +111,24 @@ extern "C"{
                                    "that is important for the data decompression\n"
                                    "DATA - contains the intrinsic imaging signal itself \n"
                                    "GREE - available in Green Maps only\n"
-                                   "ROIS, SYNC - no idea\n";
+                                   "ROIS, SYNC - no idea\n"
+                                   "\n"
+                                   "The chunk object allows to manager the data stored in a single chunk\n"
+                                   "The ISOI chunk object manages all other chunks\n"
+                                   "All chunks have properties that represent certain data stored within the chunk\n"
+                                   "To access any chunk property please, use an index notation like:\n"
+                                   "chunk['property_name']\n"
+                                   "\n"
+                                   "The following chunk properties are present in all chunks\n"
+                                   "'ID' - the chunk ID (write chunk['ID'] to access)\n"
+                                   "'size' - the space occupied by the chunk body on the hard disk. For ISOI or DATA \n"
+                                   "chunks this value may be 0 that doesn't correspond to the actual chunk size\n"
+                                   "Any other properties are specific for a certain chunk. You may find them by writing: \n"
+                                   "help(chunk)\n"
+                                   "To print all chunk properties, please, write:\n"
+                                   "print(chunk)\n"
+                                   "The following command will receive all chunk properties as a single string:\n"
+                                   "str(chunk)";
         PyImanS_ChunkType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
         PyImanS_ChunkType.tp_new = (newfunc)PyImanS_Chunk_New;
         PyImanS_ChunkType.tp_init = (initproc)PyImanS_Chunk_Init;
