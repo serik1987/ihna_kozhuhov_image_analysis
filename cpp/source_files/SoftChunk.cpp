@@ -10,7 +10,7 @@ namespace GLOBAL_NAMESPACE{
         using std::endl;
 
         out << "===== SOFT =====\n";
-        out << "Tag: " << std::string(chunk.getTag(), 4) << "\n";
+        // out << "Tag: " << std::string(chunk.getTag(), 4) << "\n";
         out << "File type: ";
         switch (chunk.getFileType()){
             case SourceFile::AnalysisFile:

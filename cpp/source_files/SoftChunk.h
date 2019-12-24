@@ -162,13 +162,13 @@ namespace GLOBAL_NAMESPACE {
 
         /**
          *
-         * @return X coordinate of upper-left conner of adjusted ROI (before binning)
+         * @return X coordinate of upper-left corner of adjusted ROI (before binning)
          */
         [[nodiscard]] uint32_t getRoiXPositionAdjusted() const { return info.ROIXPositionAdjusted; }
 
         /**
          *
-         * @return Y coordinate of upper-left conner of adjusted ROI (before binning)
+         * @return Y coordinate of upper-left corner of adjusted ROI (before binning)
          */
         [[nodiscard]] uint32_t getRoiYPositionAdjusted() const { return info.ROIYPositionAdjusted; }
 

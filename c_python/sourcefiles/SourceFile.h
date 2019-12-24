@@ -12,6 +12,30 @@ extern "C" {
         void* file_handle;
     } PyImanS_SourceFileObject;
 
+    typedef struct {
+        PyObject_HEAD
+        void* handle;
+        PyObject* parent;
+    } PyImanS_ChunkObject;
+
+    static PyTypeObject PyImanS_ChunkType = {
+            PyVarObject_HEAD_INIT(NULL, 0)
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.Chunk",
+            .tp_basicsize = sizeof(PyImanS_ChunkObject),
+            .tp_itemsize = 0,
+    };
+
+    typedef struct{
+        PyImanS_ChunkObject super;
+    } PyImanS_SoftChunkObject;
+
+    static PyTypeObject PyImanS_SoftChunkType = {
+            PyVarObject_HEAD_INIT(NULL, 0)
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._SoftChunk",
+            .tp_basicsize = sizeof(PyImanS_SoftChunkObject),
+            .tp_itemsize = 0,
+    };
+
     static PyImanS_SourceFileObject* PyImanS_SourceFile_New(PyTypeObject* cls, PyObject* args, PyObject* kwds){
         PyImanS_SourceFileObject* self = NULL;
         self = (PyImanS_SourceFileObject*)cls->tp_alloc(cls, 0);
@@ -158,6 +182,26 @@ extern "C" {
         return result;
     }
 
+    static PyImanS_SoftChunkObject* PyImanS_SourceFile_GetSoft(PyImanS_SourceFileObject* self){
+        using namespace GLOBAL_NAMESPACE;
+        auto* pfile = (SourceFile*)self->file_handle;
+        SoftChunk* chunk = NULL;
+        PyImanS_SoftChunkObject* chunkObject = NULL;
+
+        try{
+            chunk = &pfile->getSoftChunk();
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+
+        chunkObject = (PyImanS_SoftChunkObject*)PyObject_CallFunction(
+                (PyObject*)&PyImanS_SoftChunkType, "O", (PyObject*)self);
+        chunkObject->super.handle = chunk;
+
+        return chunkObject;
+    }
+
     static PyGetSetDef PyImanS_SourceFileProperties[] = {
             {(char*)"file_path", (getter)PyImanS_SourceFile_GetFilePath, NULL,
              (char*)"Full path to the file", NULL},
@@ -181,6 +225,8 @@ extern "C" {
                     "'compressed' - native data in the compressed mode\n"
                     "'unknown' - the file header is not loaded or such a type is not supported in this version of \n"
                     "the module"},
+            {(char*)"soft", (getter)PyImanS_SourceFile_GetSoft, NULL,
+                (char*)"returns the SOFT chunk of the file (with retaining)", NULL},
             {NULL}
     };
 

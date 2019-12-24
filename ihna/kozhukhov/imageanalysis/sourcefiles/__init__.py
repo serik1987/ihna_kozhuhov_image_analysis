@@ -240,6 +240,40 @@ class SoftChunk(_SoftChunk):
 
     Another option to create the SOFT chunk is to use method and properties from SourceFile object
     All SOFT chunks returned by these properties/methods will be read from the hard disk
+
+    Property names for SOFT chunk (type soft["property_name"] to receive the property with such a name):
+    id - always "SOFT"
+    size - always 256 for (x32 version)
+    file_type -'analysis' for analysis file, 'green' for green map, 'stream' for imaging data in non-compressed mode,
+    'compressed' for imaging data in compressed mode
+    date_time_recorded - date and time where the record has been created
+    user_name - name of the user that created this record
+    subject_id - name of the subject who created this record
+    current_filename - this property shall coincide with the name of the currently opened file
+    previous_filename - name of the preceding file in the file train or empty string if the file is at the head of
+    the train
+    next_filename - name of the following file in the file train or empty string if the file is at the tail of the
+    train
+    data_type - the ID of the data type
+    pixel_size - size of the single pixels on the map, in bytes
+    x_size - number of pixels, in horizontal
+    y_size - number of pixels, in vertical
+    roi_x_position - X position of the upper left corner of ROI (before binning)
+    roi_y_position - Y position of the upper left corner of ROI (before binning)
+    roi_x_size - X size of the ROI, in pixels (before binning)
+    roi_y_size - Y size of the ROI, in pixels (before binning)
+    roi_x_position_adjusted - adjusted position of the X ROI (before binning)
+    roi_y_position_adjusted - adjusted position of the Y ROI (before binning)
+    roi_number - Number of the ROI
+    temporal_binning - number of bins for the temporal binning
+    spatial_binning_x - number of bins for the spatial binning, on horizontal
+    spatial_binning_y - number of bins for the spatial binning, on vertical
+    frame_header_size - size of the frame header, in bytes
+    total_frames - number of total frames within the whole record
+    frames_this_file - number of frames recorded to the opened file
+    wavelength - filter wavelength (nm)
+    filter_width - the filter width (nm)
+
     """
 
     def __init__(self):

@@ -7,19 +7,6 @@
 
 extern "C"{
 
-    typedef struct {
-        PyObject_HEAD
-        void* handle;
-        PyObject* parent;
-    } PyImanS_ChunkObject;
-
-    static PyTypeObject PyImanS_ChunkType = {
-        PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.Chunk",
-        .tp_basicsize = sizeof(PyImanS_ChunkObject),
-        .tp_itemsize = 0,
-    };
-
     static PyImanS_ChunkObject* PyImanS_Chunk_New(PyTypeObject* type, PyObject*, PyObject*){
         printf("SO Creating new Chunk object\n");
         auto* self = (PyImanS_ChunkObject*)type->tp_alloc(type, 0);
@@ -90,6 +77,34 @@ extern "C"{
         Py_TYPE(self)->tp_free(self);
     }
 
+    static PyObject* PyImanS_Chunk_Print(PyImanS_ChunkObject* self){
+        using namespace GLOBAL_NAMESPACE;
+        auto* handle = (Chunk*)self->handle;
+        PyObject* result;
+
+        try{
+            std::stringstream ss;
+            ss << *handle << std::endl;
+            result = PyUnicode_FromString(ss.str().c_str());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            result = NULL;
+        }
+
+        return result;
+    }
+
+    static PyObject* PyImanS_Chunk_GetProperty(PyImanS_ChunkObject* self, const char* name){
+        auto* chunk = (GLOBAL_NAMESPACE::Chunk*)self->handle;
+        if (strcmp(name, "id") == 0){
+            return PyUnicode_FromString(chunk->getName().c_str());
+        } else if (strcmp(name, "size") == 0){
+            return PyLong_FromUnsignedLong(chunk->getSize());
+        } else {
+            return NULL;
+        }
+    }
+
     static int PyImanS_Chunk_Create(PyObject* module){
 
         PyImanS_ChunkType.tp_doc = "This is the base class for all file chunks.\n"
@@ -120,7 +135,7 @@ extern "C"{
                                    "chunk['property_name']\n"
                                    "\n"
                                    "The following chunk properties are present in all chunks\n"
-                                   "'ID' - the chunk ID (write chunk['ID'] to access)\n"
+                                   "'id' - the chunk ID (write chunk['id'] to access)\n"
                                    "'size' - the space occupied by the chunk body on the hard disk. For ISOI or DATA \n"
                                    "chunks this value may be 0 that doesn't correspond to the actual chunk size\n"
                                    "Any other properties are specific for a certain chunk. You may find them by writing: \n"
@@ -133,6 +148,7 @@ extern "C"{
         PyImanS_ChunkType.tp_new = (newfunc)PyImanS_Chunk_New;
         PyImanS_ChunkType.tp_init = (initproc)PyImanS_Chunk_Init;
         PyImanS_ChunkType.tp_dealloc = (destructor)PyImanS_Chunk_Destroy;
+        PyImanS_ChunkType.tp_str = (reprfunc)PyImanS_Chunk_Print;
 
         if (PyType_Ready(&PyImanS_ChunkType) < 0){
             return -1;
