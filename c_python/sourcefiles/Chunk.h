@@ -52,6 +52,15 @@ extern "C"{
             return 0;
         }
 
+        PyErr_Clear();
+
+        if (PyArg_ParseTuple(args, "O!", &PyImanS_IsoiChunkType, &suggesting_parent)){
+            Py_INCREF(suggesting_parent);
+            *pparent = suggesting_parent;
+            *phandle = suggesting_parent;
+            return 0;
+        }
+
         return -1;
     }
 

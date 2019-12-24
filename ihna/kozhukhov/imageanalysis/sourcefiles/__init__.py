@@ -54,6 +54,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedF
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_Chunk as Chunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SoftChunk as _SoftChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IsoiChunk as _IsoiChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -82,8 +83,24 @@ class StreamFileTrain(_StreamFileTrain):
         path, file = os.path.split(filename)
         if len(path) > 0:
             path += os.path.sep
-        file_sizes = [1299503468, 1299503468, 1299503468, 1135885676]
-        super().__init__(path, file, file_sizes, traverse_mode)
+        f = StreamSourceFile(filename, traverse_mode)
+        f.open()
+        f.load_file_info()
+        this_filename = path + f.filename
+        size = os.path.getsize(this_filename)
+        next_filename = f.soft['next_filename']
+        f.close()
+        actual_sizes = [size]
+        while next_filename != "":
+            f = StreamSourceFile(path + next_filename, "ignore")
+            f.open()
+            f.load_file_info()
+            this_filename = path + f.filename
+            size = os.path.getsize(this_filename)
+            next_filename = f.soft['next_filename']
+            f.close()
+            actual_sizes.append(size)
+        super().__init__(path, file, actual_sizes, traverse_mode)
 
 
 class CompressedFileTrain(_CompressedFileTrain):
@@ -280,4 +297,26 @@ class SoftChunk(_SoftChunk):
         """
         Initializes the chunk
         """
+        super().__init__()
+
+class IsoiChunk(_IsoiChunk):
+    """
+    This is the main chunk that contains all other chunks presented in the file.
+    Also, you may use the ISOI chunk in order to traverse through any other chunks
+
+    Formally, you can create an empty ISOI chunk by means of: chunk = IsoiChunk()
+    However, this operator is absolutely meaningless. The best way to access the ISOI
+    chunk is to use the isoi property of any SourceFile object.
+
+    The object is suitable for navigation over the file header. Use other methods for
+    navigation over the DATA chunk (i.e., to navigate through the file body).
+
+    Chunk parameters:
+    isoi['id'] will always return the 'ISOI' string
+    isoi['size'] will return the total size of the ISOI chunk
+    isoi['COST'] will return the any other chunk containing in the chunk header but bot in the chunk body or
+    will throw IndexError if such chunk doesn't exist
+    """
+
+    def __init__(self):
         super().__init__()

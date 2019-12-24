@@ -36,6 +36,17 @@ extern "C" {
             .tp_itemsize = 0,
     };
 
+    typedef struct {
+        PyImanS_ChunkObject super;
+    } PyImanS_IsoiChunkObject;
+
+    static PyTypeObject PyImanS_IsoiChunkType = {
+            PyVarObject_HEAD_INIT(NULL, 0)
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._IsoiChunk",
+            .tp_basicsize = sizeof(PyImanS_IsoiChunkObject),
+            .tp_itemsize = 0,
+    };
+
     static PyImanS_SourceFileObject* PyImanS_SourceFile_New(PyTypeObject* cls, PyObject* args, PyObject* kwds){
         PyImanS_SourceFileObject* self = NULL;
         self = (PyImanS_SourceFileObject*)cls->tp_alloc(cls, 0);
@@ -202,6 +213,22 @@ extern "C" {
         return chunkObject;
     }
 
+    static PyImanS_IsoiChunkObject* PyImanS_SourceFile_GetIsoiChunk(PyImanS_SourceFileObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* pfile = (SourceFile*)self->file_handle;
+
+        try{
+            IsoiChunk* chunk = &pfile->getIsoiChunk();
+            auto* chunkObject = (PyImanS_IsoiChunkObject*)PyObject_CallFunction(
+                    (PyObject*)&PyImanS_IsoiChunkType, "O", self);
+            chunkObject->super.handle = chunk;
+            return chunkObject;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyGetSetDef PyImanS_SourceFileProperties[] = {
             {(char*)"file_path", (getter)PyImanS_SourceFile_GetFilePath, NULL,
              (char*)"Full path to the file", NULL},
@@ -227,6 +254,8 @@ extern "C" {
                     "the module"},
             {(char*)"soft", (getter)PyImanS_SourceFile_GetSoft, NULL,
                 (char*)"returns the SOFT chunk of the file (with retaining)", NULL},
+            {(char*)"isoi", (getter)PyImanS_SourceFile_GetIsoiChunk, NULL,
+                (char*)"returns the ISOI chunk of the file (with retaining)", NULL},
             {NULL}
     };
 
