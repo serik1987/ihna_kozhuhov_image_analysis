@@ -33,7 +33,9 @@ extern "C"{
         } else if (pchunk->getName() == "EPST") {
             type_object = (PyObject *) &PyImanS_EpstChunkType;
         } else if (pchunk->getName() == "GREE") {
-            type_object = (PyObject*)&PyImanS_GreenChunkType;
+            type_object = (PyObject *) &PyImanS_GreenChunkType;
+        } else if (pchunk->getName() == "HARD") {
+            type_object = (PyObject*)&PyImanS_HardChunkType;
         } else {
             PyErr_SetString(PyExc_NotImplementedError, "The chunk is not still supported");
             return NULL;

@@ -60,6 +60,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CostChunk a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_DataChunk as _DataChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_EpstChunk as _EpstChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_GreenChunk as _GreenChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_HardChunk as _HardChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -404,6 +405,39 @@ class GreenChunk(_GreenChunk):
 
     At the moment when the program was created, the green chunk is not able to provide I/O operations
     on chunk properties
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class HardChunk(_HardChunk):
+    """
+    The chunk contains general properties of the experimental setup
+
+    Among them are:
+    hard['id'] - always 'HARD'
+    hard['size'] - always 256 bytes
+    hard['camera_name'] - the camera name
+    hard['camera_type'] - the camera type
+    hard['resolution_x'] - resolution on X
+    hard['resolution_y'] - resolution on Y
+    hard['pixel_size_x'] - pixel size on X, in um (rounded to integer)
+    hard['pixel_size_y'] - pixel size on Y, in um (rounded to integer)
+    hard['ccd_aperture_x'] - CCD aperture on X, in um (rounded to integer)
+    hard['ccd_aperture_y'] - CCD aperture on Y, in um (rounded to integer)
+    hard['integration time'] - the integration time in microseconds
+    hard['interframe_time'] - the interframe time in microseconds
+    hard['vertical_hardware_binning'] - vertical hardware binning
+    hard['horizontal_hardware_binning'] - horizontal hardware binning
+    hard['hardware_gain'] - the hardware gain
+    hard['hardware_offset'] - the hardware offset
+    hard['ccd_size_x'] - hardware binned CCD X size
+    hard['ccd_size_y'] - hardware binned CCD Y size
+    hard['dynamic_range'] - the dynamic range
+    hard['optics_focal_length_top'] - Top lens focal length (the one closer to the camera), millimeters
+    hard['optics_focal_length_bottom'] - Bottom lens focal length, millimeters
+    hard['hardware_bits'] - the hardware bits
     """
 
     def __init__(self):
