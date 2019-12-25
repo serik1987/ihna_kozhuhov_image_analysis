@@ -59,6 +59,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompChunk a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CostChunk as _CostChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_DataChunk as _DataChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_EpstChunk as _EpstChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_GreenChunk as _GreenChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -390,6 +391,19 @@ class EpstChunk(_EpstChunk):
     epst['stimulus_frames'] - Number of stimulus frames
     epst['pre_frames'] - Number of prestimulus frames
     epst['post_frames'] - Number of poststimulus frames
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class GreenChunk(_GreenChunk):
+    """
+    The chunk is presented in green files only and stores properties specific for the green chunk
+    itself
+
+    At the moment when the program was created, the green chunk is not able to provide I/O operations
+    on chunk properties
     """
 
     def __init__(self):
