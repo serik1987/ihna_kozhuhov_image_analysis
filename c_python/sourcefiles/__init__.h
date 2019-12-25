@@ -16,7 +16,7 @@
 
 extern "C" {
     static int PyImanS_TotalChunksAdded = 0;
-    static const int PyImanS_TotalChunksExisted = 6;
+    static const int PyImanS_TotalChunksExisted = 7;
     static PyObject* PyImanS_ChunkTypes[PyImanS_TotalChunksExisted];
 };
 
@@ -39,6 +39,7 @@ extern "C" {
 #include "CompChunk.h"
 #include "CostChunk.h"
 #include "DataChunk.h"
+#include "EpstChunk.h"
 
 #include "ChunkCreator.h"
 
@@ -227,6 +228,11 @@ extern "C" {
         }
 
         if (PyImanS_DataChunk_Create(imageanalysis) < 0){
+            PyImanS_Destroy();
+            return -1;
+        }
+
+        if (PyImanS_EpstChunk_Create(imageanalysis) < 0){
             PyImanS_Destroy();
             return -1;
         }

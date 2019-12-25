@@ -58,6 +58,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IsoiChunk a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompChunk as _CompChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CostChunk as _CostChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_DataChunk as _DataChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_EpstChunk as _EpstChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -361,13 +362,34 @@ class CostChunk(_CostChunk):
 
 class DataChunk(_DataChunk):
     """
-    This is the main chunk that contains the file body. Specifically, it contains sequence of all
+    This is the chunk that contains the file body. Specifically, it contains sequence of all
     frames recorded in the current file.
 
     Chunk have the following properties only:
     data['id'] = always 'DATA'
     data['size'] = size of the file body in uncoompressed mode
     All other data are accessible through the file routines only
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class EpstChunk(_EpstChunk):
+    """
+    The chunk contains information about the visual stimulus when episodic stimulation protocol was
+    applied. The chunk is absent in the data recorded under continuous stimulation protocol.
+
+    The chunk has the following properties:
+    epst['id'] - always "EPST"
+    epst['size'] - always 64 bytes
+    epst['condition_number'] - total number of stimulus conditions
+    epst['repetition_number'] - total number of stimulus repetitions
+    epst['randomized'] - True if the stimulus is randomized
+    epst['iti_frames'] - Number of intertrial frames
+    epst['stimulus_frames'] - Number of stimulus frames
+    epst['pre_frames'] - Number of prestimulus frames
+    epst['post_frames'] - Number of poststimulus frames
     """
 
     def __init__(self):
