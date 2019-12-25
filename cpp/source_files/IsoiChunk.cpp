@@ -63,7 +63,7 @@ namespace GLOBAL_NAMESPACE{
 
         out << "===== ISOI =====\n";
         out << "Chunk size: " << isoi.getSize() << endl;
-        out << "Chunk tag: " << isoi.getTag() << endl;
+        /* out << "Chunk tag: " << isoi.getTag() << endl; */
         out << "All chunks containing in the ISOI chunk are given below:\n";
         for (auto it = isoi.cbegin(); it != isoi.cend(); ++it){
             out << *it << endl;

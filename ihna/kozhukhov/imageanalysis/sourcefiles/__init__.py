@@ -57,6 +57,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SoftChunk a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IsoiChunk as _IsoiChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompChunk as _CompChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CostChunk as _CostChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_DataChunk as _DataChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -352,6 +353,21 @@ class CostChunk(_CostChunk):
     cost['synchronization_channel_max'] = tuple containing maximum value for each synchronization channel
     cost['stimulus_channels'] = number of stimulus channels (if no synchronization channels were presented)
     cost['stimulus_period'] = tuple containing stimulus period values for each stimulus period
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class DataChunk(_DataChunk):
+    """
+    This is the main chunk that contains the file body. Specifically, it contains sequence of all
+    frames recorded in the current file.
+
+    Chunk have the following properties only:
+    data['id'] = always 'DATA'
+    data['size'] = size of the file body in uncoompressed mode
+    All other data are accessible through the file routines only
     """
 
     def __init__(self):

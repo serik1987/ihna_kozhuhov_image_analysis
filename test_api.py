@@ -11,13 +11,19 @@ if __name__ == "__main__":
     for file in train:
         print(file.filename)
 
-    chunk = file.isoi['cost']
-    print("PY cost chunk has been created")
-    print("PY Chunk identifier: ", chunk['id'])
+    chunk = file.isoi['data']
+    print(chunk)
+    print("PY chunk has been created")
+    print("PY Chunk ID: ", chunk["id"])
     print("PY Chunk size: ", chunk['size'])
-    print("PY Synchronization channel number: ", chunk['synchronization_channel_number'])
-    print("PY Synchronization channels max: ", chunk['synchronization_channel_max'])
-    print("PY Total number of stimulus channels: ", chunk['stimulus_channels'])
-    print("PY Stimulus periods: ", chunk['stimulus_period'])
+
+    del train
+    print("PY train has been deleted")
+
+    del file
+    print("PY file has been deleted")
+
+    del chunk
+    print("PY Chunk has been deleted")
 
     print("PY Test end")

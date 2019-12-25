@@ -27,7 +27,9 @@ extern "C"{
         } else if (pchunk->getName() == "COMP") {
             type_object = (PyObject *) &PyImanS_CompChunkType;
         } else if (pchunk->getName() == "COST") {
-            type_object = (PyObject*)&PyImanS_CostChunkType;
+            type_object = (PyObject *) &PyImanS_CostChunkType;
+        } else if (pchunk->getName() == "DATA") {
+            type_object = (PyObject*)&PyImanS_DataChunkType;
         } else {
             PyErr_SetString(PyExc_NotImplementedError, "The chunk is not still supported");
             return NULL;
