@@ -121,7 +121,7 @@ namespace GLOBAL_NAMESPACE{
         }
         if (cost != nullptr){
             experimentalMode = Continuous;
-            for (int chan = 0; chan < cost->getSynchonizationChannels(); ++chan){
+            for (int chan = 0; chan < cost->getSynchronizationChannels(); ++chan){
                 synchChannelMax.push_back(cost->getSynchronizationChannelsMax(chan));
             }
         }

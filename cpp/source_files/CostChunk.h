@@ -44,7 +44,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return number of synchronization channels
          */
-        [[nodiscard]] int getSynchonizationChannels() const { return info.NSynchChannels; }
+        [[nodiscard]] int getSynchronizationChannels() const { return info.NSynchChannels; }
 
         /**
          *

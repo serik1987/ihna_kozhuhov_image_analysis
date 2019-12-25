@@ -7,19 +7,17 @@ if __name__ == "__main__":
 
     train = files.CompressedFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0A00z", "traverse")
     train.open()
-    print(train)
 
     for file in train:
-        print(file)
-        print(file.isoi)
+        print(file.filename)
 
-    comp = file.isoi['comp']
-    print("PY comp chunk extracted")
-    print(comp)
-    print("PY Chunk name: ", comp['id'])
-    print("PY Chunk size: ", comp['size'])
-    print("PY Single extrapixel size: ", comp['compressed_record_size'])
-    print("PY Compressed frame size: ", comp['compressed_frame_size'])
-    print("PY Compressed frame number: ", comp['compressed_frame_number'])
+    chunk = file.isoi['cost']
+    print("PY cost chunk has been created")
+    print("PY Chunk identifier: ", chunk['id'])
+    print("PY Chunk size: ", chunk['size'])
+    print("PY Synchronization channel number: ", chunk['synchronization_channel_number'])
+    print("PY Synchronization channels max: ", chunk['synchronization_channel_max'])
+    print("PY Total number of stimulus channels: ", chunk['stimulus_channels'])
+    print("PY Stimulus periods: ", chunk['stimulus_period'])
 
     print("PY Test end")

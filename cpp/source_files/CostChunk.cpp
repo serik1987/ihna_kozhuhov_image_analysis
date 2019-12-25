@@ -8,8 +8,8 @@ namespace GLOBAL_NAMESPACE{
 
     std::ostream &operator<<(std::ostream &out, const CostChunk &chunk) {
         out << "===== COST =====\n";
-        out << "Number of active synchronization channels: " << chunk.getSynchonizationChannels() << "\n";
-        for (int i=0; i < chunk.getSynchonizationChannels(); ++i){
+        out << "Number of active synchronization channels: " << chunk.getSynchronizationChannels() << "\n";
+        for (int i=0; i < chunk.getSynchronizationChannels(); ++i){
             out << "Max. value on synchronization channel " << i << ": " << chunk.getSynchronizationChannelsMax(i)
             << "\n";
         }

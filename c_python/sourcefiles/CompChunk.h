@@ -64,7 +64,6 @@ extern "C"{
     };
 
     static int PyImanS_CompChunk_Create(PyObject* module){
-        printf("SO Creating CompChunk...\n");
 
         PyImanS_CompChunkType.tp_base = &PyImanS_ChunkType;
         PyImanS_CompChunkType.tp_doc = "Use CompChunk instead";

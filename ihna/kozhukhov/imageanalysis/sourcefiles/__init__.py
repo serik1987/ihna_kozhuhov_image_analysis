@@ -56,6 +56,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_Chunk as Ch
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SoftChunk as _SoftChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IsoiChunk as _IsoiChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompChunk as _CompChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CostChunk as _CostChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -333,6 +334,24 @@ class CompChunk(_CompChunk):
     comp['compressed_record_size'] = size of a single extrapixel
     comp['compressed_frame_size'] = size of a single frame (bytes), when this is in compressed mode
     comp['compressed_frame_number'] = number of frames in a certain compressed file
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class CostChunk(_CostChunk):
+    """
+    This chunk is presented in the data recorded under continuous stimulation protocol
+    and represents the stimulation parameters
+
+    Chunk properties are the following:
+    cost['id'] = always 'COST'
+    cost['size'] = always 64 bytes
+    cost['synchronization_channel_number'] = total number of the synchronization channels
+    cost['synchronization_channel_max'] = tuple containing maximum value for each synchronization channel
+    cost['stimulus_channels'] = number of stimulus channels (if no synchronization channels were presented)
+    cost['stimulus_period'] = tuple containing stimulus period values for each stimulus period
     """
 
     def __init__(self):
