@@ -55,6 +55,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedF
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_Chunk as Chunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SoftChunk as _SoftChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IsoiChunk as _IsoiChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompChunk as _CompChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -316,6 +317,22 @@ class IsoiChunk(_IsoiChunk):
     isoi['size'] will return the total size of the ISOI chunk
     isoi['COST'] will return the any other chunk containing in the chunk header but bot in the chunk body or
     will throw IndexError if such chunk doesn't exist
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class CompChunk(_CompChunk):
+    """
+    This chunk presents in compressed files only and contains the compression info
+
+    Chunk property names:
+    comp['id'] - always COMP
+    comp['size'] = always 28 bytes
+    comp['compressed_record_size'] = size of a single extrapixel
+    comp['compressed_frame_size'] = size of a single frame (bytes), when this is in compressed mode
+    comp['compressed_frame_number'] = number of frames in a certain compressed file
     """
 
     def __init__(self):

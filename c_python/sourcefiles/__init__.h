@@ -12,10 +12,11 @@
 #include "../../cpp/source_files/StreamSourceFile.h"
 #include "../../cpp/source_files/DataChunk.h"
 #include "../../cpp/source_files/StreamFileTrain.h"
+#include "../../cpp/source_files/CompChunk.h"
 
 extern "C" {
     static int PyImanS_TotalChunksAdded = 0;
-    static const int PyImanS_TotalChunksExisted = 3;
+    static const int PyImanS_TotalChunksExisted = 4;
     static PyObject* PyImanS_ChunkTypes[PyImanS_TotalChunksExisted];
 };
 
@@ -35,6 +36,7 @@ extern "C" {
 #include "Chunk.h"
 #include "SoftChunk.h"
 #include "IsoiChunk.h"
+#include "CompChunk.h"
 
 #include "ChunkCreator.h"
 
@@ -208,6 +210,11 @@ extern "C" {
         }
 
         if (PyImanS_IsoiChunk_Create(imageanalysis) < 0){
+            PyImanS_Destroy();
+            return -1;
+        }
+
+        if (PyImanS_CompChunk_Create(imageanalysis) < 0){
             PyImanS_Destroy();
             return -1;
         }

@@ -22,8 +22,10 @@ extern "C"{
         PyObject* type_object;
         if (pchunk->getName() == "ISOI"){
             type_object = (PyObject*)&PyImanS_IsoiChunkType;
-        } else if (pchunk->getName() == "SOFT"){
-            type_object = (PyObject*)&PyImanS_SoftChunkType;
+        } else if (pchunk->getName() == "SOFT") {
+            type_object = (PyObject *) &PyImanS_SoftChunkType;
+        } else if (pchunk->getName() == "COMP") {
+            type_object = (PyObject*) &PyImanS_CompChunkType;
         } else {
             PyErr_SetString(PyExc_NotImplementedError, "The chunk is not still supported");
             return NULL;

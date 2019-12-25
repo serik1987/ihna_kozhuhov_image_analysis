@@ -1,27 +1,6 @@
 #!/usr/bin/env python3
 
-import ihna.kozhukhov.imageanalysis as iman
 import ihna.kozhukhov.imageanalysis.sourcefiles as files
-
-'''
-try:
-    iman.test_exception()
-except iman.ImanError as e:
-    print("Error message: ", e)
-    print("Error class name: ", e.__class__.__name__)
-    print("Error class: ", e.__class__)
-    if isinstance(e, files.IoError):
-        print("Instance of files.IoError")
-    if isinstance(e, files.TrainError):
-        print("Instance of files.TrainError")
-        print("Train name: ", e.train_name)
-    if isinstance(e, files.SourceFileError):
-        print("Instance of files.SourceFileError")
-        print("File name: ", e.file_name)
-    if isinstance(e, files.ChunkError):
-        print("Instance of files.ChunkError")
-        print("Chunk name: ", e.chunk_name)
-'''
 
 if __name__ == "__main__":
     print("PY Test begin")
@@ -31,12 +10,16 @@ if __name__ == "__main__":
     print(train)
 
     for file in train:
-        print(file.filename)
+        print(file)
+        print(file.isoi)
 
-    isoi = file.isoi
-    print(isoi)
-
-    soft = isoi['FRAM']
-    print(soft)
+    comp = file.isoi['comp']
+    print("PY comp chunk extracted")
+    print(comp)
+    print("PY Chunk name: ", comp['id'])
+    print("PY Chunk size: ", comp['size'])
+    print("PY Single extrapixel size: ", comp['compressed_record_size'])
+    print("PY Compressed frame size: ", comp['compressed_frame_size'])
+    print("PY Compressed frame number: ", comp['compressed_frame_number'])
 
     print("PY Test end")
