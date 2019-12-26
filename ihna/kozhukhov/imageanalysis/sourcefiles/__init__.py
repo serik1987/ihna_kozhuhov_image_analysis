@@ -62,6 +62,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_EpstChunk a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_GreenChunk as _GreenChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_HardChunk as _HardChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_RoisChunk as _RoisChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SyncChunk as _SyncChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -447,7 +448,16 @@ class HardChunk(_HardChunk):
 
 class RoisChunk(_RoisChunk):
     """
-    This is the rarely used chunk which is mostly not-implemented
+    This is the rarely used chunk which is mostly non-implemented
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class SyncChunk(_SyncChunk):
+    """
+    This is the rarely used which which is mostly non-implemented
     """
 
     def __init__(self):

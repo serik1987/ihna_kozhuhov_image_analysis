@@ -11,7 +11,7 @@ if __name__ == "__main__":
     for file in train:
         print(file.filename)
 
-    chunk = files.RoisChunk()
+    chunk = files.SyncChunk()
     print(chunk)
     print("PY Chunk ID: ", chunk['id'])
     print("PY Chunk size: ", chunk['size'])

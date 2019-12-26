@@ -37,7 +37,9 @@ extern "C"{
         } else if (pchunk->getName() == "HARD") {
             type_object = (PyObject *) &PyImanS_HardChunkType;
         } else if (pchunk->getName() == "ROIS") {
-            type_object = (PyObject*)&PyImanS_RoisChunkType;
+            type_object = (PyObject *) &PyImanS_RoisChunkType;
+        } else if (pchunk->getName() == "SYNC") {
+            type_object = (PyObject*) &PyImanS_SyncChunkType;
         } else {
             PyErr_SetString(PyExc_NotImplementedError, "The chunk is not still supported");
             return NULL;
