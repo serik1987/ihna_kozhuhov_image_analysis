@@ -35,7 +35,9 @@ extern "C"{
         } else if (pchunk->getName() == "GREE") {
             type_object = (PyObject *) &PyImanS_GreenChunkType;
         } else if (pchunk->getName() == "HARD") {
-            type_object = (PyObject*)&PyImanS_HardChunkType;
+            type_object = (PyObject *) &PyImanS_HardChunkType;
+        } else if (pchunk->getName() == "ROIS") {
+            type_object = (PyObject*)&PyImanS_RoisChunkType;
         } else {
             PyErr_SetString(PyExc_NotImplementedError, "The chunk is not still supported");
             return NULL;

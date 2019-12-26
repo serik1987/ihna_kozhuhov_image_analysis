@@ -61,6 +61,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_DataChunk a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_EpstChunk as _EpstChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_GreenChunk as _GreenChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_HardChunk as _HardChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_RoisChunk as _RoisChunk
 
 
 class StreamFileTrain(_StreamFileTrain):
@@ -438,6 +439,15 @@ class HardChunk(_HardChunk):
     hard['optics_focal_length_top'] - Top lens focal length (the one closer to the camera), millimeters
     hard['optics_focal_length_bottom'] - Bottom lens focal length, millimeters
     hard['hardware_bits'] - the hardware bits
+    """
+
+    def __init__(self):
+        super().__init__()
+
+
+class RoisChunk(_RoisChunk):
+    """
+    This is the rarely used chunk which is mostly not-implemented
     """
 
     def __init__(self):

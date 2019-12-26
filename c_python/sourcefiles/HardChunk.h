@@ -102,7 +102,6 @@ extern "C" {
     };
 
     static int PyImanS_HardChunk_Create(PyObject* module){
-        printf("SO Creating HARD chunk...\n");
 
         PyImanS_HardChunkType.tp_doc = "Use HardChunk instead";
         PyImanS_HardChunkType.tp_base = &PyImanS_ChunkType;
