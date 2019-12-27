@@ -11,6 +11,19 @@ extern "C"{
 
     static PyImanS_ChunkObject* PyImanS_Chunk_FromHandle(void* handle, PyObject* parent);
 
+    typedef struct {
+        PyObject_HEAD
+        PyImanS_IsoiChunkObject* parent;
+        void* handle;
+    } PyImanS_IsoiChunkIteratorObject;
+
+    static PyTypeObject PyImanS_IsoiChunkIteratorType = {
+            PyVarObject_HEAD_INIT(NULL, 0)
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.IsoiChunkIterator",
+            .tp_basicsize = sizeof(PyImanS_IsoiChunkIteratorObject),
+            .tp_itemsize = 0,
+    };
+
     static int PyImanS_IsoiChunk_Init(PyImanS_IsoiChunkObject* self, PyObject* args, PyObject*){
         void* chunk_handle;
         PyObject* parent_object;
@@ -77,6 +90,11 @@ extern "C"{
             .mp_ass_subscript = NULL,
     };
 
+    static PyImanS_IsoiChunkIteratorObject* PyImanS_IsoiChunk_Iter(PyImanS_IsoiChunkObject* self){
+        return (PyImanS_IsoiChunkIteratorObject*)
+            PyObject_CallFunction((PyObject*)&PyImanS_IsoiChunkIteratorType, "O", self);
+    }
+
     static int PyImanS_IsoiChunk_Create(PyObject* module){
 
         PyImanS_IsoiChunkType.tp_doc = "Use IsoiChunk instead";
@@ -84,6 +102,7 @@ extern "C"{
         PyImanS_IsoiChunkType.tp_base = &PyImanS_ChunkType;
         PyImanS_IsoiChunkType.tp_init = (initproc)PyImanS_IsoiChunk_Init;
         PyImanS_IsoiChunkType.tp_as_mapping = &PyImanS_IsoiChunk_mapping;
+        PyImanS_IsoiChunkType.tp_iter = (getiterfunc)PyImanS_IsoiChunk_Iter;
 
         if (PyType_Ready(&PyImanS_IsoiChunkType) < 0){
             return -1;

@@ -16,7 +16,7 @@
 
 extern "C" {
     static int PyImanS_TotalChunksAdded = 0;
-    static const int PyImanS_TotalChunksExisted = 11;
+    static const int PyImanS_TotalChunksExisted = 12;
     static PyObject* PyImanS_ChunkTypes[PyImanS_TotalChunksExisted];
 };
 
@@ -45,6 +45,7 @@ extern "C" {
 #include "RoisChunk.h"
 #include "SyncChunk.h"
 #include "ChunkCreator.h"
+#include "IsoiChunkIterator.h"
 
 extern "C" {
 
@@ -256,6 +257,11 @@ extern "C" {
         }
 
         if (PyImanS_SyncChunk_Create(imageanalysis) < 0){
+            PyImanS_Destroy();
+            return -1;
+        }
+
+        if (PyImanS_IsoiChunkIterator_Create(imageanalysis) < 0){
             PyImanS_Destroy();
             return -1;
         }

@@ -63,6 +63,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_GreenChunk 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_HardChunk as _HardChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_RoisChunk as _RoisChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SyncChunk as _SyncChunk
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IsoiChunkIterator as IsoiChunkIterator
 
 
 class StreamFileTrain(_StreamFileTrain):

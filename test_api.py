@@ -9,11 +9,8 @@ if __name__ == "__main__":
     train.open()
 
     for file in train:
-        print(file.filename)
-
-    chunk = files.SyncChunk()
-    print(chunk)
-    print("PY Chunk ID: ", chunk['id'])
-    print("PY Chunk size: ", chunk['size'])
+        print(file)
+        for chunk in file.isoi:
+            print(chunk)
 
     print("PY Test end")
