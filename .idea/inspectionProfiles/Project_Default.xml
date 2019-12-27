@@ -6,6 +6,7 @@
         <list>
           <option value="imageanalysis.sourcefiles.*" />
           <option value="ihna.kozhukhov.imageanalysis.sourcefiles.*" />
+          <option value="wx" />
         </list>
       </option>
     </inspection_tool>
