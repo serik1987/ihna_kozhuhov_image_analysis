@@ -1,7 +1,7 @@
 # -*- coding: utf-8
 
 import wx
-
+import ihna.kozhukhov.imageanalysis.manifest as manifest
 
 class MainWindow(wx.Frame):
     """
@@ -46,12 +46,16 @@ class MainWindow(wx.Frame):
     __auto_average_maps_box = None
     __working_dir = None
 
+    __animals = None
+    __animal = None
+
     def __create_left_panel(self, panel):
         left_panel = wx.BoxSizer(wx.VERTICAL)
         left_panel_caption = wx.StaticText(panel, label="Animals", style=wx.ALIGN_LEFT)
         left_panel.Add(left_panel_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
 
         self.__animals_box = wx.ListBox(panel, size=(100, 150), style=wx.LB_SINGLE | wx.LB_NEEDED_SB | wx.LB_SORT)
+        self.Bind(wx.EVT_LISTBOX, self.select_animal, self.__animals_box)
         left_panel.Add(self.__animals_box, 0, wx.BOTTOM | wx.EXPAND, 5)
         left_button_panel = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -333,16 +337,53 @@ class MainWindow(wx.Frame):
         self.Centre(wx.BOTH)
 
     def new_animal(self):
-        print("New animal")
+        animal_dlg = wx.TextEntryDialog(self, "Please, enter the valid folder name", "New animal")
+        if animal_dlg.ShowModal() != wx.ID_OK:
+            return
+        folder_name = animal_dlg.GetValue()
+        if folder_name == "":
+            wx.MessageDialog(self, "The folder name shall be non-empty", "Creating animal failed",
+                             wx.OK | wx.ICON_ERROR | wx.CENTRE).ShowModal()
+            return
+        try:
+            self.__animal = manifest.Animal(folder_name)
+            specimen = self.__animal['specimen']
+            self.__animals[specimen] = self.__animal
+            self.__animals.save()
+            self.load_all_animals()
+        except IOError as err:
+            wx.MessageDialog(self, "Failed to create the folder corresponding to an animal", "Creating animal failed",
+                             wx.OK | wx.ICON_ERROR | wx.CENTRE).ShowModal()
+            print(err)
 
     def delete_animal(self):
-        print("Delete animal")
+        try:
+            specimen = self.__animal['specimen']
+            self.__animal = None
+            del self.__animals[specimen]
+            self.__animals.save()
+            self.load_all_animals()
+        except IOError as err:
+            wx.MessageDialog(self, "Failed to delete the animal", "Delete the animal", wx.OK | wx.ICON_ERROR).\
+                ShowModal()
+            print(err)
+
 
     def open_animal_filter(self):
         print("Open animal filter")
 
     def save_animal_info(self):
-        print("Save animal info")
+        try:
+            old_specimen = self.__animal['specimen']
+            self.__animal['specimen'] = self.__specimen_box.GetValue()
+            self.__animal['conditions'] = self.__conditions_box.GetValue()
+            self.__animal['recording_site'] = self.__recording_site_box.GetValue()
+            self.__animals.replace_key(old_specimen, self.__animal['specimen'])
+            self.__animals.save()
+            self.load_all_animals()
+        except IOError as err:
+            wx.MessageDialog(self, "Failed to save the data", "Save animal info", wx.OK | wx.ICON_ERROR)
+            print(err)
 
     def import_case(self):
         print("Import case")
@@ -459,4 +500,43 @@ class MainWindow(wx.Frame):
 
     def open_working_dir(self, dir):
         self.__working_dir = dir
-        print("Opening the following working dir:", self.__working_dir)
+        try:
+            self.__animals = manifest.Animals(dir)
+            self.__animal = None
+            self.load_all_animals()
+        except IOError as err:
+            wx.MessageDialog(self, "Failed to open the data", "Fatal error", wx.OK | wx.ICON_ERROR).ShowModal()
+            raise err
+
+    def load_all_animals(self):
+        self.__animals_box.Clear()
+        idx = 0
+        for animal in self.__animals:
+            self.__animals_box.Append(animal['specimen'])
+            if self.__animal is not None and animal == self.__animal:
+                self.__animals_box.SetSelection(idx)
+            idx += 1
+        if self.__animal is not None:
+            self.load_animal()
+        else:
+            self.clear_animal_info()
+
+    def select_animal(self, event):
+        self.__animal = self.__animals[event.GetString()]
+        self.load_animal()
+
+    def load_animal(self):
+        self.__delete_animal.Enable(True)
+        self.__specimen_box.SetValue(self.__animal['specimen'])
+        self.__conditions_box.SetValue(self.__animal['conditions'])
+        self.__recording_site_box.SetValue(self.__animal['recording_site'])
+        self.__save_animal_info.Enable(True)
+        self.__import_case.Enable(True)
+
+    def clear_animal_info(self):
+        self.__delete_animal.Enable(False)
+        self.__specimen_box.SetValue("")
+        self.__conditions_box.SetValue("")
+        self.__recording_site_box.SetValue("")
+        self.__save_animal_info.Enable(False)
+        self.__import_case.Enable(False)
