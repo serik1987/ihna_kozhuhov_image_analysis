@@ -8,7 +8,7 @@ class MainWindow(wx.Frame):
     This is the main window of the application
     """
 
-    __cases_box = None
+    __animals_box = None
     __new_animal = None
     __delete_animal = None
     __animal_filter = None
@@ -16,30 +16,56 @@ class MainWindow(wx.Frame):
     __conditions_box = None
     __recording_site_box = None
     __save_animal_info = None
+    __cases_box = None
+    __import_case = None
+    __delete_case = None
+    __case_filter = None
+    __case_short_name_box = None
+    __case_long_name_box = None
+    __stimulation_box = None
+    __additional_stimulation_box = None
+    __special_conditions_box = None
+    __additional_information_box = None
+    __save_case_info = None
+    __case_info_label = None
+    __native_data_label = None
+    __native_data_manager = None
+    __roi_label = None
+    __roi_data_manager = None
+    __trace_analysis_label = None
+    __trace_analysis_manager = None
+    __averaged_maps_label = None
+    __averaged_maps_manager = None
+    __compressed_state = None
+    __roi_exist = None
+    __include_auto_box = None
+    __decompress_before_processing = False
+    __decompress_before_processing_box = None
+    __extract_frame_button = None
+    __trace_analysis_button = None
+    __auto_average_maps_box = None
+    __working_dir = None
 
-    def __init__(self):
-        super().__init__(None, title="Image Analysis", size=(800, 700),
-                         style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
-        panel = wx.Panel(self)
-        general_layout = wx.BoxSizer(wx.HORIZONTAL)
-        main_layout = wx.BoxSizer(wx.HORIZONTAL)
-
+    def __create_left_panel(self, panel):
         left_panel = wx.BoxSizer(wx.VERTICAL)
-        left_panel_caption = wx.StaticText(panel, label="Case name", style=wx.ALIGN_LEFT)
+        left_panel_caption = wx.StaticText(panel, label="Animals", style=wx.ALIGN_LEFT)
         left_panel.Add(left_panel_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
 
-        self.__cases_box = wx.ListBox(panel, size=(100, 300), style=wx.LB_SINGLE|wx.LB_NEEDED_SB|wx.LB_SORT)
-        left_panel.Add(self.__cases_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+        self.__animals_box = wx.ListBox(panel, size=(100, 150), style=wx.LB_SINGLE | wx.LB_NEEDED_SB | wx.LB_SORT)
+        left_panel.Add(self.__animals_box, 0, wx.BOTTOM | wx.EXPAND, 5)
         left_button_panel = wx.BoxSizer(wx.HORIZONTAL)
 
         self.__new_animal = wx.Button(panel, label="New animal")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.new_animal(), self.__new_animal)
         left_button_panel.Add(self.__new_animal, 0, wx.RIGHT, 5)
 
         self.__delete_animal = wx.Button(panel, label="Delete animal")
         self.__delete_animal.Enable(False)
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.delete_animal(), self.__delete_animal)
         left_button_panel.Add(self.__delete_animal, 0, wx.RIGHT, 5)
 
         self.__animal_filter = wx.Button(panel, label="Animal filter")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.open_animal_filter(), self.__animal_filter)
         left_button_panel.Add(self.__animal_filter, 0, 0, 0)
 
         left_panel.Add(left_button_panel, 0, wx.BOTTOM, 5)
@@ -67,19 +93,370 @@ class MainWindow(wx.Frame):
         left_panel_content_sizer.Add(self.__recording_site_box, 0, wx.BOTTOM | wx.EXPAND, 5)
 
         self.__save_animal_info = wx.Button(left_box, label="Save animal info")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.save_animal_info(), self.__save_animal_info)
         left_panel_content_sizer.Add(self.__save_animal_info, 0, 0, 0)
 
         left_panel_sizer.Add(left_panel_content_sizer, 1, wx.ALL | wx.EXPAND, 5)
         left_box.SetSizer(left_panel_sizer)
+        return left_panel
+
+    def __create_middle_panel(self, panel):
+        middle_panel = wx.BoxSizer(wx.VERTICAL)
+        middle_panel_caption = wx.StaticText(panel, label="Cases")
+        middle_panel.Add(middle_panel_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__cases_box = wx.ListBox(panel, size=(100, 150), style=wx.LB_SINGLE | wx.LB_NEEDED_SB | wx.LB_SORT)
+        middle_panel.Add(self.__cases_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+        middle_button_panel = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.__import_case = wx.Button(panel, label="Import case")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.import_case(), self.__import_case)
+        middle_button_panel.Add(self.__import_case, 0, wx.RIGHT, 5)
+
+        self.__delete_case = wx.Button(panel, label="Delete case")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.delete_case(), self.__delete_case)
+        self.__delete_case.Enable(False)
+        middle_button_panel.Add(self.__delete_case, 0, wx.RIGHT, 5)
+
+        self.__case_filter = wx.Button(panel, label="Case filter")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.open_case_filter(), self.__case_filter)
+        middle_button_panel.Add(self.__case_filter, 0, 0, 0)
+
+        middle_panel.Add(middle_button_panel, 0, wx.BOTTOM, 5)
+        middle_box = wx.StaticBox(panel, label="Case info")
+        middle_panel.Add(middle_box, 1, wx.EXPAND, 0)
+
+        middle_box_general_layout = wx.BoxSizer(wx.VERTICAL)
+        middle_box_main_layout = wx.BoxSizer(wx.VERTICAL)
+
+        short_name_caption = wx.StaticText(middle_box, label="Short name")
+        middle_box_main_layout.Add(short_name_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__case_short_name_box = wx.TextCtrl(middle_box)
+        middle_box_main_layout.Add(self.__case_short_name_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        long_name_caption = wx.StaticText(middle_box, label="Long name")
+        middle_box_main_layout.Add(long_name_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__case_long_name_box = wx.TextCtrl(middle_box)
+        middle_box_main_layout.Add(self.__case_long_name_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        stimulation_caption = wx.StaticText(middle_box, label="Stimulation")
+        middle_box_main_layout.Add(stimulation_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__stimulation_box = wx.TextCtrl(middle_box)
+        middle_box_main_layout.Add(self.__stimulation_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        additional_stimulation_caption = wx.StaticText(middle_box, label="Additional stimulation")
+        middle_box_main_layout.Add(additional_stimulation_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__additional_stimulation_box = wx.TextCtrl(middle_box)
+        middle_box_main_layout.Add(self.__additional_stimulation_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        special_conditions_caption = wx.StaticText(middle_box, label="Special conditions")
+        middle_box_main_layout.Add(special_conditions_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__special_conditions_box = wx.TextCtrl(middle_box)
+        middle_box_main_layout.Add(self.__special_conditions_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        additional_information_caption = wx.StaticText(middle_box, label="Additional information")
+        middle_box_main_layout.Add(additional_information_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__additional_information_box = wx.TextCtrl(middle_box, style=wx.TE_MULTILINE|wx.TE_WORDWRAP,
+                                                        size=(100, 70))
+        middle_box_main_layout.Add(self.__additional_information_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        self.__save_case_info = wx.Button(middle_box, label="Save case info")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.save_case_info(), self.__save_case_info)
+        middle_box_main_layout.Add(self.__save_case_info, 0, 0, 0)
+
+        middle_box_general_layout.Add(middle_box_main_layout, 1, wx.ALL | wx.EXPAND, 5)
+        middle_box.SetSizer(middle_box_general_layout)
+
+        return middle_panel
+
+    def __create_case_study(self, panel):
+        single_case_box = wx.StaticBoxSizer(wx.VERTICAL, panel, label="Case study")
+        right_panel_main_layout = wx.FlexGridSizer(2, 5, 5)
+
+        case_info_caption = wx.StaticText(panel, label="Case info")
+        right_panel_main_layout.Add(case_info_caption, 1, wx.EXPAND, 0)
+
+        self.__case_info_label = wx.StaticText(panel, label="")
+        font = self.__case_info_label.GetFont()
+        font.SetWeight(wx.FONTWEIGHT_BOLD)
+        self.__case_info_label.SetFont(font)
+        right_panel_main_layout.Add(self.__case_info_label, 1, wx.EXPAND, 0)
+
+        native_data_caption = wx.StaticText(panel, label="Native data")
+        right_panel_main_layout.Add(native_data_caption, 1, wx.EXPAND, 0)
+
+        self.__native_data_label = wx.StaticText(panel, label="")
+        self.__native_data_label.SetFont(font)
+        right_panel_main_layout.Add(self.__native_data_label, 1, wx.EXPAND, 0)
+
+        aux_label = wx.StaticText(panel, label="")
+        right_panel_main_layout.Add(aux_label, 1, wx.EXPAND, 0)
+
+        self.__native_data_manager = wx.Button(panel, label="Open data manager")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.open_native_data_manager(), self.__native_data_manager)
+        self.__native_data_manager.Enable(False)
+        right_panel_main_layout.Add(self.__native_data_manager, 1, wx.EXPAND, 0)
+
+        roi_caption = wx.StaticText(panel, label="ROI")
+        right_panel_main_layout.Add(roi_caption, 0, wx.EXPAND, 0)
+
+        self.__roi_label = wx.StaticText(panel, label="")
+        self.__roi_label.SetFont(font)
+        right_panel_main_layout.Add(self.__roi_label, 1, wx.EXPAND, 0)
+
+        aux_label = wx.StaticText(panel, label="")
+        right_panel_main_layout.Add(aux_label, 0, wx.EXPAND, 0)
+
+        self.__roi_data_manager = wx.Button(panel, label="Open manager")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.open_roi_data_manager(), self.__roi_data_manager)
+        self.__roi_data_manager.Enable(False)
+        right_panel_main_layout.Add(self.__roi_data_manager, 0, wx.EXPAND, 0)
+
+        trace_analysis_caption = wx.StaticText(panel, label="Trace analysis")
+        right_panel_main_layout.Add(trace_analysis_caption, 0, wx.EXPAND, 0)
+
+        self.__trace_analysis_label = wx.StaticText(panel, label="")
+        self.__trace_analysis_label.SetFont(font)
+        right_panel_main_layout.Add(self.__trace_analysis_label, 0, wx.EXPAND, 0)
+
+        aux_label = wx.StaticText(panel, label="")
+        right_panel_main_layout.Add(aux_label, 0, wx.EXPAND, 0)
+
+        self.__trace_analysis_manager = wx.Button(panel, label="Open manager")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.open_trace_analysis_manager(), self.__trace_analysis_manager)
+        self.__trace_analysis_manager.Enable(False)
+        right_panel_main_layout.Add(self.__trace_analysis_manager, 0, wx.EXPAND, 0)
+
+        averaged_maps_caption = wx.StaticText(panel, label="Averaged maps")
+        right_panel_main_layout.Add(averaged_maps_caption, 0, wx.EXPAND, 0)
+
+        self.__averaged_maps_label = wx.StaticText(panel, label="")
+        self.__averaged_maps_label.SetFont(font)
+        right_panel_main_layout.Add(self.__averaged_maps_label, 0, wx.EXPAND, 0)
+
+        aux_label = wx.StaticText(panel, label="")
+        right_panel_main_layout.Add(aux_label, 0, wx.EXPAND, 0)
+
+        self.__averaged_maps_manager = wx.Button(panel, label="Open manager")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.open_averaged_maps_manager(), self.__averaged_maps_manager)
+        self.__averaged_maps_manager.Enable(False)
+        right_panel_main_layout.Add(self.__averaged_maps_manager, 0, wx.EXPAND, 0)
+
+        single_case_box.Add(right_panel_main_layout, 1, wx.ALL | wx.EXPAND, 5)
+
+        self.__include_auto_box = wx.CheckBox(panel, label="In autoprocess and autocompress")
+        self.Bind(wx.EVT_CHECKBOX, self.set_autoprocess, self.__include_auto_box)
+        self.__include_auto_box.Enable(False)
+        single_case_box.Add(self.__include_auto_box, 0, wx.LEFT | wx.RIGHT | wx.EXPAND | wx.BOTTOM, 5)
+
+        return single_case_box
+
+    def __create_auto_compress(self, panel):
+        autocompress_box = wx.StaticBoxSizer(wx.VERTICAL, panel, label="Autocompress")
+        main_layout = wx.BoxSizer(wx.HORIZONTAL)
+
+        autocompress = wx.Button(panel, label="Compress")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.autocompress(), autocompress)
+        main_layout.Add(autocompress, 0, wx.RIGHT, 5)
+
+        autodecompress = wx.Button(panel, label="Decompress")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.autodecompress(), autodecompress)
+        main_layout.Add(autodecompress, 0, 0, 0)
+
+        autocompress_box.Add(main_layout, 0, wx.ALL | wx.EXPAND, 5)
+        return autocompress_box
+
+    def __create_auto_process(self, panel):
+        autoprocess_box = wx.StaticBoxSizer(wx.VERTICAL, panel, label="Autoprocess")
+        main_layout = wx.BoxSizer(wx.VERTICAL)
+
+        self.__decompress_before_processing_box = wx.CheckBox(panel, label="Decompress before processing")
+        self.Bind(wx.EVT_CHECKBOX, self.__set_decompress_before_processing, self.__decompress_before_processing_box)
+        main_layout.Add(self.__decompress_before_processing_box, 0, wx.EXPAND | wx.BOTTOM, 5)
+
+        self.__extract_frame_button = wx.Button(panel, label="Extract frame")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.extract_frame(), self.__extract_frame_button)
+        main_layout.Add(self.__extract_frame_button, 0, wx.BOTTOM, 5)
+
+        actions_box = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.__trace_analysis_button = wx.Button(panel, label="Trace analysis")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.auto_trace_analysis(), self.__trace_analysis_button)
+        actions_box.Add(self.__trace_analysis_button, 0, wx.RIGHT, 5)
+
+        self.__auto_average_maps_box = wx.Button(panel, label="Average maps")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.auto_average_maps(), self.__auto_average_maps_box)
+        actions_box.Add(self.__auto_average_maps_box, 0, 0, 0)
+
+        main_layout.Add(actions_box, 0, 0, 0)
+        autoprocess_box.Add(main_layout, 0, wx.ALL | wx.EXPAND, 5)
+        return autoprocess_box
+
+    def __create_right_panel(self, panel):
+        right_panel = wx.BoxSizer(wx.VERTICAL)
+
+        single_case_box = self.__create_case_study(panel)
+        right_panel.Add(single_case_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        autocompress_box = self.__create_auto_compress(panel)
+        right_panel.Add(autocompress_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        autoprocess_box = self.__create_auto_process(panel)
+        right_panel.Add(autoprocess_box, 0, wx.EXPAND, 0)
+
+        return right_panel
+
+    def __init__(self):
+        super().__init__(None, title="Image Analysis", size=(900, 700),
+                         style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        panel = wx.Panel(self)
+        general_layout = wx.BoxSizer(wx.HORIZONTAL)
+        main_layout = wx.BoxSizer(wx.HORIZONTAL)
+
+        left_panel = self.__create_left_panel(panel)
         main_layout.Add(left_panel, 3, wx.RIGHT | wx.EXPAND, 5)
-        middle_panel = wx.Panel(panel)
-        middle_panel.SetBackgroundColour("blue")
+
+        middle_panel = self.__create_middle_panel(panel)
         main_layout.Add(middle_panel, 3, wx.RIGHT | wx.EXPAND, 5)
 
-        right_panel = wx.Panel(panel)
-        right_panel.SetBackgroundColour("yellow")
-        main_layout.Add(right_panel, 2, wx.EXPAND, 0)
+        right_panel = self.__create_right_panel(panel)
+        main_layout.Add(right_panel, 3, wx.EXPAND, 0)
 
         general_layout.Add(main_layout, 1, wx.ALL | wx.EXPAND, 10)
         panel.SetSizer(general_layout)
         self.Centre(wx.BOTH)
+
+    def new_animal(self):
+        print("New animal")
+
+    def delete_animal(self):
+        print("Delete animal")
+
+    def open_animal_filter(self):
+        print("Open animal filter")
+
+    def save_animal_info(self):
+        print("Save animal info")
+
+    def import_case(self):
+        print("Import case")
+
+    def delete_case(self):
+        print("Delete case")
+
+    def open_case_filter(self):
+        print("Case filter")
+
+    def save_case_info(self):
+        print("Save case info")
+
+    def open_native_data_manager(self):
+        print("Open native data manager")
+
+    def open_roi_data_manager(self):
+        print("Open roi data manager")
+
+    def open_trace_analysis_manager(self):
+        print("Open trace analysis manager")
+
+    def open_averaged_maps_manager(self):
+        print("Averaged maps manager")
+
+    def set_autoprocess(self, evt):
+        checked = evt.IsChecked()
+        print("Set autoprocess to", checked)
+
+    def set_averaged_maps_not_found(self):
+        self.__averaged_maps_label.SetLabel("Not found")
+        self.__averaged_maps_label.SetForegroundColour("red")
+        self.__averaged_maps_manager.Enable(False)
+
+    def set_averaged_maps_ready(self):
+        self.__averaged_maps_label.SetLabel("Ready for analysis")
+        self.__averaged_maps_label.SetForegroundColour("green")
+        self.__averaged_maps_manager.Enable(True)
+
+    def set_traces_not_found(self):
+        self.__trace_analysis_label.SetLabel("Not found")
+        self.__trace_analysis_label.SetForegroundColour("red")
+        self.__trace_analysis_manager.Enable(False)
+
+    def set_traces_ready(self):
+        self.__trace_analysis_label.SetLabel("Ready for analysis")
+        self.__trace_analysis_label.SetForegroundColour("green")
+        self.__trace_analysis_manager.Enable(True)
+
+    def set_roi_not_found(self):
+        self.__roi_label.SetLabel("Not found")
+        self.__roi_label.SetForegroundColour("red")
+        self.__roi_data_manager.Enable(True)
+        self.__roi_exist = False
+
+    def set_roi_ready(self):
+        self.__roi_label.SetLabel("Ready to apply")
+        self.__roi_label.SetForegroundColour("green")
+        self.__roi_data_manager.Enable(True)
+        self.__roi_exist = True
+
+    def set_native_data_not_found(self):
+        self.__native_data_label.SetLabel("Not found")
+        self.__native_data_label.SetForegroundColour("red")
+        self.__native_data_manager.Enable(False)
+
+    def set_native_data_compressed(self):
+        self.__native_data_label.SetLabel("Compressed")
+        self.__native_data_label.SetForegroundColour("orange")
+        self.__native_data_manager.Enable(True)
+        self.__compressed_state = True
+
+    def set_native_data_ready(self):
+        self.__native_data_label.SetLabel("Ready to use")
+        self.__native_data_label.SetForegroundColour("green")
+        self.__native_data_manager.Enable(True)
+        self.__compressed_state = False
+
+    def set_case_info_present(self):
+        self.__case_info_label.SetLabel("Present")
+        self.__case_info_label.SetForegroundColour("green")
+
+    def set_case_info_not_present(self):
+        self.__case_info_label.SetLabel("Not present")
+        self.__case_info_label.SetForegroundColour("red")
+        self.set_native_data_not_found()
+        self.set_roi_not_found()
+        self.__roi_data_manager.Enable(False)
+        self.set_traces_not_found()
+        self.set_averaged_maps_not_found()
+        self.__include_auto_box.Enable(False)
+
+    def autocompress(self):
+        print("Autocompress")
+
+    def autodecompress(self):
+        print("Autodecompress")
+
+    def is_decompress_before_processing(self):
+        return self.__decompress_before_processing
+
+    def __set_decompress_before_processing(self, evt):
+        self.__decompress_before_processing = evt.IsChecked()
+        print(self.is_decompress_before_processing())
+
+    def extract_frame(self):
+        print("Extract frame")
+
+    def auto_trace_analysis(self):
+        print("Auto trace analysis")
+
+    def auto_average_maps(self):
+        print("Auto average maps")
+
+    def open_working_dir(self, dir):
+        self.__working_dir = dir
+        print("Opening the following working dir:", self.__working_dir)

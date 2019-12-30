@@ -7,4 +7,8 @@ import sys
 from ihna.kozhukhov.imageanalysis.gui import main
 
 if __name__ == "__main__":
-	sys.exit(main())
+	if len(sys.argv) == 1:
+		working_folder = "."
+	else:
+		working_folder = sys.argv[1]
+	sys.exit(main(working_folder))
