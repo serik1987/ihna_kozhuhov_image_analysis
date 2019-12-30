@@ -463,3 +463,118 @@ class SyncChunk(_SyncChunk):
 
     def __init__(self):
         super().__init__()
+
+
+def get_file_info(selected_files, discarded_files=None, progress_bar=None):
+    """
+    Reads file header for each files in the given list and returns information about this file
+    as an output
+
+    Input arguments:
+        selected_files - list of str that contains absolute or relative file names. This function will read the file
+        header belonging to each file that is presented within the selected_files list but absent in the
+        discarded_files list
+
+        discarded_files - list of files which headers will not be looked for. None means that there is no such files
+
+        progress_bar - is this argument is a function like f(i, N) such function will be called within the each 10 files
+        total number of files processed will be referred to i and total files to process will be N
+
+    Output arguments:
+        a tuple containing two values.
+        The first value is list of all files that can be opened and processed. If the file is a part of the file train,
+        the list item refers to the train head while all other files within the train will be ignored.
+            'filename' - full name of the file. In case of train, the full name of the file head
+            'filetype' - the main file type, like: 'analysis' - the analysis file; 'green' - the green file
+            The following key presents in the train file only:
+            'tail_files' - list of the files that are within the same file train as considering file but not at the
+            head of the train.
+
+        The second value is the list of all files that are incorrect and hence will be discarded. Files that are within
+        the file train but not within the head of the train will not be included in both lists
+    """
+    if discarded_files is None:
+        discarded_files = []
+    done_files = []
+    valid_files = []
+    invalid_files = []
+    idx = 0
+    for filename in selected_files:
+        if filename in discarded_files or filename in done_files:
+            continue
+        is_valid = False
+        try:
+            analysis_file = AnalysisSourceFile(filename)
+            analysis_file.open()
+            analysis_file.load_file_info()
+            valid_files.append({
+                "filename": filename,
+                "filetype": "analysis"
+            })
+            is_valid = True
+            done_files.append(filename)
+            print("{0}\tanalysis".format(filename))
+        except IoError:
+            pass
+        try:
+            green_file = GreenSourceFile(filename)
+            green_file.open()
+            green_file.load_file_info()
+            valid_files.append({
+                "filename": filename,
+                filetype: "green"
+            })
+            is_valid = True
+            done_files.append(filename)
+            print("{0}\tgreen".format(filename))
+        except IoError:
+            pass
+        try:
+            compressed_file_train = CompressedFileTrain(filename, "traverse")
+            compressed_file_train.open()
+            head_filename = compressed_file_train.file_path + compressed_file_train.filename
+            valid_file = {
+                "filename": head_filename,
+                "filetype": "compressed",
+                "tail_files": []
+            }
+            print("{0}\tcompressed".format(filename), end="\t")
+            for file in compressed_file_train:
+                if file.full_name != head_filename:
+                    valid_file['tail_files'].append(file.full_name)
+                    print(file.filename, end=" ")
+                done_files.append(file.full_name)
+            valid_files.append(valid_file)
+            is_valid = True
+            print("")
+        except IoError:
+            pass
+        try:
+            stream_file_train = StreamFileTrain(filename, "traverse")
+            stream_file_train.open()
+            head_filename = stream_file_train.file_path + stream_file_train.filename
+            valid_file = {
+                "filename": head_filename,
+                "filetype": "stream",
+                "tail_files": []
+            }
+            print("{0}\tstream".format(head_filename), end="\t\t")
+            for file in stream_file_train:
+                if file.full_name != head_filename:
+                    valid_file['tail_files'].append(file.full_name)
+                    print(file.filename, end=" ")
+                done_files.append(file.full_name)
+            valid_files.append(valid_file)
+            is_valid = True
+            print("")
+        except IoError:
+            pass
+        if not is_valid:
+            invalid_files.append(filename)
+            done_files.append(filename)
+            print("{0}\tINVALID".format(filename))
+        idx += 1
+        if idx % 10 == 0 and progress_bar is not None:
+            progress_bar(idx, len(selected_files))
+
+    return valid_files, invalid_files

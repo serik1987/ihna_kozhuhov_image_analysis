@@ -2,6 +2,9 @@
 
 import wx
 import ihna.kozhukhov.imageanalysis.manifest as manifest
+import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
+from .importcasedialog import ImportCaseDialog
+
 
 class MainWindow(wx.Frame):
     """
@@ -166,7 +169,7 @@ class MainWindow(wx.Frame):
         additional_information_caption = wx.StaticText(middle_box, label="Additional information")
         middle_box_main_layout.Add(additional_information_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
 
-        self.__additional_information_box = wx.TextCtrl(middle_box, style=wx.TE_MULTILINE|wx.TE_WORDWRAP,
+        self.__additional_information_box = wx.TextCtrl(middle_box, style=wx.TE_MULTILINE | wx.TE_WORDWRAP,
                                                         size=(100, 70))
         middle_box_main_layout.Add(self.__additional_information_box, 0, wx.BOTTOM | wx.EXPAND, 5)
 
@@ -364,10 +367,9 @@ class MainWindow(wx.Frame):
             self.__animals.save()
             self.load_all_animals()
         except IOError as err:
-            wx.MessageDialog(self, "Failed to delete the animal", "Delete the animal", wx.OK | wx.ICON_ERROR).\
+            wx.MessageDialog(self, "Failed to delete the animal", "Delete the animal", wx.OK | wx.ICON_ERROR). \
                 ShowModal()
             print(err)
-
 
     def open_animal_filter(self):
         print("Open animal filter")
@@ -386,7 +388,22 @@ class MainWindow(wx.Frame):
             print(err)
 
     def import_case(self):
-        print("Import case")
+        import_case_dialog = ImportCaseDialog(self)
+        import_mode = import_case_dialog.ShowModal()
+        if import_mode == wx.ID_CANCEL:
+            return
+        dialog = wx.FileDialog(self, "Import cases", self.__working_dir,
+                               style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.FD_MULTIPLE)
+        if dialog.ShowModal() == wx.ID_CANCEL:
+            return
+        file_list = dialog.GetPaths()
+        valid_files, invalid_files = sfiles.get_file_info(file_list)
+        print("Valid files:")
+        for valid_file in valid_files:
+            print(valid_file)
+        print("Invalid files:")
+        for invalid_file in invalid_files:
+            print(invalid_file)
 
     def delete_case(self):
         print("Delete case")

@@ -8,7 +8,6 @@
 extern "C"{
 
     static PyImanS_ChunkObject* PyImanS_Chunk_New(PyTypeObject* type, PyObject*, PyObject*){
-        printf("SO Creating new Chunk object\n");
         auto* self = (PyImanS_ChunkObject*)type->tp_alloc(type, 0);
         if (self != NULL){
             self->handle = NULL;
@@ -18,7 +17,6 @@ extern "C"{
     }
 
     static int PyImanS_Chunk_InitArgs(PyObject* args, const char* name, void** phandle, PyObject** pparent){
-        printf("SO Chunk initialization\n");
         using namespace GLOBAL_NAMESPACE;
         PyObject* suggesting_parent;
         Chunk* suggesting_chunk;
@@ -73,7 +71,6 @@ extern "C"{
 
     static void PyImanS_Chunk_Destroy(PyImanS_ChunkObject* self){
         using namespace GLOBAL_NAMESPACE;
-        printf("SO Destruction of Chunk\n");
 
         if (self->parent != NULL){
             Py_DECREF(self->parent);
