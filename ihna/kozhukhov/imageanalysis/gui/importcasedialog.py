@@ -11,6 +11,7 @@ class ImportCaseDialog(wx.Dialog):
     __download_box = None
     __link_box = None
     __sign_field = 50
+    __result = None
     ID_DOWNLOAD = wx.ID_YES
     ID_LINK = wx.ID_NO
 
@@ -91,6 +92,11 @@ class ImportCaseDialog(wx.Dialog):
 
     def __ok(self):
         if self.__download_box.GetValue():
+            self.__result = self.ID_DOWNLOAD
             self.EndModal(self.ID_DOWNLOAD)
         if self.__link_box.GetValue():
+            self.__result = self.ID_LINK
             self.EndModal(self.ID_LINK)
+
+    def get_result(self):
+        return self.__result

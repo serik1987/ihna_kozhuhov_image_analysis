@@ -4,6 +4,7 @@ import wx
 import ihna.kozhukhov.imageanalysis.manifest as manifest
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from .importcasedialog import ImportCaseDialog
+from .importcasemanager import ImportCaseManager
 
 
 class MainWindow(wx.Frame):
@@ -394,16 +395,15 @@ class MainWindow(wx.Frame):
             return
         dialog = wx.FileDialog(self, "Import cases", self.__working_dir,
                                style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST | wx.FD_MULTIPLE)
-        if dialog.ShowModal() == wx.ID_CANCEL:
+        dialog_result = dialog.ShowModal()
+        if dialog_result == wx.ID_CANCEL:
             return
         file_list = dialog.GetPaths()
         valid_files, invalid_files = sfiles.get_file_info(file_list)
-        print("Valid files:")
-        for valid_file in valid_files:
-            print(valid_file)
-        print("Invalid files:")
-        for invalid_file in invalid_files:
-            print(invalid_file)
+        if ImportCaseManager(self, valid_files, invalid_files,
+                             import_mode == ImportCaseDialog.ID_LINK,
+                             self.__animal['folder_full_name']).ShowModal() == wx.ID_OK:
+            print("TO-DO: Load all imported cases")
 
     def delete_case(self):
         print("Delete case")
