@@ -9,3 +9,4 @@ this folder
 
 from .Animals import Animals
 from .animal import Animal
+from .caseslist import CasesList

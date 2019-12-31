@@ -52,6 +52,8 @@ class MainWindow(wx.Frame):
 
     __animals = None
     __animal = None
+    __cases = None
+    __case = None
 
     def __create_left_panel(self, panel):
         left_panel = wx.BoxSizer(wx.VERTICAL)
@@ -114,6 +116,7 @@ class MainWindow(wx.Frame):
         middle_panel.Add(middle_panel_caption, 0, wx.BOTTOM | wx.EXPAND, 5)
 
         self.__cases_box = wx.ListBox(panel, size=(100, 150), style=wx.LB_SINGLE | wx.LB_NEEDED_SB | wx.LB_SORT)
+        self.__cases_box.Bind(wx.EVT_LISTBOX, self.select_case, self.__cases_box)
         middle_panel.Add(self.__cases_box, 0, wx.BOTTOM | wx.EXPAND, 5)
         middle_button_panel = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -190,7 +193,7 @@ class MainWindow(wx.Frame):
         case_info_caption = wx.StaticText(panel, label="Case info")
         right_panel_main_layout.Add(case_info_caption, 1, wx.EXPAND, 0)
 
-        self.__case_info_label = wx.StaticText(panel, label="")
+        self.__case_info_label = wx.StaticText(panel, label="Some status")
         font = self.__case_info_label.GetFont()
         font.SetWeight(wx.FONTWEIGHT_BOLD)
         self.__case_info_label.SetFont(font)
@@ -199,7 +202,7 @@ class MainWindow(wx.Frame):
         native_data_caption = wx.StaticText(panel, label="Native data")
         right_panel_main_layout.Add(native_data_caption, 1, wx.EXPAND, 0)
 
-        self.__native_data_label = wx.StaticText(panel, label="")
+        self.__native_data_label = wx.StaticText(panel, label="Some status")
         self.__native_data_label.SetFont(font)
         right_panel_main_layout.Add(self.__native_data_label, 1, wx.EXPAND, 0)
 
@@ -214,7 +217,7 @@ class MainWindow(wx.Frame):
         roi_caption = wx.StaticText(panel, label="ROI")
         right_panel_main_layout.Add(roi_caption, 0, wx.EXPAND, 0)
 
-        self.__roi_label = wx.StaticText(panel, label="")
+        self.__roi_label = wx.StaticText(panel, label="Some status")
         self.__roi_label.SetFont(font)
         right_panel_main_layout.Add(self.__roi_label, 1, wx.EXPAND, 0)
 
@@ -229,7 +232,7 @@ class MainWindow(wx.Frame):
         trace_analysis_caption = wx.StaticText(panel, label="Trace analysis")
         right_panel_main_layout.Add(trace_analysis_caption, 0, wx.EXPAND, 0)
 
-        self.__trace_analysis_label = wx.StaticText(panel, label="")
+        self.__trace_analysis_label = wx.StaticText(panel, label="Some status")
         self.__trace_analysis_label.SetFont(font)
         right_panel_main_layout.Add(self.__trace_analysis_label, 0, wx.EXPAND, 0)
 
@@ -244,7 +247,7 @@ class MainWindow(wx.Frame):
         averaged_maps_caption = wx.StaticText(panel, label="Averaged maps")
         right_panel_main_layout.Add(averaged_maps_caption, 0, wx.EXPAND, 0)
 
-        self.__averaged_maps_label = wx.StaticText(panel, label="")
+        self.__averaged_maps_label = wx.StaticText(panel, label="Some status")
         self.__averaged_maps_label.SetFont(font)
         right_panel_main_layout.Add(self.__averaged_maps_label, 0, wx.EXPAND, 0)
 
@@ -403,7 +406,7 @@ class MainWindow(wx.Frame):
         if ImportCaseManager(self, valid_files, invalid_files,
                              import_mode == ImportCaseDialog.ID_LINK,
                              self.__animal['folder_full_name']).ShowModal() == wx.ID_OK:
-            print("TO-DO: Load all imported cases")
+            self.load_cases()
 
     def delete_case(self):
         print("Delete case")
@@ -549,6 +552,7 @@ class MainWindow(wx.Frame):
         self.__recording_site_box.SetValue(self.__animal['recording_site'])
         self.__save_animal_info.Enable(True)
         self.__import_case.Enable(True)
+        self.load_cases()
 
     def clear_animal_info(self):
         self.__delete_animal.Enable(False)
@@ -557,3 +561,51 @@ class MainWindow(wx.Frame):
         self.__recording_site_box.SetValue("")
         self.__save_animal_info.Enable(False)
         self.__import_case.Enable(False)
+
+    def load_cases(self):
+        self.__cases = manifest.CasesList(self.__animal)
+        idx = 0
+        for case in self.__cases:
+            if case['short_name'] is None:
+                case_name = case['filename']
+            else:
+                case_name = case['short_name']
+            self.__cases_box.Append(case_name)
+            if self.__case is not None:
+                if self.__case['short_name'] is None:
+                    if self.__case['filename'] == case['filename']:
+                        self.__cases_box.SetSelection(idx)
+                else:
+                    if self.__case['short_name'] == case['short_name']:
+                        self.__cases_box.SetSelection(idx)
+            idx += 1
+        if self.__case is not None:
+            self.load_case()
+        else:
+            self.clear_case_info()
+
+    def select_case(self, event):
+        selection = event.GetString()
+        self.__case = self.__cases[selection]
+        self.load_case()
+
+    def load_case(self):
+        self.__delete_case.Enable(True)
+        self.__save_case_info.Enable(True)
+        if self.__case['imported']:
+            self.set_case_info_not_present()
+        else:
+            self.set_case_info_present()
+            self.__case_short_name_box.SetValue(self.__case['short_name'])
+            self.__case_long_name_box.SetValue(self.__case['long_name'])
+            self.__case_stimulation_box.Value(self.__case['stimulation'])
+            self.__case_additional_stimulation_box.SetValue(self.__case['additional_stimulation'])
+            self.__additional_information_box.SetValue(self.__case['additional_information'])
+
+    def clear_case_info(self):
+        self.__delete_case.Enable(False)
+        self.__save_case_info.Enable(False)
+        self.__case_info_label.SetLabel("")
+        self.__native_data_label.SetLabel("")
+        self.__trace_analysis_label.SetLabel("")
+        self.__averaged_maps_label.SetLabel("")
