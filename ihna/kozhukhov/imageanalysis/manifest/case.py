@@ -41,7 +41,7 @@ class Case:
 
     property_names = ['pathname', 'filename', 'short_name', 'long_name', 'stimulation', 'additional_stimulation',
                       'additional_information', 'native_data_files', 'compressed_data_files', 'roi', 'trace_files',
-                      'averaged_maps', 'auto', 'imported']
+                      'averaged_maps', 'auto', 'imported', 'special_conditions']
 
     __properties = None
 
@@ -78,8 +78,47 @@ class Case:
         print("load case")
 
     def save_case(self, parent_xml):
-        print("save case")
-        return None
+        if self['imported']:
+            return
+        if self['auto']:
+            autoprocess_line = "Y"
+        else:
+            autoprocess_line = "N"
+        root = ET.SubElement(parent_xml, "case", {
+            "filename": self['filename'],
+            "short_name": self['short_name'],
+            "long_name": self['long_name'],
+            "stimulation": self['stimulation'],
+            "additional_stimulation": self['additional_stimulation'],
+            "special_conditions": self['special_conditions'],
+            "additional_information": self['additional_information'],
+            "autoprocess": autoprocess_line
+        })
+        root.tail = "\n"
+        root.text = "\n"
+        if self['native_data_files'] is not None:
+            self.__add_file_list(root, "native-files", "native-file", self['native_data_files'])
+        if self['compressed_data_files'] is not None:
+            self.__add_file_list(root, "compressed-files", "compressed-file", self['compressed_data_files'])
+        if self['trace_files'] is not None:
+            self.__add_file_list(root, "trace-files", "trace-file", self['trace_files'])
+        if self['averaged_maps'] is not None:
+            self.__add_file_list(root, "averaged-maps", "averaged-map", self['averaged_maps'])
+        if self['roi'] is not None:
+            self.__add_roi(root)
+
+    def __add_file_list(self, root, list_name, list_element_name, filelist):
+        list_element = ET.SubElement(root, list_name)
+        list_element.text = "\n"
+        list_element.tail = "\n"
+        for filename in filelist:
+            filename_element = ET.SubElement(list_element, list_element_name)
+            filename_element.text = filename
+            filename_element.tail = "\n"
+
+    def __add_roi(self, root):
+        roi_list_element = ET.SubElement(root, "roi")
+        roi_list_element.tail = "\n"
 
     def set_properties(self, **kwargs):
         for property_name in self.property_names:

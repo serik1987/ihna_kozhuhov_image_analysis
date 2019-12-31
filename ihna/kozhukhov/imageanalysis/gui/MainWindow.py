@@ -415,7 +415,21 @@ class MainWindow(wx.Frame):
         print("Case filter")
 
     def save_case_info(self):
-        print("Save case info")
+        if self.__case_short_name_box.GetValue() == "":
+            short_name = self.__case['filename']
+        else:
+            short_name = self.__case_short_name_box.GetValue()
+        self.__case.set_properties(
+            short_name=short_name,
+            long_name=self.__case_long_name_box.GetValue(),
+            stimulation=self.__stimulation_box.GetValue(),
+            special_conditions=self.__special_conditions_box.GetValue(),
+            additional_stimulation=self.__additional_stimulation_box.GetValue(),
+            additional_information=self.__additional_information_box.GetValue(),
+            imported=False
+        )
+        self.__cases.save()
+        self.load_cases()
 
     def open_native_data_manager(self):
         print("Open native data manager")
@@ -552,6 +566,8 @@ class MainWindow(wx.Frame):
         self.__recording_site_box.SetValue(self.__animal['recording_site'])
         self.__save_animal_info.Enable(True)
         self.__import_case.Enable(True)
+        self.__cases = None
+        self.__case = None
         self.load_cases()
 
     def clear_animal_info(self):
@@ -564,6 +580,7 @@ class MainWindow(wx.Frame):
 
     def load_cases(self):
         self.__cases = manifest.CasesList(self.__animal)
+        self.__cases_box.Clear()
         idx = 0
         for case in self.__cases:
             if case['short_name'] is None:
@@ -572,11 +589,13 @@ class MainWindow(wx.Frame):
                 case_name = case['short_name']
             self.__cases_box.Append(case_name)
             if self.__case is not None:
-                if self.__case['short_name'] is None:
+                if case['short_name'] is None:
                     if self.__case['filename'] == case['filename']:
+                        self.__case = case
                         self.__cases_box.SetSelection(idx)
                 else:
                     if self.__case['short_name'] == case['short_name']:
+                        self.__case = case
                         self.__cases_box.SetSelection(idx)
             idx += 1
         if self.__case is not None:
@@ -594,12 +613,19 @@ class MainWindow(wx.Frame):
         self.__save_case_info.Enable(True)
         if self.__case['imported']:
             self.set_case_info_not_present()
+            self.__case_short_name_box.SetValue("")
+            self.__case_long_name_box.SetValue("")
+            self.__stimulation_box.SetValue("")
+            self.__additional_stimulation_box.SetValue("")
+            self.__special_conditions_box.SetValue("")
+            self.__additional_information_box.SetValue("")
         else:
             self.set_case_info_present()
             self.__case_short_name_box.SetValue(self.__case['short_name'])
             self.__case_long_name_box.SetValue(self.__case['long_name'])
-            self.__case_stimulation_box.Value(self.__case['stimulation'])
-            self.__case_additional_stimulation_box.SetValue(self.__case['additional_stimulation'])
+            self.__stimulation_box.SetValue(self.__case['stimulation'])
+            self.__additional_stimulation_box.SetValue(self.__case['additional_stimulation'])
+            self.__special_conditions_box.SetValue(self.__case['special_conditions'])
             self.__additional_information_box.SetValue(self.__case['additional_information'])
 
     def clear_case_info(self):
@@ -607,5 +633,6 @@ class MainWindow(wx.Frame):
         self.__save_case_info.Enable(False)
         self.__case_info_label.SetLabel("")
         self.__native_data_label.SetLabel("")
+        self.__roi_label.SetLabel("")
         self.__trace_analysis_label.SetLabel("")
         self.__averaged_maps_label.SetLabel("")

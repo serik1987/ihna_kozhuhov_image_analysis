@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import os.path
+import xml.etree.ElementTree as ET
 from ihna.kozhukhov.imageanalysis.sourcefiles import get_file_info
 from .case import Case
 
@@ -33,7 +34,7 @@ class CasesList:
             self.load()
         else:
             self.__all_cases = []
-            self.__discarded_list = []
+            self.__discarded_list = [self.get_manifest_file()]
         source_files = os.listdir(self.__corresponding_animal['folder_full_name'])
         for idx in range(len(source_files)):
             source_files[idx] = os.path.join(self.__corresponding_animal['folder_full_name'], source_files[idx])
@@ -44,10 +45,16 @@ class CasesList:
             self.__all_cases.append(Case(valid_file))
 
     def load(self):
+        self.__discarded_list = [self.get_manifest_file()]
         print("Loading the cases list from the manifest file")
 
     def save(self):
-        print("Saving the cases list to the manifest file")
+        root = ET.Element("caselist")
+        root.text = "\n"
+        for case in self:
+            case.save_case(root)
+        tree = ET.ElementTree(root)
+        tree.write(self.get_manifest_file(), encoding="utf-8", xml_declaration=True)
 
     def get_manifest_file(self):
         return os.path.join(self.__corresponding_animal['folder_full_name'], "iman-manifest.xml")
