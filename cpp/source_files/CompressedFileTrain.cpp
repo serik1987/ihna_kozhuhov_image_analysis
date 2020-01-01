@@ -18,4 +18,14 @@ namespace GLOBAL_NAMESPACE{
 
         return desired_size;
     }
+
+    TrainSourceFile& CompressedFileTrain::seek(int n) {
+        if (n != 0){
+            throw compressed_frame_read_exception(this);
+        }
+
+        auto* pfile = *begin();
+        pfile->getFileStream().seekg(getFileHeaderSize(), std::ios_base::beg);
+        return *pfile;
+    }
 }

@@ -50,5 +50,7 @@
 
 #define MSG_FRAME_NOT_READ "The function can't be executed and return the result because the frame has not been "\
 "loaded from the hard disk"
+#define MSG_FRAME_OUT_OF_RANGE "Trying to read/seek the frame that is out of range"
+#define MSG_COMPRESSED_FRAME_READ_ERROR "Only frame number 0 can be read from the compressed file train"
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_INIT_H

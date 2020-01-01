@@ -49,6 +49,22 @@ namespace GLOBAL_NAMESPACE {
                         SourceFile::source_file_exception(MSG_COMP_CHUNK_NOT_EXIST_EXCEPTION,
                                 filename, trainname) {};
         };
+
+        class compressed_frame_read_exception: public train_exception{
+        public:
+            explicit compressed_frame_read_exception(FileTrain* train):
+                train_exception(MSG_COMPRESSED_FRAME_READ_ERROR, train) {};
+            explicit compressed_frame_read_exception(const std::string& name):
+                train_exception(MSG_COMPRESSED_FRAME_READ_ERROR, name) {};
+        };
+
+        /**
+         * Moves the pointer to an appropriate frame
+         *
+         * @param n frame number
+         * @result reference to the TrainSourceFile that contains an appropriate frame
+         */
+        TrainSourceFile& seek(int n) override;
     };
 
 }

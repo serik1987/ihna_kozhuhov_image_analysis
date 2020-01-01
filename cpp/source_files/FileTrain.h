@@ -359,6 +359,14 @@ namespace GLOBAL_NAMESPACE {
          * Closes all files within the train
          */
         void close();
+
+        /**
+         * Moves the pointer to an appropriate frame
+         *
+         * @param n frame number
+         * @result reference to the TrainSourceFile that contains an appropriate frame
+         */
+        virtual TrainSourceFile& seek(int n) = 0;
     };
 
 }

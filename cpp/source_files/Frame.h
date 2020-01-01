@@ -53,6 +53,14 @@ namespace GLOBAL_NAMESPACE {
                 frame_exception(train_name, n, MSG_FRAME_NOT_READ) {};
         };
 
+        class frame_is_out_of_range: public frame_exception{
+        public:
+            explicit frame_is_out_of_range(const FileTrain* train, int n):
+                    frame_exception(train, n, MSG_FRAME_OUT_OF_RANGE) {};
+            explicit frame_is_out_of_range(const std::string& trainname, int n):
+                    frame_exception(trainname, n, MSG_FRAME_OUT_OF_RANGE) {};
+        };
+
 
         /**
          * The frame initialization

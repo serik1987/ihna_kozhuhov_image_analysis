@@ -52,6 +52,14 @@ namespace GLOBAL_NAMESPACE {
             file_idx = 0;
             FileTrain::open();
         }
+
+        /**
+         * Moves the pointer to an appropriate frame
+         *
+         * @param n frame number
+         * @result reference to the TrainSourceFile that contains an appropriate frame
+         */
+         TrainSourceFile& seek(int n) override;
     };
 
 }
