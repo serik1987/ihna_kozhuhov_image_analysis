@@ -23,10 +23,11 @@ class ChunkViewer(wx.Panel):
         main_widget = self._get_widgets()
         general_layout.Add(main_widget, 1, wx.EXPAND | wx.ALL, 10)
         self.SetSizer(general_layout)
+        # if not isinstance(main_widget, wx.Window):
         self.Layout()
 
     def _get_widgets(self):
-        return wx.StaticText(self, label=str(self._chunk))
+        return wx.StaticText(self, label=str(self._chunk), pos=(10, 10))
 
     def get_title(self):
         """

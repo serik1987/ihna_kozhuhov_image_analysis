@@ -213,9 +213,44 @@ class NativeDataManager(wx.Dialog):
         return general_properties_page
 
     def __create_right_panel(self, main_panel):
-        right_panel = wx.Notebook(main_panel)
-        right_panel.SetBackgroundColour("blue")
+        right_panel = wx.BoxSizer(wx.VERTICAL)
+        compression_box = wx.StaticBoxSizer(wx.HORIZONTAL, main_panel, label="Compression")
 
+        compress_button = wx.Button(main_panel, label="Compress")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.compress(), compress_button)
+        compression_box.Add(compress_button, 1, wx.EXPAND | wx.RIGHT, 5)
+        if self.__case['native_data_files'] is None:
+            compress_button.Enable(False)
+            processing_enabled = False
+        else:
+            processing_enabled = True
+
+        decompress_button = wx.Button(main_panel, label="Decompress")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.decompress(), decompress_button)
+        compression_box.Add(decompress_button, 1, wx.EXPAND)
+        if self.__case['compressed_data_files'] is None:
+            decompress_button.Enable(False)
+
+        right_panel.Add(compression_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+        processing_box = wx.StaticBoxSizer(wx.VERTICAL, main_panel, label="Processing")
+        processing_box_layout = wx.GridBagSizer(5, 5)
+
+        frame_view_button = wx.Button(main_panel, label="Frame view")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.frame_view(), frame_view_button)
+        processing_box_layout.Add(frame_view_button, pos=(0, 0), flag=wx.EXPAND)
+
+        averaged_maps_button = wx.Button(main_panel, label="Averaged maps")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.get_averaged_maps(), averaged_maps_button)
+        averaged_maps_button.Enable(processing_enabled)
+        processing_box_layout.Add(averaged_maps_button, pos=(1, 0), flag=wx.EXPAND)
+
+        trace_analysis_button = wx.Button(main_panel, label="Trace analysis")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.trace_analysis(), trace_analysis_button)
+        trace_analysis_button.Enable(processing_enabled)
+        processing_box_layout.Add(trace_analysis_button, pos=(1, 1), flag=wx.EXPAND)
+
+        processing_box.Add(processing_box_layout, 0, wx.EXPAND)
+        right_panel.Add(processing_box, 0, wx.EXPAND)
         return right_panel
 
     def close(self):
@@ -223,3 +258,18 @@ class NativeDataManager(wx.Dialog):
         Closes the file opened by this dialog
         """
         self.__train.close()
+
+    def compress(self):
+        print("NATIVE DATA MANAGER compress")
+
+    def decompress(self):
+        print("NATIVE DATA MANAGER decompress")
+
+    def frame_view(self):
+        print("NATIVE DATA MANAGER frame view")
+
+    def get_averaged_maps(self):
+        print("NATIVE DATA MANAGER get averaged maps")
+
+    def trace_analysis(self):
+        print("NATIVE DATA MANAGER trace analysis")
