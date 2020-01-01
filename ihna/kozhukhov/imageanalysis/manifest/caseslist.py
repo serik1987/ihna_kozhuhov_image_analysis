@@ -40,13 +40,19 @@ class CasesList:
             source_files[idx] = os.path.join(self.__corresponding_animal['folder_full_name'], source_files[idx])
         source_files.sort()
         valid_files = get_file_info(source_files, self.__discarded_list)[0]
-        self.__all_cases = []
         for valid_file in valid_files:
             self.__all_cases.append(Case(valid_file))
 
     def load(self):
         self.__discarded_list = [self.get_manifest_file()]
-        print("Loading the cases list from the manifest file")
+        self.__all_cases = []
+        pathname = self.__corresponding_animal['folder_full_name']
+        root = ET.parse(self.get_manifest_file()).getroot()
+        for case_element in root.findall("case"):
+            case = Case(case_element)
+            case['pathname'] = pathname
+            self.__discarded_list.extend(case.get_discarded_list())
+            self.__all_cases.append(case)
 
     def save(self):
         root = ET.Element("caselist")

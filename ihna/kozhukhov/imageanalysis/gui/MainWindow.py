@@ -619,14 +619,37 @@ class MainWindow(wx.Frame):
             self.__additional_stimulation_box.SetValue("")
             self.__special_conditions_box.SetValue("")
             self.__additional_information_box.SetValue("")
+            self.__include_auto_box.SetValue(False)
+            self.__include_auto_box.Enable(False)
         else:
             self.set_case_info_present()
+            if self.__case['native_data_files'] is None:
+                if self.__case['compressed_data_files'] is None:
+                    self.set_native_data_not_found()
+                else:
+                    self.set_native_data_compressed()
+            else:
+                self.set_native_data_ready()
+            if self.__case['roi'] is None:
+                self.set_roi_not_found()
+            else:
+                self.set_roi_ready()
+            if self.__case['trace_files'] is None:
+                self.set_traces_not_found()
+            else:
+                self.set_traces_ready()
+            if self.__case['averaged_maps'] is None:
+                self.set_averaged_maps_not_found()
+            else:
+                self.set_averaged_maps_ready()
             self.__case_short_name_box.SetValue(self.__case['short_name'])
             self.__case_long_name_box.SetValue(self.__case['long_name'])
             self.__stimulation_box.SetValue(self.__case['stimulation'])
             self.__additional_stimulation_box.SetValue(self.__case['additional_stimulation'])
             self.__special_conditions_box.SetValue(self.__case['special_conditions'])
             self.__additional_information_box.SetValue(self.__case['additional_information'])
+            self.__include_auto_box.Enable(True)
+            self.__include_auto_box.SetValue(self.__case['auto'])
 
     def clear_case_info(self):
         self.__delete_case.Enable(False)
@@ -636,3 +659,6 @@ class MainWindow(wx.Frame):
         self.__roi_label.SetLabel("")
         self.__trace_analysis_label.SetLabel("")
         self.__averaged_maps_label.SetLabel("")
+        self.__include_auto_box.SetValue(False)
+        self.__include_auto_box.Enable(False)
+

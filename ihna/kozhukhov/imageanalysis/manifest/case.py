@@ -75,7 +75,39 @@ class Case:
             self.set_properties(pathname=pathname, filename=filename, imported=True)
 
     def load_case(self, xml):
-        print("load case")
+        if xml.attrib['autoprocess'] == "Y":
+            autoprocess = True
+        else:
+            autoprocess = False
+        self.set_properties(
+            filename=xml.attrib['filename'],
+            short_name=xml.attrib['short_name'],
+            long_name=xml.attrib['long_name'],
+            stimulation=xml.attrib['stimulation'],
+            additional_stimulation=xml.attrib['additional_stimulation'],
+            special_conditions=xml.attrib['special_conditions'],
+            additional_information=xml.attrib['additional_information'],
+            auto=autoprocess
+        )
+        if xml.find('native-files') is not None:
+            self['native_data_files'] = self.__read_file_list(xml.find('native-files'), 'native-file')
+        if xml.find('compressed-files') is not None:
+            self['compressed_data_files'] = self.__read_file_list(xml.find('compressed-files'), 'compressed-file')
+        if xml.find('trace-files') is not None:
+            self['trace_files'] = self.__read_file_list(xml.find('trace-files'), 'trace-file')
+        if xml.find('averaged-maps') is not None:
+            self['averaged_maps'] = self.__read_file_list(xml.find('averaged-maps'), 'averaged-map')
+        if xml.find('roi') is not None:
+            self.__load_roi(xml.find('roi'))
+
+    def __read_file_list(self, xml, element_name):
+        filelist = []
+        for file_element in xml.findall(element_name):
+            filelist.append(file_element.text)
+        return filelist
+
+    def __load_roi(self, xml):
+        self['roi'] = []
 
     def save_case(self, parent_xml):
         if self['imported']:
@@ -128,3 +160,52 @@ class Case:
     def __getitem__(self, key):
         if key in self.property_names:
             return self.__properties[key]
+        else:
+            raise IndexError("Subscript index doesn't refer to the valid property name")
+
+    def __setitem__(self, key, value):
+        if key in self.property_names:
+            self.__properties[key] = value
+        else:
+            raise IndexError("Subscript index doesn't refer to the valid property name")
+
+    def __str__(self):
+        s = ""
+        s += "Pathname: %s\n" % (self['pathname'])
+        s += "Filename: %s\n" % (self['filename'])
+        s += "Short name: %s\n" % (self['short_name'])
+        s += "Long name: %s\n" % (self['long_name'])
+        s += "Stimulation: %s\n" % (self['stimulation'])
+        s += "Additional stimulation: %s\n" % (self['additional_stimulation'])
+        s += "Special conditions: %s\n" % (self['special_conditions'])
+        s += "Additional information: %s\n" % (self['additional_information'])
+        s += "Native data files: {0}\n".format(self['native_data_files'])
+        s += "Compressed data files: {0}\n".format(self['compressed_data_files'])
+        s += "ROI information:\n{0}\n".format(self['roi'])
+        s += "Trace files: {0}\n".format(self['trace_files'])
+        s += "Averaged_maps: {0}\n".format(self['averaged_maps'])
+        if self['auto']:
+            s += "Autoprocess on\n"
+        else:
+            s += "Autoprocess off\n"
+        if self['imported']:
+            s += "Case info is not presented"
+        else:
+            s += "Case info is presented"
+        return s
+
+    def get_discarded_list(self):
+        discarded_list = []
+        short_list = []
+        if self['native_data_files'] is not None:
+            short_list.extend(self['native_data_files'])
+        if self['compressed_data_files'] is not None:
+            short_list.extend(self['compressed_data_files'])
+        if self['trace_files'] is not None:
+            short_list.extend(self['trace_files'])
+        if self['averaged_maps'] is not None:
+            short_list.extend(self['averaged_maps'])
+        for filename in short_list:
+            fullname = os.path.join(self['pathname'], filename)
+            discarded_list.append(fullname)
+        return discarded_list
