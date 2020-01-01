@@ -409,7 +409,14 @@ class MainWindow(wx.Frame):
             self.load_cases()
 
     def delete_case(self):
-        print("Delete case")
+        if self.__case['short_name'] is None:
+            key = self.__case['filename']
+        else:
+            key = self.__case['short_name']
+        self.__case = None
+        del self.__cases[key]
+        self.__cases.save()
+        self.load_cases()
 
     def open_case_filter(self):
         print("Case filter")
@@ -445,7 +452,8 @@ class MainWindow(wx.Frame):
 
     def set_autoprocess(self, evt):
         checked = evt.IsChecked()
-        print("Set autoprocess to", checked)
+        self.__case['auto'] = checked
+        self.__cases.save()
 
     def set_averaged_maps_not_found(self):
         self.__averaged_maps_label.SetLabel("Not found")
@@ -623,8 +631,8 @@ class MainWindow(wx.Frame):
             self.__include_auto_box.Enable(False)
         else:
             self.set_case_info_present()
-            if self.__case['native_data_files'] is None:
-                if self.__case['compressed_data_files'] is None:
+            if not self.__case.native_data_files_exist():
+                if not self.__case.compressed_data_files_exist():
                     self.set_native_data_not_found()
                 else:
                     self.set_native_data_compressed()
@@ -652,6 +660,7 @@ class MainWindow(wx.Frame):
             self.__include_auto_box.SetValue(self.__case['auto'])
 
     def clear_case_info(self):
+        self.__cases_box.SetSelection(wx.NOT_FOUND)
         self.__delete_case.Enable(False)
         self.__save_case_info.Enable(False)
         self.__case_info_label.SetLabel("")
@@ -661,4 +670,7 @@ class MainWindow(wx.Frame):
         self.__averaged_maps_label.SetLabel("")
         self.__include_auto_box.SetValue(False)
         self.__include_auto_box.Enable(False)
+        for button in [self.__averaged_maps_manager, self.__roi_data_manager, self.__native_data_manager,
+                       self.__trace_analysis_manager]:
+            button.Enable(False)
 

@@ -73,3 +73,13 @@ class CasesList:
             if case['short_name'] == key or case['filename'] == key:
                 return case
         raise IndexError("The case with a given short_name of filename is not found")
+
+    def __delitem__(self, key):
+        deleting_case = None
+        for case in self.__all_cases:
+            if case['short_name'] == key or case['filename'] == key:
+                deleting_case = case
+                self.__all_cases.remove(case)
+        filelist = deleting_case.get_discarded_list()
+        for file in filelist:
+            os.remove(file)

@@ -3,6 +3,7 @@
 import copy
 import os.path
 import xml.etree.ElementTree as ET
+import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 
 
 class Case:
@@ -209,3 +210,27 @@ class Case:
             fullname = os.path.join(self['pathname'], filename)
             discarded_list.append(fullname)
         return discarded_list
+
+    def native_data_files_exist(self):
+        if self['native_data_files'] is None:
+            return False
+        fullfile = os.path.join(self['pathname'], self['native_data_files'][0])
+        try:
+            train = sfiles.StreamFileTrain(fullfile, "traverse")
+            train.open()
+            train.close()
+            return True
+        except sfiles.IoError:
+            return False
+
+    def compressed_data_files_exist(self):
+        if self['compressed_data_files'] is None:
+            return False
+        fullfile = os.path.join(self['pathname'], self['compressed_data_files'][0])
+        train = sfiles.CompressedFileTrain(fullfile, "traverse")
+        try:
+            train.open()
+            train.close()
+            return True
+        except sfiles.IoError:
+            return False

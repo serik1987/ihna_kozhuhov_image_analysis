@@ -507,6 +507,7 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
             analysis_file = AnalysisSourceFile(filename)
             analysis_file.open()
             analysis_file.load_file_info()
+            analysis_file.close()
             valid_files.append({
                 "filename": filename,
                 "filetype": "analysis"
@@ -520,6 +521,7 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
             green_file = GreenSourceFile(filename)
             green_file.open()
             green_file.load_file_info()
+            green_file.close()
             valid_files.append({
                 "filename": filename,
                 filetype: "green"
@@ -532,6 +534,7 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
         try:
             compressed_file_train = CompressedFileTrain(filename, "traverse")
             compressed_file_train.open()
+            compressed_file_train.close()
             head_filename = compressed_file_train.file_path + compressed_file_train.filename
             valid_file = {
                 "filename": head_filename,
@@ -552,6 +555,7 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
         try:
             stream_file_train = StreamFileTrain(filename, "traverse")
             stream_file_train.open()
+            stream_file_train.close()
             head_filename = stream_file_train.file_path + stream_file_train.filename
             valid_file = {
                 "filename": head_filename,
