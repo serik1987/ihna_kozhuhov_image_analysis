@@ -9,7 +9,6 @@ extern "C" {
 
     static PyImanS_IsoiChunkIteratorObject*
         PyImanS_IsoiChunkIterator_New(PyTypeObject* cls, PyObject* args, PyObject* kwds){
-        printf("SO Creating new ISOI chunk iterator\n");
         auto* self = (PyImanS_IsoiChunkIteratorObject*)cls->tp_alloc(cls, 0);
         if (self != NULL){
             self->parent = NULL;
@@ -22,7 +21,6 @@ extern "C" {
         using namespace GLOBAL_NAMESPACE;
         PyImanS_IsoiChunkObject* parent;
 
-        printf("SO Initialization of the IsoiChunkIterator\n");
         if (!PyArg_ParseTuple(args, "O!", &PyImanS_IsoiChunkType, &parent)){
             return -1;
         }
@@ -40,7 +38,6 @@ extern "C" {
     static void PyImanS_IsoiChunkIterator_Destroy(PyImanS_IsoiChunkIteratorObject* self){
         using namespace GLOBAL_NAMESPACE;
         if (self->handle != NULL){
-            printf("SO Destruction of the ISOI chunk iterator\n");
             delete (IsoiChunk::iterator*)self->handle;
             self->handle = NULL;
         }

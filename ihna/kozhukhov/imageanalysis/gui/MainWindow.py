@@ -5,6 +5,7 @@ import ihna.kozhukhov.imageanalysis.manifest as manifest
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from .importcasedialog import ImportCaseDialog
 from .importcasemanager import ImportCaseManager
+from .nativedatamanager import NativeDataManager
 
 
 class MainWindow(wx.Frame):
@@ -439,7 +440,13 @@ class MainWindow(wx.Frame):
         self.load_cases()
 
     def open_native_data_manager(self):
-        print("Open native data manager")
+        try:
+            manager = NativeDataManager(self, self.__case)
+            manager.ShowModal()
+            manager.close()
+        except Exception as err:
+            wx.MessageDialog(self, str(err), "Native data manager",
+                             style=wx.OK | wx.CENTRE | wx.ICON_ERROR).ShowModal()
 
     def open_roi_data_manager(self):
         print("Open roi data manager")
