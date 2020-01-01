@@ -11,7 +11,7 @@ add_executable(test main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/Ch
         cpp/source_files/RoisChunk.cpp cpp/source_files/CompChunk.cpp cpp/source_files/AnalysisSourceFile.cpp
         cpp/source_files/GreenSourceFile.cpp cpp/source_files/TrainSourceFile.cpp cpp/source_files/StreamSourceFile.cpp
         cpp/source_files/CompressedSourceFile.cpp cpp/source_files/FileTrain.cpp cpp/source_files/StreamFileTrain.cpp
-        cpp/source_files/CompressedFileTrain.cpp)
+        cpp/source_files/CompressedFileTrain.cpp cpp/source_files/Frame.cpp)
 
 include_directories(/usr/include/python3.6m)
 
@@ -23,4 +23,4 @@ add_library(imageanalysis SHARED imageanalysis.cpp cpp/source_files/SourceFile.c
         cpp/source_files/RoisChunk.cpp cpp/source_files/CompChunk.cpp cpp/source_files/AnalysisSourceFile.cpp
         cpp/source_files/GreenSourceFile.cpp cpp/source_files/TrainSourceFile.cpp cpp/source_files/StreamSourceFile.cpp
         cpp/source_files/CompressedSourceFile.cpp cpp/source_files/FileTrain.cpp cpp/source_files/StreamFileTrain.cpp
-        cpp/source_files/CompressedFileTrain.cpp)
+        cpp/source_files/CompressedFileTrain.cpp cpp/source_files/Frame.cpp)

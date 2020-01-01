@@ -3,8 +3,7 @@
  */
 
 #include "cpp/source_files/StreamFileTrain.h"
-#include "cpp/source_files/IsoiChunk.h"
-#include "cpp/source_files/SoftChunk.h"
+#include "cpp/source_files/Frame.h"
 
 int main() {
     using namespace std;
@@ -14,10 +13,9 @@ int main() {
 
     StreamFileTrain train("/home/serik1987/vasomotor-oscillations/sample_data/c022z/", "T_1BF.0201", file_size, true);
     train.open();
+    Frame frame(train);
 
-    for (auto it = train.begin(); it != train.end(); ++it){
-        cout << (*it)->getFullname() << endl;
-    }
+    std::cout << frame << std::endl;
 
     return 0;
 }

@@ -48,4 +48,7 @@
 #define MSG_NOT_STREAM_FILE "This file is not a stream source file"
 #define MSG_NOT_TRAIN_HEAD "The file is not the first file in the train"
 
+#define MSG_FRAME_NOT_READ "The function can't be executed and return the result because the frame has not been "\
+"loaded from the hard disk"
+
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_INIT_H
