@@ -51,10 +51,9 @@ class NativeDataManager(wx.Dialog):
         self.Centre()
 
     def __create_left_panel(self, main_panel):
-        left_panel = wx.Notebook(main_panel)
+        left_panel = wx.Notebook(main_panel, style=wx.BK_DEFAULT)
 
-        general_properties_page = wx.Panel(left_panel)
-        general_properties_page.SetBackgroundColour("red")
+        general_properties_page = self.__create_general_properties(left_panel)
         left_panel.AddPage(general_properties_page, "General Properties")
 
         for file in self.__train:
@@ -66,6 +65,152 @@ class NativeDataManager(wx.Dialog):
                 left_panel.AddPage(viewer, viewer.get_title())
 
         return left_panel
+
+    def __create_general_properties(self, parent):
+        general_properties_page = wx.Panel(parent)
+        general_layout = wx.BoxSizer(wx.VERTICAL)
+        main_layout = wx.FlexGridSizer(2, 5, 15)
+
+        label = wx.StaticText(general_properties_page, label="Number of files in the train")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=str(self.__train.file_number))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Total number of frames")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=str(self.__train.total_frames))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Frame dimensions")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} x {1} pixels".format(self.__train.frame_shape[1],
+                                                                                       self.__train.frame_shape[0]))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Total number of pixels in the frame")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=str(self.__train.frame_size))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Frame body size")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} bytes".format(self.__train.frame_image_size))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Frame header size")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} bytes".format(self.__train.frame_header_size))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Total frame size (header + body)")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} bytes".format(self.__train.total_frame_size))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="File header size")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} bytes".format(self.__train.file_header_size))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Experiment mode")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=self.__train.experiment_mode)
+        main_layout.Add(label)
+
+        for file in self.__train:
+            break
+        soft = file.soft
+
+        label = wx.StaticText(general_properties_page, label="Date and time of the record")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=soft['date_time_recorded'])
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="User name")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=soft['user_name'])
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Subject ID")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=soft['subject_id'])
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Pixel size")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} bytes".format(soft['pixel_size']))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="ROI position (before binning)")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="({0}, {1}) pixels".format(soft['roi_x_position'],
+                                                                                        soft['roi_y_position']))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="ROI position (adjusted, before binning)")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="({0}, {1}) pixels".format(soft['roi_x_position_adjusted'],
+                                                                                        soft['roi_y_position_adjusted']
+                                                                                        ))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="ROI size (before binning)")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} x {1} pixels".format(soft['roi_x_size'],
+                                                                                       soft['roi_y_size']))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="ROI number")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=str(soft['roi_number']))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Number of bins for temporal binning")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label=str(soft['temporal_binning']))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Spatial binning")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} x {1} pixels".format(soft['spatial_binning_x'],
+                                                                                       soft['spatial_binning_y']))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Wavelength")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} nm".format(soft['wavelength']))
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="Filter width")
+        main_layout.Add(label)
+
+        label = wx.StaticText(general_properties_page, label="{0} nm".format(soft['filter_width']))
+        main_layout.Add(label)
+
+        general_layout.Add(main_layout, 1, wx.EXPAND | wx.ALL, 10)
+        general_properties_page.SetSizer(general_layout)
+        general_properties_page.Layout()
+        return general_properties_page
 
     def __create_right_panel(self, main_panel):
         right_panel = wx.Notebook(main_panel)
