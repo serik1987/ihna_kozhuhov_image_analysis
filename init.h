@@ -52,5 +52,6 @@
 "loaded from the hard disk"
 #define MSG_FRAME_OUT_OF_RANGE "Trying to read/seek the frame that is out of range"
 #define MSG_COMPRESSED_FRAME_READ_ERROR "Only frame number 0 can be read from the compressed file train"
+#define MSG_FRAM_CHUNK_NOT_FOUND "The frame reading is failed because the FRAM chunk is absent"
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_INIT_H

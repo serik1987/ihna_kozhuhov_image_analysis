@@ -69,7 +69,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return size of the chunk body
          */
-        [[nodiscard]] uint32_t getSize() const { return chunkSize; }
+        [[nodiscard]] virtual uint32_t getSize() const { return chunkSize; }
 
         /**
          * Reads the string from the string buffer (i.e., from a field like char[n]

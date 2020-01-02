@@ -66,6 +66,10 @@ namespace GLOBAL_NAMESPACE {
          * @return estimated delay time at a current synchronization channel
          */
         [[nodiscard]] uint32_t getSynchChannelDelay(int idx)const { return info.SynchChannelDelay[idx]; }
+
+        [[nodiscard]] uint32_t getSize() const override { return sizeof(FRAM_COST_CHUNK); }
+
+        friend std::ostream& operator<<(std::ostream& out, const FramCostChunk& chunk);
     };
 
 }

@@ -61,6 +61,14 @@ namespace GLOBAL_NAMESPACE {
                     frame_exception(trainname, n, MSG_FRAME_OUT_OF_RANGE) {};
         };
 
+        class fram_chunk_not_found_exception: public frame_exception{
+        public:
+            fram_chunk_not_found_exception(const FileTrain* train, int n):
+                frame_exception(train, n, MSG_FRAM_CHUNK_NOT_FOUND) {};
+            fram_chunk_not_found_exception(const std::string& train_name, int n):
+                frame_exception(train_name, n, MSG_FRAM_CHUNK_NOT_FOUND) {};
+        };
+
 
         /**
          * The frame initialization
@@ -139,6 +147,15 @@ namespace GLOBAL_NAMESPACE {
         bool iLock;
 
         friend std::ostream& operator<<(std::ostream& out, const Frame& frame);
+
+        /**
+         * Reads the chunk from the file.
+         * The file pointer shall be at the beginning of the frame.
+         *
+         * @param reference to the file the file that will be used to read the chunk
+         * @param n the frame number that was read
+         */
+        void readFromFile(SourceFile& file, int n);
 
 
     };

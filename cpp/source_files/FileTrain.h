@@ -11,6 +11,8 @@
 
 namespace GLOBAL_NAMESPACE {
 
+    class Frame;
+
     /**
      * A base class for all file trains.
      *
@@ -367,6 +369,16 @@ namespace GLOBAL_NAMESPACE {
          * @result reference to the TrainSourceFile that contains an appropriate frame
          */
         virtual TrainSourceFile& seek(int n) = 0;
+
+        /**
+         * Reads the frame with an appropriate number
+         *
+         * @param n number of the frame
+         * @return poitner to the frame read. The object will be constructed during the routine execution.
+         * The object will not be deleted. This is your responsibility to delete the object
+         * In case of throwing exception, the object will be deleted
+         */
+        Frame* readFrame(int n);
     };
 
 }

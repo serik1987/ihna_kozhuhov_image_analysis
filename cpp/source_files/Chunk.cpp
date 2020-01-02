@@ -12,6 +12,8 @@
 #include "HardChunk.h"
 #include "CostChunk.h"
 #include "EpstChunk.h"
+#include "FramChunk.h"
+#include "FramCostChunk.h"
 
 namespace GLOBAL_NAMESPACE{
 
@@ -30,6 +32,8 @@ namespace GLOBAL_NAMESPACE{
         const auto* costChunk = dynamic_cast<const CostChunk*>(&chunk);
         const auto* epstChunk = dynamic_cast<const EpstChunk*>(&chunk);
         const auto* dataChunk = dynamic_cast<const DataChunk*>(&chunk);
+        const auto* framChunk = dynamic_cast<const FramChunk*>(&chunk);
+        const auto* framCostChunk = dynamic_cast<const FramCostChunk*>(&chunk);
 
         if (softChunk != nullptr) {
             out << *softChunk;
@@ -45,6 +49,10 @@ namespace GLOBAL_NAMESPACE{
             out << *epstChunk;
         } else if (dataChunk != nullptr) {
             out << *dataChunk;
+        } else if (framChunk != nullptr) {
+            out << *framChunk;
+        } else if (framCostChunk != nullptr) {
+            out << *framCostChunk;
         } else {
             out << "===== The chunk is unsupported or its write is not implemented =====\n";
             out << "Chunk name: " << chunk.getName() << std::endl;

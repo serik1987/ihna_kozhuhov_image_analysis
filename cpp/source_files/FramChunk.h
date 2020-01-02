@@ -18,6 +18,9 @@ namespace GLOBAL_NAMESPACE {
      */
     class FramChunk: public Chunk {
     public:
+
+        static constexpr double BIG_LONG = 4294967296.0;
+
 #pragma PACK(push, 1)
         struct FRAM_CHUNK{		// Experiment independent chunk sizeof(FRAM_CHUNK)=64
             char		Tag[4] = "\x00\x00\x00";			//01 01
@@ -79,6 +82,14 @@ namespace GLOBAL_NAMESPACE {
 
         /**
          *
+         * @return frame arrival time in ms
+         */
+        [[nodiscard]] double getTimeArrival() const {
+            return ((double)info.TimeArrivalUsecLo + BIG_LONG * (double)info.TimeArrivalUsecHi) * 1e-3;
+        }
+
+        /**
+         *
          * @return Difference between arrival and WaitEvent time in usec
          */
         [[nodiscard]] uint32_t getTimeDelayUsec() const { return info.TimeDelayUsec; }
@@ -100,13 +111,15 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return Frame sequential number (should be: FrameSeqCount+1=FrameSeqNumber)
          */
-        [[nodiscard]] uint32_t getFrameSeqNumber() const { return info.FrameSeqCount; }
+        [[nodiscard]] uint32_t getFrameSeqCount() const { return info.FrameSeqCount; }
 
         /**
          *
          * @return Return value of the experiment callback
          */
         [[nodiscard]] uint32_t getCallbackResult() const { return info.CallbackResult; }
+
+        friend std::ostream& operator<<(std::ostream& out, const FramChunk& chunk);
     };
 
 }

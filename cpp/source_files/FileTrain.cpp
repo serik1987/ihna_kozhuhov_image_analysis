@@ -7,6 +7,7 @@
 #include "IsoiChunk.h"
 #include "CostChunk.h"
 #include "EpstChunk.h"
+#include "Frame.h"
 
 
 namespace GLOBAL_NAMESPACE{
@@ -171,5 +172,18 @@ namespace GLOBAL_NAMESPACE{
                 throw data_type_mismatch(file);
             }
         }
+    }
+
+    Frame *FileTrain::readFrame(int n) {
+        auto* frame = new Frame(*this);
+        try{
+            auto& file = seek(n);
+            frame->readFromFile(file, n);
+        } catch (std::exception& e){
+            delete frame;
+            throw;
+        }
+
+        return frame;
     }
 }
