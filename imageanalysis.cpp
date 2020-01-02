@@ -13,12 +13,14 @@ extern "C" {
     #ifdef C_EXCEPTION_TEST
     static PyObject *PyIman_Test_exception(PyObject *, PyObject *) {
         using namespace GLOBAL_NAMESPACE;
-//        std::exception e;
+        std::exception e;
 //        iman_exception e("Sample exception message");
 //        io_exception e("Sample IO exception", "FILE001.DAT");
 //        FileTrain::train_exception e("Sample IO exception", "TRAIN001.DAT");
 //        SourceFile::source_file_exception e("Sample source file error", "FILE001.DAT", "TRAIN001.DAT");
-        DataChunk::data_chunk_read_exception e;
+//        SourceFile::chunk_not_found_exception e("CHUNK", "FILE001.DAT", "TRAIN001.DAT");
+//        Frame::frame_exception e("TRAIN001.DAT", 20, "Sample frame message");
+//        FileTrain::cache_too_small_exception e("TRAIN001.DAT");
         PyIman_Exception_process(&e);
         return NULL;
     }

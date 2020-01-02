@@ -37,7 +37,8 @@ namespace GLOBAL_NAMESPACE {
                     std::to_string(frameNumber) + " ] " + msg) {};
 
             frame_exception(const std::string& train_name, int n, const std::string& msg):
-                train_exception(msg, train_name), frameNumber(n) {};
+                train_exception(msg, train_name), frameNumber(n),
+                message(train_name + " [ frame # " + std::to_string(frameNumber) + " ] " + msg){};
 
             [[nodiscard]] int getFrameNumber() const { return frameNumber; }
 

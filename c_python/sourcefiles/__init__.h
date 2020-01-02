@@ -13,6 +13,7 @@
 #include "../../cpp/source_files/DataChunk.h"
 #include "../../cpp/source_files/StreamFileTrain.h"
 #include "../../cpp/source_files/CompChunk.h"
+#include "../../cpp/source_files/Frame.h"
 
 extern "C" {
     static int PyImanS_TotalChunksAdded = 0;

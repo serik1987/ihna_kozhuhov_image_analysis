@@ -38,6 +38,14 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotGreenFil
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotInTrainHeadError as NotInTrainHeadError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotStreamFileError as NotStreamFileError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_NotCompressedFileError as NotCompressedFileError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FrameError as FrameError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FrameNotReadError as FrameNotReadError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FrameRangeError as FrameRangeError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FramChunkNotFoundError as FramChunkNotFoundError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFrameReadError as \
+    CompressedFrameReadError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CacheSizeError as CacheSizeError
+
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FileTrain as FileTrain
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamFileTrain as _StreamFileTrain
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFileTrain as _CompressedFileTrain

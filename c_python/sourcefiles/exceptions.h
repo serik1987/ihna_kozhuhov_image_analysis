@@ -44,6 +44,14 @@ extern "C" {
     static PyObject* PyImanS_NotInTrainHeadError = NULL;
     static PyObject* PyImanS_NotStreamFileError = NULL;
     static PyObject* PyImanS_NotCompressedFileError = NULL;
+    static PyObject* PyImanS_FrameError = NULL;
+    static PyObject* PyImanS_FrameError_init = NULL;
+    static PyObject* PyImanS_FrameError_args = NULL;
+    static PyObject* PyImanS_FrameNotReadError = NULL;
+    static PyObject* PyImanS_FrameRangeError = NULL;
+    static PyObject* PyImanS_FramChunkNotFoundError = NULL;
+    static PyObject* PyImanS_CompressedFrameReadError = NULL;
+    static PyObject* PyImanS_CacheSizeError = NULL;
 
     static int PyImanS_Create_exceptions(PyObject* module){
         PyImanS_IoError = PyErr_NewExceptionWithDoc("ihna.kozhukhov.imageanalysis.sourcefiles.IoError",
@@ -296,6 +304,60 @@ extern "C" {
         if (PyModule_AddObject(module, "_sourcefiles_NotCompressedFileError", PyImanS_NotCompressedFileError) < 0){
             return -1;
         }
+        PyImanS_FrameError_init = PyLong_FromLong(-1);
+        PyImanS_FrameError_args = PyDict_New();
+        if (PyDict_SetItemString(PyImanS_FrameError_args, "frame_number", PyImanS_FrameError_init) < 0){
+            return -1;
+        }
+        PyImanS_FrameError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.FrameError",
+                "This is a general error happened during working with frames",
+                PyImanS_TrainError, PyImanS_FrameError_args);
+        if (PyModule_AddObject(module, "_sourcefiles_FrameError", PyImanS_FrameError) < 0){
+            return -1;
+        }
+        PyImanS_FrameNotReadError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.FrameNotReadError",
+                "This error is generated when you access the frame property that is required for a frame to be "
+                "properly read from the file",
+                PyImanS_FrameError, NULL);
+        if (PyModule_AddObject(module, "_sourcefiles_FrameNotReadError", PyImanS_FrameNotReadError) < 0){
+            return -1;
+        }
+        PyImanS_FrameRangeError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.FrameRangeError",
+                "This error is generated when you try to access the frame which number is not present in the train",
+                PyImanS_FrameError, NULL);
+        if (PyModule_AddObject(module, "_sourcefiles_FrameRangeError", PyImanS_FrameRangeError) < 0){
+            return -1;
+        }
+        PyImanS_FramChunkNotFoundError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.FramChunkNotFoundError",
+                "Each frame shall be started from the FRAM chunk. If such chunk is not present in the frame this "
+                "error will be generated",
+                PyImanS_FrameError, NULL);
+        if (PyModule_AddObject(module, "_sourcefiles_FramChunkNotFoundError", PyImanS_FramChunkNotFoundError) < 0){
+            return -1;
+        }
+        PyImanS_CompressedFrameReadError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.CompressedFrameReadError",
+                "All compressed files contain the frame #0 being uncompressed and all other frames being compressed. "
+                "Hence, you can't read frames with number different from zero in the compressed files. "
+                "Trying to do this will throw this exception",
+                PyImanS_TrainError, NULL);
+        if (PyModule_AddObject(module, "_sourcefiles_CompressedFrameReadError", PyImanS_CompressedFrameReadError) < 0){
+            return -1;
+        }
+        PyImanS_CacheSizeError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.CacheSizeError",
+                "If this exception is generated one of the following things were happened:\n"
+                "1. Amount of free memory on your PC is not enough. You need to close some extra application or "
+                "restart the Native data manager\n"
+                "2. Cache capacity is not too little. Use train.capacity attribute to increase the cache capacity\n",
+                PyImanS_TrainError, NULL);
+        if (PyModule_AddObject(module, "_sourcefiles_CacheSizeError", PyImanS_CacheSizeError) < 0){
+            return -1;
+        }
 
         return 0;
     }
@@ -338,6 +400,14 @@ extern "C" {
         Py_XDECREF(PyImanS_NotInTrainHeadError);
         Py_XDECREF(PyImanS_NotStreamFileError);
         Py_XDECREF(PyImanS_NotCompressedFileError);
+        Py_XDECREF(PyImanS_FrameError);
+        Py_XDECREF(PyImanS_FrameError_init);
+        Py_XDECREF(PyImanS_FrameError_args);
+        Py_XDECREF(PyImanS_FrameNotReadError);
+        Py_XDECREF(PyImanS_FrameRangeError);
+        Py_XDECREF(PyImanS_FramChunkNotFoundError);
+        Py_XDECREF(PyImanS_CompressedFrameReadError);
+        Py_XDECREF(PyImanS_CacheSizeError);
     }
 
     static int PyImanS_Exception_process(const void* handle){
@@ -478,15 +548,43 @@ extern "C" {
                         dynamic_cast<FileTrain::synchronization_channel_number_exception*>(train_handle);
                 auto* unsupported_experiment_mode_error_handle =
                         dynamic_cast<FileTrain::unsupported_experiment_mode_exception*>(train_handle);
+                auto* frame_error_handle = dynamic_cast<Frame::frame_exception*>(train_handle);
+                auto* compressed_frame_read_handle =
+                        dynamic_cast<CompressedFileTrain::compressed_frame_read_exception*>(train_handle);
+                auto* cache_size_error_handle =
+                        dynamic_cast<FileTrain::cache_too_small_exception*>(train_handle);
 
-                if (experiment_mode_handle != nullptr) {
+                if (frame_error_handle != nullptr) {
+                    PyObject* frame_number = PyLong_FromLong(frame_error_handle->getFrameNumber());
+                    PyObject_SetAttrString(PyImanS_FrameError, "frame_number", frame_number);
+
+                    auto* frame_not_read_handle = dynamic_cast<Frame::frame_not_read*>(frame_error_handle);
+                    auto* frame_range_error_handle = dynamic_cast<Frame::frame_is_out_of_range*>(frame_error_handle);
+                    auto* fram_chunk_not_found_handle = dynamic_cast<Frame::fram_chunk_not_found_exception*>
+                        (frame_error_handle);
+
+                    if (frame_not_read_handle != nullptr) {
+                        PyErr_SetString(PyImanS_FrameNotReadError, frame_not_read_handle->what());
+                    } else if (frame_range_error_handle != nullptr) {
+                        PyErr_SetString(PyImanS_FrameRangeError, frame_range_error_handle->what());
+                    } else if (fram_chunk_not_found_handle != nullptr){
+                        PyErr_SetString(PyImanS_FramChunkNotFoundError, fram_chunk_not_found_handle->what());
+                    } else {
+                        PyErr_SetString(PyImanS_FrameError, frame_error_handle->what());
+                    }
+
+                } else if (experiment_mode_handle != nullptr) {
                     PyErr_SetString(PyImanS_ExperimentModeError, experiment_mode_handle->what());
                 } else if (synchronization_channel_number_handle != nullptr) {
                     PyErr_SetString(PyImanS_SynchronizationChannelNumberError,
                                     synchronization_channel_number_handle->what());
-                } else if (unsupported_experiment_mode_error_handle != nullptr){
+                } else if (unsupported_experiment_mode_error_handle != nullptr) {
                     PyErr_SetString(PyImanS_UnsupportedExperimentModeError,
                                     unsupported_experiment_mode_error_handle->what());
+                } else if (compressed_frame_read_handle != nullptr) {
+                    PyErr_SetString(PyImanS_CompressedFrameReadError, compressed_frame_read_handle->what());
+                } else if (cache_size_error_handle != nullptr) {
+                    PyErr_SetString(PyImanS_CacheSizeError, cache_size_error_handle->what());
                 } else {
                     PyErr_SetString(PyImanS_TrainError, train_handle->what());
                 }
