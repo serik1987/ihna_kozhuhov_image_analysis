@@ -20,6 +20,115 @@ namespace GLOBAL_NAMESPACE{
         for (auto pfile: *this){
             delete pfile;
         }
+
+        delete [] frameCacheStatus;
+        frameCacheStatus = nullptr;
+
+        clearCache();
+    }
+
+    void FileTrain::clearCache(){
+        while (!frameCache.empty()){
+#ifdef DEBUG_DELETE_CHECK
+            std::cout << "CLEARING FRAME CACHE: ";
+#endif
+            Frame* frame = frameCache.front();
+            frameCache.pop_front();
+            if (frameCacheStatus != nullptr){
+                frameCacheStatus[frame->getFrameNumber()] = nullptr;
+            }
+            delete frame;
+        }
+    }
+
+    void FileTrain::shrinkCache(){
+        size_t finalSize = frameCache.size() / 2;
+        while (frameCache.size() > finalSize){
+            std::list<Frame*>::iterator it;
+            Frame* frame = nullptr;
+            for (it = frameCache.begin(); it != frameCache.end(); ++it){
+                if (!(*it)->iLock){
+                    frame = *it;
+                    frameCache.erase(it);
+                    break;
+                }
+            }
+            if (frame == nullptr){
+                throw cache_too_small_exception(this);
+            }
+            frameCacheStatus[frame->getFrameNumber()] = nullptr;
+            delete frame;
+        }
+    }
+
+    Frame& FileTrain::addFrame(int n){
+        if (frameCacheStatus == nullptr){
+            frameCacheStatus = new Frame*[getTotalFrames()];
+            for (int i=0; i < getTotalFrames(); ++i){
+                frameCacheStatus[i] = nullptr;
+            }
+        }
+        if (frameCacheStatus[n] != nullptr){
+            return *frameCacheStatus[n];
+        }
+        std::cout << "READING NEW FRAME FROM THE HARD DISK DRIVE\n";
+        Frame* frame;
+        while (true){
+            try{
+                frame = readFrame(n);
+                frameCache.push_back(frame);
+                frameCacheStatus[n] = frame;
+                break;
+            } catch (std::bad_alloc& e){
+                if (frameCache.empty()){
+                    throw cache_too_small_exception(this);
+                }
+                shrinkCache();
+            }
+        }
+        return *frame;
+    }
+
+    Frame& FileTrain::replaceFrame(int n) {
+        if (frameCacheStatus == nullptr){
+            frameCacheStatus = new Frame*[getTotalFrames()];
+            for (int i=0; i < getTotalFrames(); ++i){
+                frameCacheStatus[i] = nullptr;
+            }
+        }
+        if (frameCacheStatus[n] != nullptr){
+            return *frameCacheStatus[n];
+        }
+        std::cout << "READING NEW FRAME FROM THE HARD DISK DRIVE\n";
+        Frame* frame = nullptr;
+        std::list<Frame*>::iterator it;
+        for (it = frameCache.begin(); it != frameCache.end(); ++it){
+            if (!(*it)->iLock){
+                frame = *it;
+                frameCache.erase(it);
+                break;
+            }
+        }
+        if (frame == nullptr) throw cache_too_small_exception(this);
+        frameCacheStatus[frame->getFrameNumber()] = nullptr;
+        try{
+            TrainSourceFile& file = seek(n);
+            frame->readFromFile(file, n);
+            frameCache.push_back(frame);
+            frameCacheStatus[n] = frame;
+        } catch (std::exception& e){
+            delete frame;
+            throw;
+        }
+        return *frame;
+    }
+
+    Frame& FileTrain::operator[](int n){
+        if (frameCache.size() < capacity){
+            return addFrame(n);
+        } else {
+            return replaceFrame(n);
+        }
     }
 
     std::ostream &operator<<(std::ostream &out, const FileTrain &train) {

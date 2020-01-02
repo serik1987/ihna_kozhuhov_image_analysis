@@ -157,7 +157,11 @@ namespace GLOBAL_NAMESPACE {
          */
         void readFromFile(SourceFile& file, int n);
 
-
+        /**
+         *
+         * @return the frame body
+         */
+        uint16_t* getBody() { return body; }
     };
 
 }

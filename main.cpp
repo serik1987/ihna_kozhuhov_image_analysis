@@ -2,10 +2,41 @@
  * This is an auxiliary file that has been created to test feasibilities of the ihna.kozhukhov.imageanalysis
  */
 
+#define PRINT_CACHE_ROUTINES
+
 #include "cpp/source_files/StreamFileTrain.h"
 #include "cpp/source_files/CompressedFileTrain.h"
 #include "cpp/source_files/Frame.h"
 #include "cpp/source_files/SoftChunk.h"
+
+#ifdef PRINT_CACHE_ROUTINES
+
+namespace GLOBAL_NAMESPACE {
+
+    void print_cache(GLOBAL_NAMESPACE::FileTrain *train) {
+        using namespace std;
+        cout << "Frame cache: ";
+        for (auto* frame: train->frameCache){
+            cout << frame->getFrameNumber() << " ";
+        }
+        cout << "\n";
+
+        if (train->frameCacheStatus != nullptr){
+            cout << "Frame cache status: ";
+            for (int i=0; i < train->getTotalFrames(); ++i){
+                if (train->frameCacheStatus[i] != nullptr){
+                    cout << i << " ";
+                }
+            }
+            cout << endl;
+        } else {
+            cout << "Frame cache status is not defined\n";
+        }
+    }
+
+}
+
+#endif
 
 int main() {
     using namespace std;
@@ -18,10 +49,13 @@ int main() {
     cout << "Example of stream file" << endl;
     cout << train << endl;
 
-    for (int n = 0; n < 11; ++n){
-        auto* frame = train.readFrame(n);
-        cout << *frame << endl;
-        delete frame;
+    print_cache(&train);
+    train.capacity = 10;
+
+    for (int n = 0; n < 30; ++n){
+        Frame& frame = train[n];
+        print_cache(&train);
+        cout << "t = " << frame.getFramChunk().getTimeArrival() << endl;
     }
 
     /*

@@ -75,6 +75,7 @@ namespace GLOBAL_NAMESPACE{
         auto* buffer = (char*)body;
         size_t body_size = parent->getFrameImageSize();
         file.getFileStream().read(buffer, body_size);
+        iLock = false;
     }
 
 }

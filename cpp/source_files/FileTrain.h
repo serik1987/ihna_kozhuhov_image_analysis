@@ -37,12 +37,21 @@ namespace GLOBAL_NAMESPACE {
         int dataType = -1;
         int totalFrames = -1;
 
+        std::list<Frame*> frameCache;
+        Frame** frameCacheStatus = nullptr;
+
         /**
          * Loads all scalar train properties from the file
          *
          * @param file the train head file
          */
         void loadTrainProperties(TrainSourceFile& file);
+
+
+        /**
+         * Shrinks the frame cache in order to free the operating memory.
+         */
+        void shrinkCache();
 
     protected:
         /**
@@ -85,6 +94,12 @@ namespace GLOBAL_NAMESPACE {
         virtual uint32_t getFileSizeChecksum(TrainSourceFile& file) = 0;
 
     public:
+
+        /**
+         * Defines number of frames that can be stored to the hard disk drive
+         */
+        int capacity = 200;
+
         class train_exception: public io_exception{
         public:
             train_exception(const std::string& message, const FileTrain* train):
@@ -194,6 +209,15 @@ namespace GLOBAL_NAMESPACE {
                         SourceFile::source_file_exception(MSG_DATA_TYPE_MISMATCH, filename, trainname) {};
         };
 
+        class cache_too_small_exception: public train_exception{
+        public:
+            explicit cache_too_small_exception(FileTrain* train):
+                train_exception(MSG_CACHE_TOO_SMALL, train) {};
+
+            explicit cache_too_small_exception(const std::string& train_name):
+                train_exception(MSG_CACHE_TOO_SMALL, train_name) {};
+        };
+
         /**
          * Creates new file train
          *
@@ -208,6 +232,7 @@ namespace GLOBAL_NAMESPACE {
             this->path = path;
             this->filename = filename;
             this->traverse = traverse;
+            frameCacheStatus = nullptr;
         }
 
         virtual ~FileTrain();
@@ -379,6 +404,49 @@ namespace GLOBAL_NAMESPACE {
          * In case of throwing exception, the object will be deleted
          */
         Frame* readFrame(int n);
+
+#ifdef PRINT_CACHE_ROUTINES
+        friend void print_cache(FileTrain* train);
+#endif
+
+
+        /**
+         * Clears the frame cache in order to free the operating memory
+         */
+        void clearCache();
+
+        /**
+         * If the frame exists in cache, teturns the reference to the frame from cache
+         * If the frame doesn't exist in cache, loads the frame into the cache and returns the reference to the frame
+         *
+         * @param n
+         * @return
+         */
+        Frame& addFrame(int n);
+
+        /**
+         * If the frame has already present in the cache, just gives a reference to an existent frame
+         * If the frame is not in a cache, replaces the frame by the newly created one.
+         * Throws cache_too_small() is the function is unable to do this.
+         *
+         * @param n frame number
+         * @return reference to the frame
+         */
+        Frame& replaceFrame(int n);
+
+        /**
+         * Returns the frame with a certain number
+         * If the frame is already in the cache the function returns the reference to the frame in the cache
+         * If the frame is not in the cache and total number of frames in the cache doesn't exceed the capacity
+         * the function reads the frame from the hard disk, adds it to the cache and returns the reference to it
+         * If the frame is not in the cache and total number of frames in the cache exceeds the capacity the frame
+         * will be read from the hard disk and will be added to the cache, but the oldest frame in the cache will be
+         * removed from the cache but not from the hard disk.
+         *
+         * @param n number of frame
+         * @return reference to the frame
+         */
+        Frame& operator[](int n);
     };
 
 }
