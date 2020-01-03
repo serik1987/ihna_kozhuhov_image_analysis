@@ -26,10 +26,13 @@ static int PyImanS_Frame_Init(PyImanS_FrameObject* self, PyObject* args, PyObjec
 }
 
 static void PyImanS_Frame_Destroy(PyImanS_FrameObject* self){
+#ifdef DEBUG_DELETE_CHECK
+    printf("SO Frame delete\n");
+#endif
     using namespace GLOBAL_NAMESPACE;
-    Py_XDECREF(self->parent_train);
     auto* frame = (Frame*)self->frame_handle;
     frame->iLock = false;
+    Py_XDECREF(self->parent_train);
     Py_TYPE(self)->tp_free(self);
 }
 

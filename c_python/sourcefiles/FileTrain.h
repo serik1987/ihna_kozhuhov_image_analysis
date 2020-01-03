@@ -213,6 +213,8 @@ extern "C" {
 
     static PyObject* PyImanS_FileTrain_ClearCache(PyImanS_FileTrainObject* self,
             PyObject* args, PyObject* kwds){
+        printf("Warning. Calling clear_cache() when some frames are not collected by the GC may be segmentation "
+               "faulted\n");
         using namespace GLOBAL_NAMESPACE;
         auto* ptrain = (FileTrain*)self->train_handle;
         PyObject* result;
@@ -293,7 +295,9 @@ extern "C" {
             {"close", (PyCFunction)PyImanS_FileTrain_Close, METH_NOARGS, "Closes the file train"},
             {"clear_cache", (PyCFunction)PyImanS_FileTrain_ClearCache, METH_NOARGS,
                 "Clears the frame cache. Use this function to avoid ChunkSizeError.\n"
-                "This function makes all frames created before its call to be corrupted. Don't use the any more"},
+                "Before you apply this function, please del all _Frame objects you created\n"
+                "Failure to do this will cause segmentation fault. Also, if the Python causes segmentation fault\n"
+                "please, remove this function\n"},
             {NULL, NULL, 0, NULL}
     };
 

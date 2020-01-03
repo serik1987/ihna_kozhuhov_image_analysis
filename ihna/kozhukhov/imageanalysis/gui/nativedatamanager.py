@@ -259,7 +259,7 @@ class NativeDataManager(wx.Dialog):
         Closes the file opened by this dialog and clears cache from this
         """
         self.__train.close()
-        self.__train.clear_cache()
+        self.__train = None
 
     def compress(self):
         print("NATIVE DATA MANAGER compress")
@@ -271,6 +271,7 @@ class NativeDataManager(wx.Dialog):
         try:
             viewer = FrameViewer(self, self.__train)
             viewer.ShowModal()
+            viewer.close()
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Frame viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()

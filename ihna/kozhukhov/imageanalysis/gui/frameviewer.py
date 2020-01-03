@@ -3,6 +3,7 @@
 import wx
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
+import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 
 
 class FrameViewer(wx.Dialog):
@@ -41,6 +42,8 @@ class FrameViewer(wx.Dialog):
         self.__train = train
         self.__frame_number = 0
         self.__total_frames = self.__train.total_frames
+        if isinstance(self.__train, sfiles.CompressedFileTrain):
+            self.__total_frames = 1
         self.__constructed = False
         super().__init__(parent, title="Frame viewer: " + self.__train.filename, size=(800, 600))
         main_panel = wx.Panel(self)
@@ -64,6 +67,8 @@ class FrameViewer(wx.Dialog):
         main_panel.SetSizer(general_layout)
         self.Centre()
 
+        self.load_frame()
+
     def __create_left_layout(self, parent):
         left_layout = wx.Panel(parent, size=(400, 500))
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -72,6 +77,9 @@ class FrameViewer(wx.Dialog):
         self.__canvas = FigureCanvas(left_layout, -1, self.__fig)
         self.__ax = self.__fig.add_subplot(111)
         self.__ax.set_aspect('equal')
+        self.__ax.set_title(self.__train.filename)
+        self.__ax.plot([1, 2, 3], [1, 2, 3], 'b-')
+        self.__ax.plot([1, 2, 3], [3, 2, 1], 'b-')
 
         sizer.Add(self.__canvas, 1, wx.LEFT | wx.TOP | wx.EXPAND)
         left_layout.SetSizer(sizer)
@@ -157,20 +165,90 @@ class FrameViewer(wx.Dialog):
 
         return bottom_layout
 
+    def load_frame(self):
+        self.__current_frame = self.__train[self.__frame_number]
+        self.__frame_body = self.__current_frame.body
+        self.__ax.cla()
+        self.__ax.imshow(self.__frame_body, cmap='gray')
+        self.__ax.set_title("{0}: Frame # {1}".format(self.__train.filename, self.__frame_number))
+        self.__txt_number.SetLabel(str(self.__current_frame.number))
+        self.__txt_sequential_number.SetLabel(str(self.__current_frame.sequential_number))
+        self.__txt_arrival_time.SetLabel("{0:.0f} ms".format(self.__current_frame.arrival_time))
+        self.__txt_delay.SetLabel("{0:.0f} ms".format(self.__current_frame.delay))
+        if self.__train.experiment_mode == "continuous":
+            synch = self.__current_frame.synch
+            for i in range(self.__train.synchronization_channel_number):
+                self.__txt_synch[i].SetLabel(str(synch[i]))
+        prev_enability = self.__frame_number != 0
+        next_enability = self.__frame_number != self.__total_frames-1
+        goto_enability = not isinstance(self.__train, sfiles.CompressedFileTrain)
+        self.__btn_first.Enable(prev_enability)
+        self.__btn_previous.Enable(prev_enability)
+        self.__btn_go_to.Enable(goto_enability)
+        self.__btn_go_to.SetLabel("Frame # {0}".format(self.__frame_number))
+        self.__btn_next.Enable(next_enability)
+        self.__btn_last.Enable(next_enability)
+        self.__canvas.draw()
+
+    def close(self):
+        self.__current_frame = None
+        self.__frame_body = None
+
     def first(self):
-        print("Go to first")
+        old_number = self.__frame_number
+        try:
+            self.__frame_number = 0
+            self.load_frame()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+            self.__frame_number = old_number
 
     def previous(self):
-        print("Go to previous")
+        old_number = self.__frame_number
+        try:
+            self.__frame_number -= 1
+            self.load_frame()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+            self.__frame_number = old_number
 
     def go_to(self):
-        print("Go to predefined frame")
+        old_number = self.__frame_number
+        try:
+            dlg = wx.TextEntryDialog(self, "Number of the frame to show", "Frame Viewer")
+            if dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            n = int(dlg.GetValue())
+            if n < 0 or n >= self.__total_frames:
+                raise ValueError("Frame index is out of range")
+            self.__frame_number = n
+            self.load_frame()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+            self.__frame_number = old_number
 
     def next(self):
-        print("Go to next")
+        old_number = self.__frame_number
+        try:
+            self.__frame_number += 1
+            self.load_frame()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+            self.__frame_number = old_number
 
     def last(self):
-        print("Go to last")
+        old_number = self.__frame_number
+        try:
+            self.__frame_number = self.__total_frames - 1
+            self.load_frame()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+            self.__frame_number = old_number
 
     def save_png(self):
         print("Save to PNG")

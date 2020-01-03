@@ -17,6 +17,9 @@ if __name__ == "__main__":
     plt.colorbar()
     plt.show()
 
+    train.clear_cache()
+    train.clear_cache()
+
     '''
     try:
         print("PY generating new exception")
