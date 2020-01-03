@@ -1,8 +1,10 @@
 # -*- coding: utf-8
 
 import wx
+import numpy as np
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
+import scipy.io
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 
 
@@ -251,13 +253,40 @@ class FrameViewer(wx.Dialog):
             self.__frame_number = old_number
 
     def save_png(self):
-        print("Save to PNG")
+        try:
+            dlg = wx.FileDialog(self, "Save as PNG", style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT, wildcard=".png")
+            dlg.ShowModal()
+            filename = dlg.GetPath()
+            if not filename.endswith(".png"):
+                filename += ".png"
+            self.__fig.savefig(filename)
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def save_npy(self):
-        print("Save to NPY")
+        try:
+            dlg = wx.FileDialog(self, "Save as NPY", style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT, wildcard=".npy")
+            dlg.ShowModal()
+            filename = dlg.GetPath()
+            if not filename.endswith(".npy"):
+                filename += ".npy"
+            np.save(filename, self.__frame_body)
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def save_mat(self):
-        print("Save to MAT")
+        try:
+            dlg = wx.FileDialog(self, "Save as MAT", style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT, wildcard=".mat")
+            dlg.ShowModal()
+            filename = dlg.GetPath()
+            if not filename.endswith(".mat"):
+                filename += ".mat"
+            scipy.io.savemat(filename, {"frame_data": self.__frame_body})
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def define_roi(self):
-        print("Define ROI")
+        print("TO-DO: define ROI")
