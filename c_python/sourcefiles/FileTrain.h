@@ -18,6 +18,19 @@ extern "C" {
         PyObject* parent_train;
     } PyImanS_FileTrainIteratorObject;
 
+    typedef struct {
+        PyObject_HEAD
+        PyObject* parent_train;
+        void* frame_handle;
+    } PyImanS_FrameObject;
+
+    static PyTypeObject PyImanS_FrameType {
+            PyVarObject_HEAD_INIT(NULL, 0)
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._Frame",
+            .tp_basicsize = sizeof(PyImanS_FrameObject),
+            .tp_itemsize = 0,
+    };
+
     static PyObject* PyImanS_FileTrain_New(PyTypeObject* type, PyObject*, PyObject*){
         PyImanS_FileTrainObject* self;
         self = (PyImanS_FileTrainObject*)type->tp_alloc(type, 0);
@@ -198,6 +211,46 @@ extern "C" {
         return status;
     }
 
+    static PyObject* PyImanS_FileTrain_ClearCache(PyImanS_FileTrainObject* self,
+            PyObject* args, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* ptrain = (FileTrain*)self->train_handle;
+        PyObject* result;
+
+        try{
+            ptrain->clearCache();
+            result = Py_BuildValue("");
+        } catch (std::exception& e){
+            PyImanS_Exception_process(&e);
+            result = NULL;
+        }
+
+        return result;
+    }
+
+    static PyObject* PyImanS_FileTrain_GetCapacity(PyImanS_FileTrainObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* train = (FileTrain*)self->train_handle;
+        int capacity = train->capacity;
+        return PyLong_FromLong(capacity);
+    }
+
+    static int PyImanS_FileTrain_SetCapacity(PyImanS_FileTrainObject* self, PyObject* value, void*){
+        using namespace GLOBAL_NAMESPACE;
+        if (!PyLong_Check(value)){
+            PyErr_SetString(PyExc_ValueError, "frame capacity shall be an integer greater than zero");
+            return -1;
+        }
+        int capacity = PyLong_AsLong(value);
+        if (capacity <= 0){
+            PyErr_SetString(PyExc_ValueError, "Wrong capacity value");
+            return -1;
+        }
+        auto* train = (FileTrain*)self->train_handle;
+        train->capacity = capacity;
+        return 0;
+    }
+
     static PyGetSetDef PyImanS_FileTrain_properties[] = {
             {(char*)"file_number", (getter)PyImanS_FileTrain_GetFileNumber, NULL,
                     (char*)"Total number of opened files in the train", NULL},
@@ -225,6 +278,8 @@ extern "C" {
                     (char*)"Returns total number of synchronization channels (requires continuous stimulation protocol)", NULL},
             {(char*)"total_frames", (getter)PyImanS_FileTrain_GetTotalFrames, NULL,
                     (char*)"Returns total number of frames for the whole record", NULL},
+            {(char*)"capacity", (getter)PyImanS_FileTrain_GetCapacity, (setter)PyImanS_FileTrain_SetCapacity,
+             (char*)"Max number of frames that may be simultaneously accessible from Python", NULL},
             {NULL, NULL, NULL, NULL, NULL}
     };
 
@@ -236,6 +291,9 @@ extern "C" {
              "\tchan - the channel number"},
             {"open", (PyCFunction)PyImanS_FileTrain_Open, METH_NOARGS, "Opens the file train for reading"},
             {"close", (PyCFunction)PyImanS_FileTrain_Close, METH_NOARGS, "Closes the file train"},
+            {"clear_cache", (PyCFunction)PyImanS_FileTrain_ClearCache, METH_NOARGS,
+                "Clears the frame cache. Use this function to avoid ChunkSizeError.\n"
+                "This function makes all frames created before its call to be corrupted. Don't use the any more"},
             {NULL, NULL, 0, NULL}
     };
 
@@ -244,6 +302,43 @@ extern "C" {
             .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.FileTrain",
             .tp_basicsize = sizeof(PyImanS_FileTrainObject),
             .tp_itemsize = 0,
+    };
+
+    static Py_ssize_t PyImanS_FileTrain_Length(PyImanS_FileTrainObject* self){
+        using namespace GLOBAL_NAMESPACE;
+        auto* train = (FileTrain*)self->train_handle;
+        return train->getTotalFrames();
+    }
+
+    static PyImanS_FrameObject* PyImanS_FileTrain_GetFrame(PyImanS_FileTrainObject* self, PyObject* arg){
+        using namespace GLOBAL_NAMESPACE;
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "Subscript index is not a number");
+            return NULL;
+        }
+        int n = PyLong_AsLong(arg);
+        auto* train = (FileTrain*)self->train_handle;
+        Frame* frame = NULL;
+
+        try{
+            frame = &(*train)[n];
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+
+        auto* frame_object = (PyImanS_FrameObject*)PyObject_CallFunction((PyObject*)&PyImanS_FrameType,
+                "O", (PyObject*)self);
+        frame_object->frame_handle = frame;
+        frame->iLock = true;
+
+        return frame_object;
+    }
+
+    static PyMappingMethods PyImanS_FileTrain_mapping = {
+            .mp_length = (lenfunc)PyImanS_FileTrain_Length,
+            .mp_subscript = (binaryfunc)PyImanS_FileTrain_GetFrame,
+            .mp_ass_subscript = NULL,
     };
 
     static int PyImanS_FileTrain_Create(PyObject* module){
@@ -259,13 +354,21 @@ extern "C" {
                 "Use derivatives of this class in order to open the whole file train\n"
                 "\n"
                 "The file that contains the very beginning of the record is called 'train head'. The file that refers\n"
-                "to the end of the record is called the 'train tail'";
+                "to the end of the record is called the 'train tail'\n"
+                "\n"
+                "To iterate over all files within the train write:\n"
+                "for file in train:\n"
+                "\tdo_something_with(frame)\n"
+                "\n"
+                "To access the frame number n please, write: \n"
+                "train[n]",
         PyImanS_FileTrainType.tp_new = PyImanS_FileTrain_New;
         PyImanS_FileTrainType.tp_dealloc = (destructor)PyImanS_FileTrain_Destroy;
         PyImanS_FileTrainType.tp_init = PyImanS_FileTrain_Init;
         PyImanS_FileTrainType.tp_getset = PyImanS_FileTrain_properties;
         PyImanS_FileTrainType.tp_methods = PyImanS_FileTrain_methods;
         PyImanS_FileTrainType.tp_str = (reprfunc)PyImanS_FileTrain_Str;
+        PyImanS_FileTrainType.tp_as_mapping = &PyImanS_FileTrain_mapping;
 
         if (PyType_Ready(&PyImanS_FileTrainType) < 0){
             return -1;

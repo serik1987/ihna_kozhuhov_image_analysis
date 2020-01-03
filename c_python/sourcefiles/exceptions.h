@@ -353,7 +353,10 @@ extern "C" {
                 "If this exception is generated one of the following things were happened:\n"
                 "1. Amount of free memory on your PC is not enough. You need to close some extra application or "
                 "restart the Native data manager\n"
-                "2. Cache capacity is not too little. Use train.capacity attribute to increase the cache capacity\n",
+                "2. Cache capacity is not too little. Use train.capacity attribute to increase the cache capacity\n"
+                "3. Too many frames are accessible from Python. You need some frames to make inaccessible. Try:\n"
+                "del frame where frame is an instance of ihna.kozhukhov.imageanalysis.sourcefiles._Frame object to \n"
+                "make some frames inaccessible",
                 PyImanS_TrainError, NULL);
         if (PyModule_AddObject(module, "_sourcefiles_CacheSizeError", PyImanS_CacheSizeError) < 0){
             return -1;

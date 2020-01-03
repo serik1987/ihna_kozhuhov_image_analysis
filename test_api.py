@@ -6,11 +6,13 @@ import ihna.kozhukhov.imageanalysis.sourcefiles as files
 if __name__ == "__main__":
     print("PY Test begin")
 
-    train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0200", "traverse")
+    train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0201")
     print("PY Train created")
     train.open()
     print(train)
-    print("PY Train ready")
+
+    for n in range(30):
+        print(train[n])
 
     '''
     try:

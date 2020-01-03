@@ -4,6 +4,7 @@ the hard disk
 """
 
 import os
+import psutil
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IoError as IoError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_TrainError as TrainError
@@ -73,6 +74,8 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_RoisChunk a
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_SyncChunk as _SyncChunk
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_IsoiChunkIterator as IsoiChunkIterator
 
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_Frame as _Frame
+
 
 class StreamFileTrain(_StreamFileTrain):
     """
@@ -85,7 +88,7 @@ class StreamFileTrain(_StreamFileTrain):
     in the file train
     """
 
-    def __init__(self, filename, traverse_mode):
+    def __init__(self, filename, traverse_mode="traverse"):
         """
         Initializes the train
 
@@ -119,6 +122,12 @@ class StreamFileTrain(_StreamFileTrain):
             actual_sizes.append(size)
         super().__init__(path, file, actual_sizes, traverse_mode)
 
+    def open(self):
+        super().open()
+        available_memory = psutil.virtual_memory().available // 2
+        max_frames = available_memory // self.total_frame_size
+        self.capacity = max_frames
+
 
 class CompressedFileTrain(_CompressedFileTrain):
     """
@@ -134,7 +143,7 @@ class CompressedFileTrain(_CompressedFileTrain):
     CompressedSourceFile instances within the object
     """
 
-    def __init__(self, filename, traverse_mode):
+    def __init__(self, filename, traverse_mode="traverse"):
         """
         Initializes the train
 

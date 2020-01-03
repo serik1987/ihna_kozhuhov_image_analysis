@@ -255,9 +255,10 @@ class NativeDataManager(wx.Dialog):
 
     def close(self):
         """
-        Closes the file opened by this dialog
+        Closes the file opened by this dialog and clears cache from this
         """
         self.__train.close()
+        self.__train.clear_cache()
 
     def compress(self):
         print("NATIVE DATA MANAGER compress")

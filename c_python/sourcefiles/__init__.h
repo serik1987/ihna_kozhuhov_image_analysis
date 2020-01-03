@@ -19,6 +19,7 @@ extern "C" {
     static int PyImanS_TotalChunksAdded = 0;
     static const int PyImanS_TotalChunksExisted = 12;
     static PyObject* PyImanS_ChunkTypes[PyImanS_TotalChunksExisted];
+    static PyObject* PyImanS_FrameType_Handle = NULL;
 };
 
 #include "exceptions.h"
@@ -47,6 +48,7 @@ extern "C" {
 #include "SyncChunk.h"
 #include "ChunkCreator.h"
 #include "IsoiChunkIterator.h"
+#include "Frame.h"
 
 extern "C" {
 
@@ -70,6 +72,7 @@ extern "C" {
         for (int i=0; i < PyImanS_TotalChunksAdded; ++i){
             Py_DECREF(PyImanS_ChunkTypes[i]);
         }
+        Py_XDECREF(PyImanS_FrameType_Handle);
         PyImanS_DeleteSourceFileClasses();
     }
 
@@ -263,6 +266,11 @@ extern "C" {
         }
 
         if (PyImanS_IsoiChunkIterator_Create(imageanalysis) < 0){
+            PyImanS_Destroy();
+            return -1;
+        }
+
+        if (PyImanS_Frame_Create(imageanalysis) < 0){
             PyImanS_Destroy();
             return -1;
         }

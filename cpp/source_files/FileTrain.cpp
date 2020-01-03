@@ -71,7 +71,9 @@ namespace GLOBAL_NAMESPACE{
         if (frameCacheStatus[n] != nullptr){
             return *frameCacheStatus[n];
         }
+#ifdef DEBUG_DELETE_CHECK
         std::cout << "READING NEW FRAME FROM THE HARD DISK DRIVE\n";
+#endif
         Frame* frame;
         while (true){
             try{
@@ -99,7 +101,9 @@ namespace GLOBAL_NAMESPACE{
         if (frameCacheStatus[n] != nullptr){
             return *frameCacheStatus[n];
         }
+#ifdef DEBUG_DELETE_CHECK
         std::cout << "READING NEW FRAME FROM THE HARD DISK DRIVE\n";
+#endif
         Frame* frame = nullptr;
         std::list<Frame*>::iterator it;
         for (it = frameCache.begin(); it != frameCache.end(); ++it){
