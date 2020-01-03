@@ -317,6 +317,10 @@ extern "C" {
             return NULL;
         }
         int n = PyLong_AsLong(arg);
+        if (n < 0){
+            PyErr_SetString(PyExc_ValueError, "Frame number shall be positive");
+            return NULL;
+        }
         auto* train = (FileTrain*)self->train_handle;
         Frame* frame = NULL;
 

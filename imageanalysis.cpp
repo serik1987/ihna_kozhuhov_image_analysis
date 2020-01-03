@@ -3,8 +3,10 @@
 //
 
 // #define C_EXCEPTION_TEST
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include "Python.h"
 #include "structmember.h"
+#include <numpy/ndarrayobject.h>
 #include "init.h"
 #include "c_python/__init__.h"
 
@@ -54,6 +56,7 @@ extern "C" {
 
         imageanalysis = PyModule_Create(&PyIman_Description);
         if (imageanalysis == NULL) return NULL;
+        import_array()
 
         PyIman_ImanError = PyErr_NewExceptionWithDoc("ihna.kozhukhov.imageanalysis.ImanError",
                                                      "This is the base exception that will be thrown by method within this package",
