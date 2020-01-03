@@ -3,6 +3,8 @@
 
 
 import sys
+import matplotlib
+matplotlib.use("wxAgg")
 
 from ihna.kozhukhov.imageanalysis.gui import main
 

@@ -4,6 +4,7 @@ import os.path
 import wx
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from .chunk import ChunkViewer
+from .frameviewer import FrameViewer
 
 
 class NativeDataManager(wx.Dialog):
@@ -267,7 +268,12 @@ class NativeDataManager(wx.Dialog):
         print("NATIVE DATA MANAGER decompress")
 
     def frame_view(self):
-        print("NATIVE DATA MANAGER frame view")
+        try:
+            viewer = FrameViewer(self, self.__train)
+            viewer.ShowModal()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), caption="Frame viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def get_averaged_maps(self):
         print("NATIVE DATA MANAGER get averaged maps")

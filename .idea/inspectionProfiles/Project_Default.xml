@@ -7,6 +7,7 @@
           <option value="imageanalysis.sourcefiles.*" />
           <option value="ihna.kozhukhov.imageanalysis.sourcefiles.*" />
           <option value="wx" />
+          <option value="matplotlib" />
         </list>
       </option>
     </inspection_tool>
