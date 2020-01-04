@@ -1,9 +1,12 @@
 # -*- coding: utf-8
 
+import os
 import xml.etree.ElementTree as ET
 import wx
 from wx.grid import Grid
 from ihna.kozhukhov.imageanalysis.manifest import SimpleRoi
+import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
+from .definesimpleroidlg import DefineSimpleRoiDlg
 
 
 class RoiManager(wx.Dialog):
@@ -137,8 +140,35 @@ class RoiManager(wx.Dialog):
             dlg = wx.MessageDialog(self, str(err), "ROI manager", wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
 
+    def get_vessel_map(self):
+        pathname = self.__data['pathname']
+        filename = None
+        TheTrain = None
+        if self.__data.native_data_files_exist():
+            filename = self.__data['native_data_files'][0]
+            TheTrain = sfiles.StreamFileTrain
+        if self.__data.compressed_data_files_exist():
+            filename = self.__data['compressed_data_files'][0]
+            TheTrain = sfiles.CompressedFileTrain
+        if TheTrain is None:
+            return None
+        fullname = os.path.join(pathname, filename)
+        train = TheTrain(fullname)
+        train.open()
+        frame_data = train[0].body
+        del train
+        return frame_data
+
     def define_simple_roi(self):
-        print("Define simple ROI")
+        try:
+            vessel_map = self.get_vessel_map()
+            dlg = DefineSimpleRoiDlg(self, self.__fullname, vessel_map)
+            if dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            print("Continuing ROI definition")
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Define simple ROI", wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def define_complex_roi(self):
         print("Define complex ROI")
