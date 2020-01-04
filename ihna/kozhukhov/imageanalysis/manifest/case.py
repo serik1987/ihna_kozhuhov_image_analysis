@@ -4,6 +4,7 @@ import copy
 import os.path
 import xml.etree.ElementTree as ET
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
+from .roilist import RoiList
 
 
 class Case:
@@ -45,6 +46,7 @@ class Case:
                       'averaged_maps', 'auto', 'imported', 'special_conditions']
 
     __properties = None
+    __roi_list = None
 
     def __init__(self, input_object):
         self.__properties = {}
@@ -52,6 +54,7 @@ class Case:
             self.__properties[property_name] = None
         self.__properties['auto'] = False
         self.__properties['imported'] = False
+        self.__roi_list = RoiList()
         if isinstance(input_object, dict):
             self.import_case(input_object)
         elif isinstance(input_object, ET.Element):
@@ -99,7 +102,9 @@ class Case:
         if xml.find('averaged-maps') is not None:
             self['averaged_maps'] = self.__read_file_list(xml.find('averaged-maps'), 'averaged-map')
         if xml.find('roi') is not None:
-            self.__load_roi(xml.find('roi'))
+            self.__load_roi(xml.find('roi-list'))
+        else:
+            self.__roi_list = RoiList()
 
     def __read_file_list(self, xml, element_name):
         filelist = []
@@ -108,7 +113,7 @@ class Case:
         return filelist
 
     def __load_roi(self, xml):
-        self['roi'] = []
+        self.__roi_list.load(xml)
 
     def save_case(self, parent_xml):
         if self['imported']:
@@ -137,8 +142,9 @@ class Case:
             self.__add_file_list(root, "trace-files", "trace-file", self['trace_files'])
         if self['averaged_maps'] is not None:
             self.__add_file_list(root, "averaged-maps", "averaged-map", self['averaged_maps'])
-        if self['roi'] is not None:
-            self.__add_roi(root)
+        roi_xml = self.__roi_list.save()
+        roi_xml.tail = "\n"
+        root.append(roi_xml)
 
     def __add_file_list(self, root, list_name, list_element_name, filelist):
         list_element = ET.SubElement(root, list_name)
@@ -159,6 +165,8 @@ class Case:
                 self.__properties[property_name] = copy.deepcopy(kwargs[property_name])
 
     def __getitem__(self, key):
+        if key == "roi":
+            return self.__roi_list
         if key in self.property_names:
             return self.__properties[key]
         else:
@@ -234,3 +242,6 @@ class Case:
             return True
         except sfiles.IoError:
             return False
+
+    def roi_exist(self):
+        return len(self.__roi_list) > 0

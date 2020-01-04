@@ -441,7 +441,8 @@ class MainWindow(wx.Frame):
 
     def open_native_data_manager(self):
         try:
-            manager = NativeDataManager(self, self.__case)
+            fullname = self.__animal['specimen'] + "_" + self.__case['short_name']
+            manager = NativeDataManager(self, self.__case, fullname)
             manager.ShowModal()
             manager.close()
         except Exception as err:
@@ -645,7 +646,7 @@ class MainWindow(wx.Frame):
                     self.set_native_data_compressed()
             else:
                 self.set_native_data_ready()
-            if self.__case['roi'] is None:
+            if not self.__case.roi_exist():
                 self.set_roi_not_found()
             else:
                 self.set_roi_ready()

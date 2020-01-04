@@ -27,7 +27,6 @@ class FrameViewer(wx.Dialog):
     __btn_save_png = None
     __btn_save_npy = None
     __btn_save_mat = None
-    __btn_define_roi = None
 
     __txt_number = None
     __txt_sequential_number = None
@@ -39,15 +38,17 @@ class FrameViewer(wx.Dialog):
     __canvas = None
     __fig = None
     __ax = None
+    __fullname = None
 
-    def __init__(self, parent, train):
+    def __init__(self, parent, train, fullname="undefined"):
         self.__train = train
         self.__frame_number = 0
         self.__total_frames = self.__train.total_frames
         if isinstance(self.__train, sfiles.CompressedFileTrain):
             self.__total_frames = 1
         self.__constructed = False
-        super().__init__(parent, title="Frame viewer: " + self.__train.filename, size=(800, 600))
+        self.__fullname = fullname
+        super().__init__(parent, title="Frame viewer: " + fullname, size=(800, 600))
         main_panel = wx.Panel(self)
 
         general_layout = wx.BoxSizer(wx.VERTICAL)
@@ -161,10 +162,6 @@ class FrameViewer(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, lambda event: self.save_mat(), self.__btn_save_mat)
         bottom_layout.Add(self.__btn_save_mat, 0, wx.RIGHT, 5)
 
-        self.__btn_define_roi = wx.Button(parent, label="ROI", size=(50, 20))
-        self.Bind(wx.EVT_BUTTON, lambda event: self.define_roi(), self.__btn_define_roi)
-        bottom_layout.Add(self.__btn_define_roi, 0, wx.RIGHT, 5)
-
         return bottom_layout
 
     def load_frame(self):
@@ -172,7 +169,7 @@ class FrameViewer(wx.Dialog):
         self.__frame_body = self.__current_frame.body
         self.__ax.cla()
         self.__ax.imshow(self.__frame_body, cmap='gray')
-        self.__ax.set_title("{0}: Frame # {1}".format(self.__train.filename, self.__frame_number))
+        self.__ax.set_title("{0}: Frame # {1}".format(self.__fullname, self.__frame_number))
         self.__txt_number.SetLabel(str(self.__current_frame.number))
         self.__txt_sequential_number.SetLabel(str(self.__current_frame.sequential_number))
         self.__txt_arrival_time.SetLabel("{0:.0f} ms".format(self.__current_frame.arrival_time))
@@ -287,6 +284,3 @@ class FrameViewer(wx.Dialog):
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), "Frame Viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
-
-    def define_roi(self):
-        print("TO-DO: define ROI")

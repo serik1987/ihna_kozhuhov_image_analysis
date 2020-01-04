@@ -20,9 +20,11 @@ class NativeDataManager(wx.Dialog):
 
     __case = None
     __train = None
+    __case_name = None
 
-    def __init__(self, parent, case):
+    def __init__(self, parent, case, case_name="undefined"):
         self.__case = case
+        self.__case_name = case_name
         pathname = self.__case['pathname']
         if self.__case.compressed_data_files_exist():
             filename = self.__case['compressed_data_files'][0]
@@ -35,7 +37,7 @@ class NativeDataManager(wx.Dialog):
         else:
             raise RuntimeError("Error in opening native or compressed files")
         self.__train.open()
-        title = "Native data manager: " + self.__case['short_name']
+        title = "Native data manager: " + case_name
         super().__init__(parent, title=title, size=(800, 600))
         main_panel = wx.Panel(self)
         general_layout = wx.BoxSizer(wx.VERTICAL)
@@ -269,7 +271,7 @@ class NativeDataManager(wx.Dialog):
 
     def frame_view(self):
         try:
-            viewer = FrameViewer(self, self.__train)
+            viewer = FrameViewer(self, self.__train, self.__case_name)
             viewer.ShowModal()
             viewer.close()
         except Exception as err:

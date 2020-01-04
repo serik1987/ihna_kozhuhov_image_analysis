@@ -16,7 +16,7 @@ Kalatsky V.A., Stryker P.S. New Paradigm for Optical Imaging: Temporally\n\
 Encoded Maps of Intrinsic Signal. Neuron. 2003. V. 38. N. 4. P. 529-545\n\
 (C) Sergei Kozhukhov, 2020\n\
 (C) the Institute of Higher Nervous Activity and Neurophysiology,\n\
-Russian Academy of Sciences, 2020",
-                  "Warning", style=wx.OK|wx.ICON_WARNING|wx.CENTRE).ShowModal()
+Russian Academy of Sciences, 2020\n",
+                "Terms of use", style=wx.OK|wx.ICON_WARNING|wx.CENTRE).ShowModal()
     app.MainLoop()
     return 0

@@ -10,3 +10,7 @@ this folder
 from .Animals import Animals
 from .animal import Animal
 from .caseslist import CasesList
+from .roi import Roi
+from .simpleroi import SimpleRoi
+from .roilist import RoiList
+from .complexroi import ComplexRoi
