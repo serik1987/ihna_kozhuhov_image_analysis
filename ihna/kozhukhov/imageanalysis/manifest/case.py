@@ -101,7 +101,7 @@ class Case:
             self['trace_files'] = self.__read_file_list(xml.find('trace-files'), 'trace-file')
         if xml.find('averaged-maps') is not None:
             self['averaged_maps'] = self.__read_file_list(xml.find('averaged-maps'), 'averaged-map')
-        if xml.find('roi') is not None:
+        if xml.find('roi-list') is not None:
             self.__load_roi(xml.find('roi-list'))
         else:
             self.__roi_list = RoiList()

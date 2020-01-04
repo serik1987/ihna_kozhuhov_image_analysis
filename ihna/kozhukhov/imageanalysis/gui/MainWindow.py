@@ -6,6 +6,7 @@ import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from .importcasedialog import ImportCaseDialog
 from .importcasemanager import ImportCaseManager
 from .nativedatamanager import NativeDataManager
+from .roimanager import RoiManager
 
 
 class MainWindow(wx.Frame):
@@ -450,7 +451,14 @@ class MainWindow(wx.Frame):
                              style=wx.OK | wx.CENTRE | wx.ICON_ERROR).ShowModal()
 
     def open_roi_data_manager(self):
-        print("Open roi data manager")
+        fullname = "{0}_{1}".format(self.__animal['specimen'], self.__case['short_name'])
+        try:
+            dlg = RoiManager(self, self.__case, fullname)
+            dlg.ShowModal()
+            self.load_case()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), fullname, wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def open_trace_analysis_manager(self):
         print("Open trace analysis manager")
@@ -461,6 +469,9 @@ class MainWindow(wx.Frame):
     def set_autoprocess(self, evt):
         checked = evt.IsChecked()
         self.__case['auto'] = checked
+        self.__cases.save()
+
+    def save_manifest(self):
         self.__cases.save()
 
     def set_averaged_maps_not_found(self):
