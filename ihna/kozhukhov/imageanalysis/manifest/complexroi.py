@@ -125,3 +125,18 @@ class ComplexRoi(Roi):
             element = ET.SubElement(xml, "subroi")
             element.text = roi.get_name()
             element.tail = "\n"
+
+    def apply(self, data_map):
+        """
+        Applies ROI to the map
+
+        Input arguments:
+            data_map - numpy array
+        """
+        mask = np.zeros((data_map.shape[0], data_map.shape[1])) == 0
+        for coordinate in self.get_coordinate_list():
+            mask[coordinate[0], coordinate[1]] = False
+        new_map = np.array(data_map, dtype=np.float)
+        new_map[mask] = np.nan
+        new_map = new_map[self.get_top():self.get_bottom(), self.get_left():self.get_right()]
+        return new_map

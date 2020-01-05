@@ -149,3 +149,10 @@ class SimpleRoi(Roi):
 
     def get_type(self):
         return "simple"
+
+    def apply(self, data_map):
+        """
+        Applies ROI to the map and returns the adjusted ROI
+        """
+        print("entry")
+        return data_map[self.get_top():self.get_bottom(), self.get_left():self.get_right()]

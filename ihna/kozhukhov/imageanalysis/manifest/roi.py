@@ -127,3 +127,9 @@ Area: {6}\n".format(self.get_left(), self.get_right(), self.get_top(), self.get_
         Returns a string containing the ROI type
         """
         raise NotImplementedError("get_type")
+
+    def apply(self, data_map):
+        """
+        Applies ROI to the map and returns the adjusted ROI
+        """
+        raise NotImplementedError("apply")

@@ -9,6 +9,7 @@ import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from .definesimpleroidlg import DefineSimpleRoiDlg
 from .definecomplexroidlg import DefineComplexRoiDlg
 from .manualroiselectdlg import ManualRoiSelectDlg
+from .showroidlg import ShowRoiDlg
 
 
 class RoiManager(wx.Dialog):
@@ -26,6 +27,7 @@ class RoiManager(wx.Dialog):
     __btn_complex = None
     __btn_delete = None
     __btn_manual = None
+    __btn_export = None
     __btn_show = None
 
     def __init__(self, parent, data, fullname):
@@ -60,6 +62,7 @@ class RoiManager(wx.Dialog):
         self.__table.EnableEditing(False)
 
     def __create_buttons(self, parent):
+        all_buttons = wx.BoxSizer(wx.VERTICAL)
         buttons = wx.BoxSizer(wx.HORIZONTAL)
 
         self.__btn_import = wx.Button(parent, label="Import ROI")
@@ -82,11 +85,19 @@ class RoiManager(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, lambda event: self.manual_roi_select(), self.__btn_manual)
         buttons.Add(self.__btn_manual, 0, wx.RIGHT, 5)
 
+        self.__btn_export = wx.Button(parent, label="Export to TXT")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.export_to_txt(), self.__btn_export)
+        buttons.Add(self.__btn_export, 0, wx.RIGHT, 0)
+
+        all_buttons.Add(buttons, 0, wx.BOTTOM | wx.ALIGN_CENTER, 5)
+        add_buttons = wx.BoxSizer(wx.HORIZONTAL)
+
         self.__btn_show = wx.Button(parent, label="Show ROI on map")
         self.Bind(wx.EVT_BUTTON, lambda event: self.show_roi(), self.__btn_show)
-        buttons.Add(self.__btn_show)
+        add_buttons.Add(self.__btn_show, 0, wx.RIGHT, 0)
 
-        return buttons
+        all_buttons.Add(add_buttons, 0, wx.ALIGN_CENTER)
+        return all_buttons
 
     def update_roi(self):
         roi_list = self.__data['roi']
@@ -195,7 +206,7 @@ class RoiManager(wx.Dialog):
     def delete_roi(self):
         names = self.get_selected_roi()
         if len(names) != 1:
-            return
+            raise ValueError("Please, select a ROI to delete")
         del self.__data['roi'][names[0]]
         self.update_roi()
 
@@ -210,5 +221,32 @@ class RoiManager(wx.Dialog):
             dlg = wx.MessageDialog(self, str(err), "Manual ROI select", wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
 
+    def export_to_txt(self):
+        try:
+            dlg = wx.FileDialog(self, "Save ROI list to TXT", wildcard="*.txt",
+                                style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+            if dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            S = str(self.__data['roi'])
+            filename = dlg.GetPath()
+            if not filename.endswith(".txt"):
+                filename += ".txt"
+            f = open(filename, 'w')
+            f.write(S)
+            f.close()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Export to TXT", wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+
     def show_roi(self):
-        print("Show ROI")
+        try:
+            names = self.get_selected_roi()
+            if len(names) != 1:
+                raise ValueError("Please, select a ROI to show")
+            roi = self.__data['roi'][names[0]]
+            vessel_map = self.get_vessel_map()
+            dlg = ShowRoiDlg(self, self.__fullname, roi, vessel_map)
+            dlg.ShowModal()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Show ROI", wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
