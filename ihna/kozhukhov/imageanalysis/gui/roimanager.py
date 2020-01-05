@@ -8,6 +8,7 @@ from ihna.kozhukhov.imageanalysis.manifest import SimpleRoi
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from .definesimpleroidlg import DefineSimpleRoiDlg
 from .definecomplexroidlg import DefineComplexRoiDlg
+from .manualroiselectdlg import ManualRoiSelectDlg
 
 
 class RoiManager(wx.Dialog):
@@ -184,11 +185,30 @@ class RoiManager(wx.Dialog):
             dlg = wx.MessageDialog(self, str(err), "Define complex ROI", wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
 
+    def get_selected_roi(self):
+        names = []
+        rows = self.__table.GetSelectedRows()
+        for row in rows:
+            names.append(self.__table.GetRowLabelValue(row))
+        return names
+
     def delete_roi(self):
-        print("Delete ROI")
+        names = self.get_selected_roi()
+        if len(names) != 1:
+            return
+        del self.__data['roi'][names[0]]
+        self.update_roi()
 
     def manual_roi_select(self):
-        print("Manual ROI select")
+        try:
+            dlg = ManualRoiSelectDlg(self, self.__fullname)
+            if dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            self.__data['roi'].add(dlg.get_roi())
+            self.update_roi()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Manual ROI select", wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def show_roi(self):
         print("Show ROI")
