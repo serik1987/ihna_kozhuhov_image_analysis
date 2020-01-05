@@ -165,7 +165,9 @@ class RoiManager(wx.Dialog):
             dlg = DefineSimpleRoiDlg(self, self.__fullname, vessel_map)
             if dlg.ShowModal() == wx.ID_CANCEL:
                 return
-            print("Continuing ROI definition")
+            roi = dlg.get_roi()
+            self.__data['roi'].add(roi)
+            self.update_roi()
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), "Define simple ROI", wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
