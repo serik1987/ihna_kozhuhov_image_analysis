@@ -7,6 +7,7 @@ from wx.grid import Grid
 from ihna.kozhukhov.imageanalysis.manifest import SimpleRoi
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from .definesimpleroidlg import DefineSimpleRoiDlg
+from .definecomplexroidlg import DefineComplexRoiDlg
 
 
 class RoiManager(wx.Dialog):
@@ -173,7 +174,15 @@ class RoiManager(wx.Dialog):
             dlg.ShowModal()
 
     def define_complex_roi(self):
-        print("Define complex ROI")
+        try:
+            dlg = DefineComplexRoiDlg(self, self.__fullname, self.__data['roi'])
+            if dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            self.__data['roi'].add(dlg.get_roi())
+            self.update_roi()
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), "Define complex ROI", wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def delete_roi(self):
         print("Delete ROI")
