@@ -41,6 +41,8 @@ namespace GLOBAL_NAMESPACE {
         uint32_t chunkSize;
         char* body = nullptr;
 
+        virtual void writeBody(std::ofstream& out);
+
     public:
         /**
          * Initializes the chunk.
@@ -104,6 +106,14 @@ namespace GLOBAL_NAMESPACE {
          * @return reference to the out
          */
         friend std::ostream& operator<<(std::ostream& out, const Chunk& chunk);
+
+        /**
+         * Write the chunk to the output stream
+         *
+         * @param filename - name to be substituted to an exception if this is generated
+         * @param output the output stream
+         */
+        void write(const std::string& filename, std::ofstream& output);
     };
 
 }

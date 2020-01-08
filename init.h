@@ -55,4 +55,7 @@
 #define MSG_FRAM_CHUNK_NOT_FOUND "The frame reading is failed because the FRAM chunk is absent"
 #define MSG_CACHE_TOO_SMALL "Too low free memory or cache capacity"
 
+#define MSG_DECOMPRESSION_EXCEPTION "The compressor applied during the compression is not the same to the compressor "\
+    "applied to the file decompressor"
+
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_INIT_H

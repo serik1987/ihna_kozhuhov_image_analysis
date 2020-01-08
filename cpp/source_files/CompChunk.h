@@ -38,9 +38,23 @@ namespace GLOBAL_NAMESPACE {
         COMP_CHUNK info;
 
     public:
+        /**
+         * Creates a predefined COMP chunk available for reading
+         *
+         * @param size
+         */
         explicit CompChunk(uint32_t size): Chunk("COMP", size) {
             body = (char*)&info;
         }
+
+        /**
+         * Creates an empty chunk to write some data and save tht chunk to the hard disk
+         *
+         * @param compressed_record_size size of one extra pixel
+         * @param compressed_frame_size Size of the single frame at the compressed state
+         * @param compressed_frame_number Total number of compressed frames
+         */
+        CompChunk(uint32_t compressed_record_size, uint32_t compressed_frame_size, uint32_t compressed_frame_number);
 
         /**
          *

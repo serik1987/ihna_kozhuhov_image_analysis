@@ -30,6 +30,12 @@ namespace GLOBAL_NAMESPACE {
         std::unordered_map<uint32_t, Chunk*> chunk_map;
         SoftChunk* softChunk = nullptr;
         DataChunk* dataChunk = nullptr;
+
+    protected:
+        void writeBody(std::ofstream& out) override {
+            out.write(Tag, ISOI_CHUNK_TAG_SIZE);
+        };
+
     public:
         explicit IsoiChunk(uint32_t size): Chunk("ISOI", size){
             body = nullptr;

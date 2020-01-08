@@ -62,6 +62,11 @@ namespace GLOBAL_NAMESPACE {
             body = (char*)&info;
         }
 
+        SoftChunk(const SoftChunk& other): Chunk(other){
+            info = other.info;
+            body = (char*)&info;
+        }
+
         /**
          *
          * @return chunk tag
@@ -69,6 +74,8 @@ namespace GLOBAL_NAMESPACE {
         [[nodiscard]] const char* getTag() const { return info.Tag; }
 
         [[nodiscard]] SourceFile::FileType getFileType() const;
+
+        void setFileType(SourceFile::FileType value);
 
         /**
          *
@@ -95,16 +102,37 @@ namespace GLOBAL_NAMESPACE {
         [[nodiscard]] std::string getCurrentFilename() const { return readString(info.ThisFilename, 16); }
 
         /**
+         * Sets the "ThisFilename" field
+         *
+         * @param value the field value. Only first 16 characters will be copied
+         */
+        void setCurrentFilename(const std::string& value);
+
+        /**
          *
          * @return next filename or empty string if this is the last filename
          */
         [[nodiscard]] std::string getNextFilename() const { return readString(info.NextFilename, 16); }
 
         /**
+        * Sets the "NextFilename" field
+        *
+        * @param value the field value. Only first 16 characters will be copied
+        */
+        void setNextFilename(const std::string& value);
+
+        /**
          *
          * @return previous filename or empty string if this is previous filename
          */
         [[nodiscard]] std::string getPreviousFilename()const { return readString(info.PrevFilename, 16); }
+
+        /**
+        * Sets the "PreviousFilename" field
+        *
+        * @param value the field value. Only first 16 characters will be copied
+        */
+        void setPreviousFilename(const std::string& value);
 
         /**
          *

@@ -87,4 +87,35 @@ namespace GLOBAL_NAMESPACE{
 
         return type;
     }
+
+    void SoftChunk::setCurrentFilename(const std::string &value) {
+        strncpy(info.ThisFilename, value.c_str(), 16);
+    }
+
+    void SoftChunk::setNextFilename(const std::string &value) {
+        strncpy(info.NextFilename, value.c_str(), 16);
+    }
+
+    void SoftChunk::setPreviousFilename(const std::string &value) {
+        strncpy(info.PrevFilename, value.c_str(), 16);
+    }
+
+    void SoftChunk::setFileType(SourceFile::FileType value) {
+        switch (value){
+            case SourceFile::AnalysisFile:
+                info.Tag[0] = 'A';
+                break;
+            case SourceFile::CompressedFile:
+                info.Tag[0] = 'C';
+                break;
+            case SourceFile::GreenFile:
+                info.Tag[0] = 'G';
+                break;
+            case SourceFile::StreamFile:
+                info.Tag[0] = 'T';
+                break;
+            default:
+                info.Tag[0] = 'X';
+        }
+    }
 }

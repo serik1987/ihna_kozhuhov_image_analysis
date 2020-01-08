@@ -16,6 +16,9 @@ namespace GLOBAL_NAMESPACE {
      * frame body (a 2D matrix representing a certain image).
      */
     class DataChunk: public Chunk {
+    protected:
+        void writeBody(std::ofstream& output) override {};
+
     public:
         /**
          * Initializes the DATA chunk

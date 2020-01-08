@@ -61,4 +61,19 @@ namespace GLOBAL_NAMESPACE{
 
         return out;
     }
+
+    void Chunk::write(const std::string& filename, std::ofstream &output) {
+        output.write(getName().c_str(), ChunkHeader::CHUNK_ID_SIZE);
+        uint32_t chunk_size = getSize();
+        output.write((char*)&chunk_size, sizeof(uint32_t));
+        writeBody(output);
+
+        if (output.fail()){
+            throw SourceFile::file_write_exception(filename);
+        }
+    }
+
+    void Chunk::writeBody(std::ofstream &output) {
+        output.write(body, getSize());
+    }
 }

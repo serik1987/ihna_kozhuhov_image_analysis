@@ -13,8 +13,14 @@ namespace GLOBAL_NAMESPACE {
      * Provides the file compression
      */
     class Compressor: public BaseCompressor {
+    private:
+        void writeSoftChunk(const SoftChunk* psoft, std::ofstream& output);
+        void writeCompChunk(std::ofstream& output);
+
     protected:
         std::string getOutputFile(const std::string& input_file) override;
+        void writeHeader(TrainSourceFile& file, std::ofstream& out) override;
+        void writeConsequtiveFrame(std::ifstream& in, std::ofstream& out) override;
 
     public:
         /**

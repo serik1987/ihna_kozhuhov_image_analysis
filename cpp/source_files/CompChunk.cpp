@@ -16,4 +16,14 @@ namespace GLOBAL_NAMESPACE{
 
         return out;
     }
+
+    CompChunk::CompChunk(uint32_t compressed_record_size, uint32_t compressed_frame_size,
+                         uint32_t compressed_frame_number): Chunk("COMP", sizeof(COMP_CHUNK)) {
+        info.CompressedRecordSize = compressed_record_size;
+        info.CompressedFrameSize = compressed_frame_size;
+        info.CompressedFrameNumber = compressed_frame_number;
+        strncpy(info.Tag, "0000", 4);
+        info.Free[0] = 0;   info.Free[1] = 0;   info.Free[2] = 0;
+        body = (char*)&info;
+    }
 }

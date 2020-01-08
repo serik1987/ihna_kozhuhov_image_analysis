@@ -82,6 +82,12 @@ namespace GLOBAL_NAMESPACE {
                     source_file_exception(MSG_FILE_READ_EXCEPTION, filename, trainname) {};
         };
 
+        class file_write_exception: public source_file_exception{
+        public:
+            explicit file_write_exception(const std::string& filename):
+                source_file_exception("Error in writing to the output file", filename) {};
+        };
+
         class unsupported_chunk_exception: public source_file_exception{
         private:
             const char* chunk_name = NULL;
