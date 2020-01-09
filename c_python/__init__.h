@@ -16,6 +16,7 @@ static void PyIman_Exception_process(const void *);
 }
 
 #include "sourcefiles/__init__.h"
+#include "compression/__init__.h"
 
 extern "C" {
 
@@ -27,6 +28,7 @@ extern "C" {
 
         if (iman_handle != NULL){
             if (PyImanS_Exception_process(handle) < 0) return;
+            if (PyImanC_Exception_process(handle) < 0) return;
             PyErr_SetString(PyIman_ImanError, iman_handle->what());
         } else {
             PyErr_SetString(PyExc_RuntimeError, exception_handle->what());

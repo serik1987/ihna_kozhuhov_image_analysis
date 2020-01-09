@@ -19,10 +19,7 @@ extern "C" {
 //        iman_exception e("Sample exception message");
 //        io_exception e("Sample IO exception", "FILE001.DAT");
 //        FileTrain::train_exception e("Sample IO exception", "TRAIN001.DAT");
-//        SourceFile::source_file_exception e("Sample source file error", "FILE001.DAT", "TRAIN001.DAT");
-//        SourceFile::chunk_not_found_exception e("CHUNK", "FILE001.DAT", "TRAIN001.DAT");
-//        Frame::frame_exception e("TRAIN001.DAT", 20, "Sample frame message");
-//        FileTrain::cache_too_small_exception e("TRAIN001.DAT");
+//        Decompressor::decompression_exception e;
         PyIman_Exception_process(&e);
         return NULL;
     }
@@ -70,6 +67,12 @@ extern "C" {
             Py_DECREF(PyIman_ImanError);
             Py_DECREF(imageanalysis);
             return NULL;
+        }
+
+        if (PyImanC_Init(imageanalysis) < 0){
+            PyImanS_Destroy();
+            Py_DECREF(PyIman_ImanError);
+            Py_DECREF(imageanalysis);
         }
 
         return imageanalysis;

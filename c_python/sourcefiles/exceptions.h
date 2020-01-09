@@ -52,6 +52,7 @@ extern "C" {
     static PyObject* PyImanS_FramChunkNotFoundError = NULL;
     static PyObject* PyImanS_CompressedFrameReadError = NULL;
     static PyObject* PyImanS_CacheSizeError = NULL;
+    static PyObject* PyImanS_FileWriteError = NULL;
 
     static int PyImanS_Create_exceptions(PyObject* module){
         PyImanS_IoError = PyErr_NewExceptionWithDoc("ihna.kozhukhov.imageanalysis.sourcefiles.IoError",
@@ -362,6 +363,14 @@ extern "C" {
             return -1;
         }
 
+        PyImanS_FileWriteError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.FileWriteError",
+                "This error will be generated when an attempt to write to the output file is failed",
+                PyImanS_SourceFileError, NULL);
+        if (PyModule_AddObject(module, "_sourcefiles_FileWriteError",PyImanS_FileWriteError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -411,6 +420,7 @@ extern "C" {
         Py_XDECREF(PyImanS_FramChunkNotFoundError);
         Py_XDECREF(PyImanS_CompressedFrameReadError);
         Py_XDECREF(PyImanS_CacheSizeError);
+        Py_XDECREF(PyImanS_FileWriteError);
     }
 
     static int PyImanS_Exception_process(const void* handle){
@@ -459,6 +469,8 @@ extern "C" {
                         dynamic_cast<SourceFile::file_open_exception*>(source_file_handle);
                 auto* file_read_error_handle =
                         dynamic_cast<SourceFile::file_read_exception*>(source_file_handle);
+                auto* file_write_error_handle =
+                        dynamic_cast<SourceFile::file_write_exception*>(source_file_handle);
                 auto* unsupported_chunk_error_handle =
                         dynamic_cast<SourceFile::unsupported_chunk_exception*>(source_file_handle);
                 auto* chunk_size_error_handle =
@@ -508,6 +520,8 @@ extern "C" {
                     PyErr_SetString(PyImanS_FileOpenError, file_open_error_handle->what());
                 } else if (file_read_error_handle != nullptr) {
                     PyErr_SetString(PyImanS_FileReadError, file_read_error_handle->what());
+                } else if (file_write_error_handle != nullptr) {
+                    PyErr_SetString(PyImanS_FileWriteError, file_write_error_handle->what());
                 } else if (unsupported_chunk_error_handle != nullptr) {
                     PyObject *chunk_name = PyUnicode_FromString(unsupported_chunk_error_handle->getChunkName());
                     PyObject_SetAttrString(PyImanS_ChunkError, "chunk_name", chunk_name);

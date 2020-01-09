@@ -8,7 +8,7 @@
 namespace GLOBAL_NAMESPACE{
 
     BaseCompressor::BaseCompressor(FileTrain &input, const std::string& output_path):
-        train(input) {
+        train(input), full_output_train_file("") {
         this->output_path = output_path;
         original_frame_size = train.getFrameSize();
         elements_in_frame = original_frame_size * sizeof(CompressedElement) / sizeof(OriginalElement);
@@ -54,6 +54,9 @@ namespace GLOBAL_NAMESPACE{
             string output_file = getOutputFile(input_file);
             full_input_file = input_dir + input_file;
             full_output_file = output_dir + output_file;
+            if (full_output_train_file.empty()){
+                full_output_train_file = full_output_file;
+            }
             compressed_frame_number = file->getSoftChunk().getFramesThisFile();
 
             ofstream output;
@@ -73,7 +76,7 @@ namespace GLOBAL_NAMESPACE{
 
             idx++;
             if (progressFunction != nullptr){
-                progressFunction((float)idx * 100 / train.getFileNumber());
+                progressFunction((float)idx * 100 / train.getFileNumber(), handle);
             }
         }
     }

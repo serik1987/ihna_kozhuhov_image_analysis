@@ -13,11 +13,12 @@ namespace GLOBAL_NAMESPACE {
 
     class BaseCompressor {
     public:
-        typedef void (*ProgressFunction)(float);
+        typedef void (*ProgressFunction)(float, void*);
 
     private:
         void writeFirstFrame(std::istream& in, std::ostream& out);
         ProgressFunction progressFunction = nullptr;
+        void* handle = nullptr;
 
     protected:
         typedef uint16_t OriginalElement;
@@ -46,6 +47,7 @@ namespace GLOBAL_NAMESPACE {
         std::string output_path;
         std::string full_input_file;
         std::string full_output_file;
+        std::string full_output_train_file;
 
         /**
          * Returns the output file name.
@@ -103,7 +105,16 @@ namespace GLOBAL_NAMESPACE {
          * typedef void (*ProgressFunction)(float perc)
          * where perc is percentage completed
          */
-        void setProgressFunction(ProgressFunction value) { progressFunction = value; }
+        void setProgressFunction(ProgressFunction value, void* handle) {
+            progressFunction = value;
+            this->handle = handle;
+        }
+
+        /**
+         *
+         * @return the full output file
+         */
+        const std::string& getFullOutputFile() { return full_output_train_file; }
     };
 
 }
