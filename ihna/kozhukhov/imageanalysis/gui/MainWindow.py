@@ -446,6 +446,8 @@ class MainWindow(wx.Frame):
             manager = NativeDataManager(self, self.__case, fullname)
             manager.ShowModal()
             manager.close()
+            self.__cases.save()
+            self.load_cases()
         except Exception as err:
             wx.MessageDialog(self, str(err), "Native data manager",
                              style=wx.OK | wx.CENTRE | wx.ICON_ERROR).ShowModal()

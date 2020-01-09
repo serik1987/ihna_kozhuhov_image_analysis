@@ -3,8 +3,10 @@
 import os.path
 import wx
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
+from ihna.kozhukhov.imageanalysis import compression
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
+from .compressiondlg import CompressionDlg
 
 
 class NativeDataManager(wx.Dialog):
@@ -264,10 +266,44 @@ class NativeDataManager(wx.Dialog):
         self.__train = None
 
     def compress(self):
-        print("NATIVE DATA MANAGER compress")
+        dlg = CompressionDlg(self, "Compression properties",
+                             "Don't compress the data if compressed files already exists",
+                             "Delete original files after compression", "Compress")
+        if dlg.ShowModal() == wx.ID_CANCEL:
+            return
+        fail_on_exist = dlg.is_fail_on_target_exists()
+        delete_after_compression = dlg.is_delete_after_process()
+        progress_box = wx.ProgressDialog("Compression", "Compression is in progress", maximum=100, parent=self,
+                                         style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
+        progress_box.Update(0)
+        try:
+            compression.compress(self.__case, lambda perc: progress_box.Update(int(round(perc))),
+                                 fail_on_exist, delete_after_compression)
+        except Exception as err:
+            error_box = wx.MessageDialog(self, str(err), "Compression", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            error_box.ShowModal()
+        progress_box.Destroy()
+        self.Close()
 
     def decompress(self):
-        print("NATIVE DATA MANAGER decompress")
+        dlg = CompressionDlg(self, "Decompression properties",
+                             "Don't decompress if native data exists",
+                             "Delete compressed files after decompression", "Decompress")
+        if dlg.ShowModal() == wx.ID_CANCEL:
+            return
+        fail_on_exist = dlg.is_fail_on_target_exists()
+        delete_after_decompression = dlg.is_delete_after_process()
+        progress_box = wx.ProgressDialog("Decompression", "Decompression is in progress", maximum=100, parent=self,
+                                         style=wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
+        progress_box.Update(0)
+        try:
+            compression.decompress(self.__case, lambda perc: progress_box.Update(int(round(perc))),
+                                   fail_on_exist, delete_after_decompression)
+        except Exception as err:
+            error_box = wx.MessageDialog(self, str(err), "Decompression", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            error_box.ShowModal()
+        progress_box.Destroy()
+        self.Close()
 
     def frame_view(self):
         try:
