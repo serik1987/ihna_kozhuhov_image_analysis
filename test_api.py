@@ -15,24 +15,11 @@ if __name__ == "__main__":
     print("PY Test begin")
 
     animals = manifest.Animals("/home/serik1987/vasomotor-oscillations")
-    animals.load()
     animal = animals['c022']
     cases = manifest.CasesList(animal)
     case = cases['0A']
-    comp.decompress(case, progress_bar, False, True)
+    comp.compress(case, progress_bar, False, True)
     cases.save()
-    print(case)
-
-    '''
-    train = files.CompressedFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0A00z")
-    train.open()
-    print("PY Compressed train was created")
-
-    decompressor = comp._Decompressor(train, "/home/serik1987/vasomotor-oscillations/sample_data/c022z/")
-    decompressor.set_progress_bar(progress_bar)
-    decompressor.run()
-    print("PY Full output file:", decompressor.get_full_output_file())
-    '''
 
     '''
     # train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0201")

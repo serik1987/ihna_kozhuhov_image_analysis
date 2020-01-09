@@ -10,7 +10,7 @@ extern "C" {
     #include "../../cpp/compression/Compressor.h"
     #include "../../cpp/compression/Decompressor.h"
 
-#define PyImanC_CLASS_NUMBER 1
+#define PyImanC_CLASS_NUMBER 2
     static int PyImanC_Current_class = 0;
     static PyObject* PyImanC_Class_list[PyImanC_CLASS_NUMBER];
 
