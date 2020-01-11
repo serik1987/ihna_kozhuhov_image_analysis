@@ -13,12 +13,6 @@ int progress_function(int completed, int total){
     std::cout << (double)completed * 100 / total << "% completed\n";
 }
 
-TraceReader get_trace_reader(StreamFileTrain& train){
-    TraceReader reader(train);
-
-    return reader;
-}
-
 
 int main() {
     using namespace std;
@@ -30,8 +24,8 @@ int main() {
                               true);
         train.open();
 
-        TraceReader reader1(train);
-        reader1 = get_trace_reader(train);
+        TraceReader reader(train);
+        cout << reader << endl;
     }
     return 0;
 }

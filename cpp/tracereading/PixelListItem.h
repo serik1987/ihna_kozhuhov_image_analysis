@@ -20,6 +20,9 @@ namespace GLOBAL_NAMESPACE {
     private:
         int i, j;
 
+        size_t arrivalTimeDisplacement, synchronizationChannelDisplacement, frameBodyDisplacement;
+        size_t arrivalTimeSize, synchronizationChannelSize;
+
     };
 
 }
