@@ -3,43 +3,35 @@
  */
 
 #include "cpp/source_files/StreamFileTrain.h"
-#include "cpp/source_files/CompressedFileTrain.h"
-
-#include "cpp/compression/Compressor.h"
-#include "cpp/compression/Decompressor.h"
+#include "cpp/tracereading/TraceReader.h"
 
 #define WORKING_DIR "/home/serik1987/vasomotor-oscillations/sample_data/c022z/"
 
-void progress_function(float perc){
-    std::cout << perc << "% completed\n";
+using namespace ihna::kozhukhov::image_analysis;
+
+int progress_function(int completed, int total){
+    std::cout << (double)completed * 100 / total << "% completed\n";
+}
+
+TraceReader get_trace_reader(StreamFileTrain& train){
+    TraceReader reader(train);
+
+    return reader;
 }
 
 
 int main() {
     using namespace std;
-    using namespace ihna::kozhukhov::image_analysis;
 
     {
-        printf("Compression test...\n");
-        const uint32_t file_size[] = {1299503468, 1299503468, 1299503468, 380726636};
-        StreamFileTrain train(WORKING_DIR, "T_1BF.0A00", file_size,
+        printf("Trace reading test...\n");
+        const uint32_t file_size[] = {1299503468, 1299503468, 1299503468, 1135885676};
+        StreamFileTrain train(WORKING_DIR, "T_1BF.0200", file_size,
                               true);
         train.open();
 
-        Compressor compressor(train, WORKING_DIR);
-        compressor.setProgressFunction(progress_function);
-        compressor.run();
+        TraceReader reader1(train);
+        reader1 = get_trace_reader(train);
     }
-    /*
-    {
-        printf("Decompression test...\n");
-        CompressedFileTrain train(WORKING_DIR, "T_1BF.0A00z", true);
-        train.open();
-
-        Decompressor decompressor(train, WORKING_DIR);
-        decompressor.setProgressFunction(progress_function);
-        decompressor.run();
-    }
-    */
     return 0;
 }

@@ -75,6 +75,13 @@ extern "C" {
             Py_DECREF(imageanalysis);
         }
 
+        if (PyImanT_Init(imageanalysis) < 0){
+            PyImanC_Destroy();
+            PyImanS_Destroy();
+            Py_DECREF(PyIman_ImanError);
+            Py_DECREF(imageanalysis);
+        }
+
         return imageanalysis;
     }
 

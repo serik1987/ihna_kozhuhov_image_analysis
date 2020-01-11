@@ -96,7 +96,7 @@ extern "C" {
 
     static PyTypeObject PyImanS_StreamFileTrainType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis._StreamFileTrain",
+            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._StreamFileTrain",
             .tp_basicsize = sizeof(PyImanS_StreamFileTrainObject),
             .tp_itemsize = 0,
     };
