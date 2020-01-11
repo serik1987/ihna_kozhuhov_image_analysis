@@ -20,7 +20,6 @@ namespace GLOBAL_NAMESPACE {
     class TraceReader {
     public:
         typedef int (*ProgressFunction)(int steps_completed, int steps_total);
-        enum PointType {Uint16, Uint32, Uint64};
 
     private:
         StreamFileTrain& train;
@@ -32,7 +31,7 @@ namespace GLOBAL_NAMESPACE {
 
         size_t initialDisplacement;
         size_t* dataDisplacements;
-        PointType* dataTypes;
+        PixelListItem::PointType* dataTypes;
 
         static constexpr size_t ARRIVAL_TIME_DISPLACEMENT =
                 sizeof(ChunkHeader::DATA_CHUNK) + offsetof(FramChunk::FRAM_CHUNK, TimeArrivalUsecLo);
@@ -129,6 +128,10 @@ namespace GLOBAL_NAMESPACE {
          */
         [[nodiscard]] double getValue(int n, int idx) const;
 
+        [[nodiscard]] int getMapSizeX() const { return train.getXSize(); }
+        [[nodiscard]] int getMapSizeY() const { return train.getYSize(); }
+        [[nodiscard]] int getSynchChannelNumber() const { return train.getSynchronizationChannelNumber(); }
+
         /**
          *
          * @return the string "TRACE READER" if nothing else is defined in the derived class
@@ -155,6 +158,11 @@ namespace GLOBAL_NAMESPACE {
         class TimestampException: public TraceReaderException {
         public:
             TimestampException(): TraceReaderException("No timestamp with a given index") {};
+        };
+
+        class TraceNameException: public TraceReaderException{
+        public:
+            TraceNameException(): TraceReaderException("The tuple doesn't refer to a valid trace") {};
         };
 
     };

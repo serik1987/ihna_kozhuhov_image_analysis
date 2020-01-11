@@ -25,7 +25,19 @@ int main() {
         train.open();
 
         TraceReader reader(train);
-        cout << reader << endl;
+        PixelListItem pixel1(reader, PixelListItem::ARRIVAL_TIME, 0);
+        PixelListItem pixel2(reader, PixelListItem::SYNCH, 0);
+        PixelListItem pixel3(reader, PixelListItem::SYNCH, 1);
+        PixelListItem pixel4(reader, 0, 0);
+        PixelListItem pixel5(reader, 0, 1);
+        PixelListItem pixel6(reader, 1, 0);
+
+        cout << pixel1 << endl;
+        cout << pixel2 << endl;
+        cout << pixel3 << endl;
+        cout << pixel4 << endl;
+        cout << pixel5 << endl;
+        cout << pixel6 << endl;
     }
     return 0;
 }
