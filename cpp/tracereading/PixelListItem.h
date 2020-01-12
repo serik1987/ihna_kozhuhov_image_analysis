@@ -32,6 +32,7 @@ namespace GLOBAL_NAMESPACE {
         friend std::ostream& operator<<(std::ostream& out, const PixelListItem& item);
 
         [[nodiscard]] size_t getDisplacement() const { return displacement; }
+        [[nodiscard]] PointType getPointType() const { return pointType; }
         [[nodiscard]] int getPointSize() const { return POINT_SIZE[pointType]; }
         [[nodiscard]] int getI() const { return i; }
         [[nodiscard]] int getJ() const { return j; }

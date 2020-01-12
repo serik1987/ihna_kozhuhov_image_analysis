@@ -9,8 +9,8 @@ extern "C" {
 
     typedef struct {
         PyObject_HEAD
-        void* trace_reader_handle;
-        PyImanS_StreamFileTrainObject* file_train;
+        void *trace_reader_handle;
+        PyImanS_StreamFileTrainObject *file_train;
     } PyImanT_TraceReaderObject;
 
     static PyTypeObject PyImanT_TraceReaderType = {
@@ -20,36 +20,36 @@ extern "C" {
             .tp_itemsize = 0,
     };
 
-    static PyImanT_TraceReaderObject* PyImanT_TraceReader_New(PyTypeObject* type, PyObject* arg, PyObject* kwds){
-        PyImanT_TraceReaderObject* self = NULL;
-        self = (PyImanT_TraceReaderObject*)type->tp_alloc(type, 0);
-        if (self != NULL){
+    static PyImanT_TraceReaderObject *PyImanT_TraceReader_New(PyTypeObject *type, PyObject *arg, PyObject *kwds) {
+        PyImanT_TraceReaderObject *self = NULL;
+        self = (PyImanT_TraceReaderObject *) type->tp_alloc(type, 0);
+        if (self != NULL) {
             self->trace_reader_handle = NULL;
             self->file_train = NULL;
         }
         return self;
     }
 
-    static int PyImanT_TraceReader_Init(PyImanT_TraceReaderObject* self, PyObject* args, PyObject* kwds){
+    static int PyImanT_TraceReader_Init(PyImanT_TraceReaderObject *self, PyObject *args, PyObject *kwds) {
         using namespace GLOBAL_NAMESPACE;
 
-        if (!PyArg_ParseTuple(args, "O!", &PyImanS_StreamFileTrainType, &self->file_train)){
+        if (!PyArg_ParseTuple(args, "O!", &PyImanS_StreamFileTrainType, &self->file_train)) {
             return -1;
         }
 
         Py_INCREF(self->file_train);
 
-        auto* train = (StreamFileTrain*)self->file_train->super.train_handle;
+        auto *train = (StreamFileTrain *) self->file_train->super.train_handle;
         self->trace_reader_handle = new TraceReader(*train);
 
         return 0;
     }
 
-    static void PyImanT_TraceReader_Destroy(PyImanT_TraceReaderObject* self){
+    static void PyImanT_TraceReader_Destroy(PyImanT_TraceReaderObject *self) {
         using namespace GLOBAL_NAMESPACE;
 
-        if (self->trace_reader_handle != NULL){
-            auto* reader = (TraceReader*)self->trace_reader_handle;
+        if (self->trace_reader_handle != NULL) {
+            auto *reader = (TraceReader *) self->trace_reader_handle;
             delete reader;
         }
 
@@ -58,126 +58,249 @@ extern "C" {
         Py_TYPE(self)->tp_free(self);
     }
 
-    static PyObject* PyImanT_TraceReader_GetArrivalTimeDisplacement(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetArrivalTimeDisplacement(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
         return PyLong_FromUnsignedLongLong(TraceReader::getArrivalTimeDisplacement());
     }
 
-    static PyObject* PyImanT_TraceReader_GetSynchronizationChannelDisplacement(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetSynchronizationChannelDisplacement(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
         return PyLong_FromUnsignedLongLong(TraceReader::getSynchronizationChannelDisplacement());
     }
 
-    static PyObject* PyImanT_TraceReader_GetFrameBodyDisplacement(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetFrameBodyDisplacement(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
+        auto *reader = (TraceReader *) self->trace_reader_handle;
         return PyLong_FromUnsignedLongLong(reader->getFrameBodyDisplacement());
     }
 
-    static PyObject* PyImanT_TraceReader_HasRead(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_HasRead(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
-        try{
+        auto *reader = (TraceReader *) self->trace_reader_handle;
+        try {
             return PyBool_FromLong(reader->hasRead());
-        } catch (std::exception& e){
+        } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;
         }
     }
 
-    static PyObject* PyImanT_TraceReader_GetPixels(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetPixels(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
-        try{
-            PyObject* pixel_list = PyList_New(0);
+        auto *reader = (TraceReader *) self->trace_reader_handle;
+        try {
+            PyObject *pixel_list = PyList_New(0);
             if (pixel_list == NULL) return NULL;
             auto item = reader->getPixelItem(0);
             return pixel_list;
-        } catch (std::exception& e){
+        } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;
         }
     }
 
-    static PyObject* PyImanT_TraceReader_GetTraces(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetTraces(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
-        try{
-            auto* traces = reader->getTraces();
+        auto *reader = (TraceReader *) self->trace_reader_handle;
+        try {
+            auto *traces = reader->getTraces();
             return Py_BuildValue("");
-        } catch (std::exception& e){
+        } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;
         }
     }
 
-    static PyObject* PyImanT_TraceReader_GetInitialFrame(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetInitialFrame(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
-        try{
+        auto *reader = (TraceReader *) self->trace_reader_handle;
+        try {
             return PyLong_FromLong(reader->getInitialFrame());
-        } catch (std::exception& e){
+        } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;
         }
     }
 
-    static PyObject* PyImanT_TraceReader_GetFinalFrame(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetFinalFrame(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
-        try{
+        auto *reader = (TraceReader *) self->trace_reader_handle;
+        try {
             return PyLong_FromLong(reader->getFinalFrame());
-        } catch (std::exception& e){
+        } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;
         }
     }
 
-    static PyObject* PyImanT_TraceReader_GetFrameNumber(PyImanT_TraceReaderObject* self, void*){
+    static PyObject *PyImanT_TraceReader_GetFrameNumber(PyImanT_TraceReaderObject *self, void *) {
         using namespace GLOBAL_NAMESPACE;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
-        try{
+        auto *reader = (TraceReader *) self->trace_reader_handle;
+        try {
             return PyLong_FromLong(reader->getFrameNumber());
-        } catch (std::exception& e){
+        } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;
         }
     }
 
-    static PyObject* PyImanT_TraceReader_GetValue(PyImanT_TraceReaderObject* self, PyObject* args, PyObject*){
+    static PyObject *PyImanT_TraceReader_GetValue(PyImanT_TraceReaderObject *self, PyObject *args, PyObject *) {
         using namespace GLOBAL_NAMESPACE;
         int n;
         int idx;
 
-        if (!PyArg_ParseTuple(args, "ii", &n, &idx)){
+        if (!PyArg_ParseTuple(args, "ii", &n, &idx)) {
             return NULL;
         }
 
-        auto* reader = (TraceReader*)self->trace_reader_handle;
+        auto *reader = (TraceReader *) self->trace_reader_handle;
 
-        try{
+        try {
             double value = reader->getValue(n, idx);
             return PyFloat_FromDouble(value);
-        } catch (std::exception& e){
+        } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;
         }
     }
 
-    static PyObject* PyImanT_TraceReader_GetTrace(PyImanT_TraceReaderObject* self, PyObject* args, PyObject*){
+    static PyObject *PyImanT_TraceReader_GetTrace(PyImanT_TraceReaderObject *self, PyObject *args, PyObject *) {
         using namespace GLOBAL_NAMESPACE;
         int idx;
-        auto* reader = (TraceReader*)self->trace_reader_handle;
+        auto *reader = (TraceReader *) self->trace_reader_handle;
 
-        if (!PyArg_ParseTuple(args, "i", &idx)){
+        if (!PyArg_ParseTuple(args, "i", &idx)) {
             return NULL;
         }
 
-        try{
-            if (idx < 0 || idx >= reader->getChannelNumber()){
+        try {
+            if (idx < 0 || idx >= reader->getChannelNumber()) {
                 throw TraceReader::PixelItemIndexException();
             }
-            const double* traces = reader->getTraces();
+            const double *traces = reader->getTraces();
+            return Py_BuildValue("");
+        } catch (std::exception &e) {
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject *PyImanT_TraceReader_Print(PyImanT_TraceReaderObject *self) {
+        using namespace std;
+        using namespace GLOBAL_NAMESPACE;
+        auto *reader = (TraceReader *) self->trace_reader_handle;
+
+        try {
+            stringstream str;
+            str << *reader;
+            return PyUnicode_FromString(str.str().c_str());
+        } catch (std::exception &e) {
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+}
+
+static GLOBAL_NAMESPACE::PixelListItem PyImanT_PixelListItem_FromTuple(PyImanT_TraceReaderObject* self,
+        PyObject* tuple){
+    using namespace GLOBAL_NAMESPACE;
+    auto* reader = (TraceReader*)self->trace_reader_handle;
+
+    if (!PyTuple_Check(tuple)){
+        throw TraceReader::TraceNameException();
+    }
+
+    if (PyTuple_GET_SIZE(tuple) != 2){
+        throw TraceReader::TraceNameException();
+    }
+
+    PyObject* first = PyTuple_GetItem(tuple, 0);
+    PyObject* second = PyTuple_GetItem(tuple, 1);
+
+    int i, j;
+    bool parsed;
+
+    if (!PyLong_Check(second)){
+        throw TraceReader::TraceNameException();
+    }
+    j = (int)PyLong_AsLong(second);
+
+    if (PyUnicode_Check(first)){
+        const char* chan_type = PyUnicode_AsUTF8(first);
+        if (strcmp(chan_type, "TIME") == 0){
+            i = PixelListItem::ARRIVAL_TIME;
+            parsed = true;
+        } else if (strcmp(chan_type, "SYNC") == 0){
+            i = PixelListItem::SYNCH;
+            parsed = true;
+        } else {
+            parsed = false;
+        }
+    } else if (PyLong_Check(first)){
+        i = (int)PyLong_AsLong(first);
+        parsed = true;
+    } else {
+        parsed = false;
+    }
+
+    if (parsed){
+        return PixelListItem(*reader, i, j);
+    } else {
+        throw TraceReader::TraceNameException();
+    }
+}
+
+static PyObject* PyImanT_PixelListItem_AsTuple(PyImanT_TraceReaderObject* self,
+        const GLOBAL_NAMESPACE::PixelListItem& item){
+    using namespace GLOBAL_NAMESPACE;
+
+    PyObject* tuple = PyTuple_New(2);
+    if (tuple == NULL) return NULL;
+
+    PyObject *first, *second;
+    first = NULL;
+    second = NULL;
+
+    if (item.getPointType() == PixelListItem::ArrivalTime){
+        first = PyUnicode_FromString("TIME");
+        second = PyLong_FromLong(0);
+    } else if (item.getPointType() == PixelListItem::SynchronizationChannel){
+        first = PyUnicode_FromString("SYNC");
+        second = PyLong_FromLong(item.getJ());
+    } else if (item.getPointType() == PixelListItem::PixelValue){
+        first = PyLong_FromLong(item.getI());
+        second = PyLong_FromLong(item.getJ());
+    } else {
+        Py_DECREF(tuple);
+        throw TraceReader::TraceNameException();
+    }
+
+    if (first == NULL || second == NULL){
+        return NULL;
+    }
+
+    if (PyTuple_SetItem(tuple, 0, first) < 0 || PyTuple_SetItem(tuple, 1, second) < 0){
+        Py_DECREF(first);
+        Py_DECREF(second);
+        Py_DECREF(tuple);
+        return NULL;
+    }
+
+    return tuple;
+}
+
+extern "C"{
+
+    static PyObject* PyImanT_TraceReader_PrintPixelValue(PyImanT_TraceReaderObject* self, PyObject* args, PyObject*){
+        using namespace GLOBAL_NAMESPACE;
+
+        try{
+            PyObject* input;
+            if (!PyArg_ParseTuple(args, "O!", &PyTuple_Type, &input)){
+                return NULL;
+            }
+            PixelListItem output = PyImanT_PixelListItem_FromTuple(self, input);
+            std::cout << output;
             return Py_BuildValue("");
         } catch (std::exception& e){
             PyIman_Exception_process(&e);
@@ -185,15 +308,58 @@ extern "C" {
         }
     }
 
-    static PyObject* PyImanT_TraceReader_Print(PyImanT_TraceReaderObject* self){
-        using namespace std;
+    static PyObject* PyImanT_TraceReader_GetArrivalTimePixel(PyImanT_TraceReaderObject* self, PyObject* args, PyObject*){
         using namespace GLOBAL_NAMESPACE;
         auto* reader = (TraceReader*)self->trace_reader_handle;
 
         try{
-            stringstream str;
-            str << *reader;
-            return PyUnicode_FromString(str.str().c_str());
+            PixelListItem input(*reader, PixelListItem::ARRIVAL_TIME, 0);
+            PyObject* output = PyImanT_PixelListItem_AsTuple(self, input);
+            return output;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanT_TraceReader_GetSynchronizationChannelPixel(PyImanT_TraceReaderObject* self,
+            PyObject* args, PyObject*){
+
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+        int chan;
+
+        if (!PyArg_ParseTuple(args, "i", &chan)){
+            return NULL;
+        }
+
+        try{
+
+            PixelListItem input(*reader, PixelListItem::SYNCH, chan);
+            PyObject* output = PyImanT_PixelListItem_AsTuple(self, input);
+            return output;
+
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanT_TraceReader_GetPixelTrace(PyImanT_TraceReaderObject* self, PyObject* args, PyObject*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+        int i, j;
+
+        if (!PyArg_ParseTuple(args, "ii", &i, &j)){
+            return NULL;
+        }
+
+        try{
+
+            PixelListItem input(*reader, i, j);
+            PyObject* output = PyImanT_PixelListItem_AsTuple(self, input);
+            return output;
+
         } catch (std::exception& e){
             PyIman_Exception_process(&e);
             return NULL;
@@ -222,9 +388,11 @@ extern "C" {
              (char*)"coordinates of pixels which traces can be read by get_trace, get_value methods\n"
                     "or traces property\n"
                     "The returned result is a list. Element # i of the list corresponds to the trace # i.\n"
+                    "This means that if you read the trace by application of get_trace(i), exact coordinates\n"
+                    "of this trace is given in the item with index i in the list\n"
                     "Such an element is two-item tuple. In case if channel represents a signal from the map pixel\n"
                     "with index i on ordinate and index j on abscissa, the 0th element of the tuple corresponds to\n"
-                    "abscissa and the 1st element is for the ordinate\n"
+                    "ordinate and the 1st element is for the abscissa\n"
                     "In case if the channel # i is a synchronization channel, 0th element is a string 'SYNC' and \n"
                     "the 1st element is the synchronization channel number\n"
                     "In case if the channel # i is a time channel, 0th element is a string 'TIME' and \n"
@@ -232,11 +400,16 @@ extern "C" {
                     "\n"
                     "This is a read-only property. Use add_pixels, remove_pixels, remove_all_pixels to change the \n"
                     "pixel list. Also, don't forget to read() the traces again\n"
-                    "read()'ing the traces may change order of elements in this property as well as their number\n"},
+                    "read()'ing the traces may change order of elements in this property as well as their number\n"
+                    "\n"
+                    "In orde to print the detailed information about the pixel please, use print_pixel_info method"},
 
             {(char*)"traces", (getter)PyImanT_TraceReader_GetTraces, NULL,
              (char*)"All traces as numpy array. Columns of the array correspond to traces while indices are timestamps\n"
-                    "This is a read-only property because TraceReader is a trace reader, not writer\n"},
+                    "This is a read-only property because TraceReader is a trace reader, not writer\n"
+                    "the row # i in this 2D matrix contains all data reflected to the timestamp i\n"
+                    "the column # j of this 2D matrix contains all data reflected to the trace channel j\n"
+                    "to see what kind of data is stored in trace channel j use pixels[j] property"},
 
             {(char*)"initial_frame", (getter)PyImanT_TraceReader_GetInitialFrame, NULL,
              (char*)"Frame from which the reading starts\n"
@@ -269,7 +442,39 @@ extern "C" {
              "\n"
              "Usage: get_trace(idx)\n"
              "Arguments:\n"
-             "\tidx - pixel index"},
+             "\tidx - pixel index. To see what kind of data will be returned use pixels[idx] property"},
+
+            {"print_pixel_value", (PyCFunction)PyImanT_TraceReader_PrintPixelValue, METH_VARARGS,
+             "Prints the information about a certain channel on the screen"
+             "\n"
+             "Usage: print_pixel_value(pix)\n"
+             "Arguments:\n"
+             "\tpix - channel information containing in the pixels property. For instance, in order to print \n"
+             "information containing in the channel with index idx you can write the following:\n"
+             "reader.print_pixel_value(reader.pixels[idx])"},
+
+            {"get_arrival_time_pixel", (PyCFunction)PyImanT_TraceReader_GetArrivalTimePixel, METH_NOARGS,
+             "Returns the designation of a channel where arrival times will be placed\n"
+             "\n"
+             "The function will return a 2-item tuple that shall be substituted to the add_pixel or add_pixels methods"},
+
+            {"get_synchronization_channel_pixel", (PyCFunction)PyImanT_TraceReader_GetSynchronizationChannelPixel,
+             METH_VARARGS,
+             "Returns the designation of a synchronization channel with a certain number\n"
+             "\n"
+             "Usage: get_synchronization_channel_pixel(chan)\n"
+             "Arguments:\n"
+             "\tchan - synchronization channel number\n"
+             "The function will return a two-element tuple that shall be substituted into add_pixel and add_pixels\n"
+             "method if you want a certain synchronization channel to be read"},
+
+            {"get_pixel_trace", (PyCFunction)PyImanT_TraceReader_GetPixelTrace, METH_VARARGS,
+             "Returns the designation of a trace channel that contains data from a stand-alone pixel on the map\n"
+             "\n"
+             "Usage: get_pixel_trace(i, j)\n"
+             "Arguments:\n"
+             "\ti - ordinate of this pixel\n"
+             "\tj - abscissa of this pixel"},
 
             {NULL}
     };

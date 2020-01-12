@@ -21,4 +21,6 @@ if __name__ == "__main__":
     trace_reader = trace.TraceReader(train)
     print(trace_reader)
 
+    print(trace_reader.get_pixel_trace(0, 0))
+
     print("PY Test end")

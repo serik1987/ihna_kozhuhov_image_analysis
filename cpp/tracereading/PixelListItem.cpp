@@ -22,7 +22,7 @@ namespace GLOBAL_NAMESPACE{
             j = col;
             displacement = reader.getSynchronizationChannelDisplacement() + POINT_SIZE[SynchronizationChannel] * col;
         } else {
-            if (i < 0 || j < 0 || i >= reader.getMapSizeY() || j > reader.getMapSizeX()){
+            if (row < 0 || col < 0 || row >= reader.getMapSizeY() || col >= reader.getMapSizeX()){
                 throw TraceReader::TraceNameException();
             }
             pointType = PixelValue;

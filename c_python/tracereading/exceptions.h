@@ -11,6 +11,7 @@ extern "C" {
     static PyObject* PyImanT_PixelItemIndexError = NULL;
     static PyObject* PyImanT_TraceNotReadError = NULL;
     static PyObject* PyImanT_TimestampError = NULL;
+    static PyObject* PyImanT_TraceNameError = NULL;
 
     static int PyImanT_Exceptions_Create(PyObject* module){
 
@@ -48,6 +49,15 @@ extern "C" {
             return -1;
         }
 
+        PyImanT_TraceNameError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.tracereading.TraceNameException",
+                "This error will be thrown if you try to add_pixel() to the trace and the argument doesn't refer \n"
+                "to a valid trace",
+                PyImanT_TraceNameError, NULL);
+        if (PyModule_AddObject(module, "_tracereading_TraceNameError", PyImanT_TraceNameError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -56,6 +66,7 @@ extern "C" {
         Py_XDECREF(PyImanT_PixelItemIndexError);
         Py_XDECREF(PyImanT_TraceNotReadError);
         Py_XDECREF(PyImanT_TimestampError);
+        Py_XDECREF(PyImanT_TraceNameError);
     }
 
     static int PyImanT_Exception_process(const void* exception_handle){
@@ -67,6 +78,7 @@ extern "C" {
             auto* pixel_item_index_handle = dynamic_cast<TraceReader::PixelItemIndexException*>(exception);
             auto* trace_not_read_handle = dynamic_cast<TraceReader::TracesNotReadException*>(exception);
             auto* timestamp_handle = dynamic_cast<TraceReader::TimestampException*>(exception);
+            auto* trace_name_handle = dynamic_cast<TraceReader::TraceNameException*>(exception);
 
             if (pixel_item_index_handle != nullptr) {
                 PyErr_SetString(PyImanT_PixelItemIndexError, pixel_item_index_handle->what());
@@ -74,6 +86,8 @@ extern "C" {
                 PyErr_SetString(PyImanT_TraceNotReadError, trace_not_read_handle->what());
             } else if (timestamp_handle != nullptr) {
                 PyErr_SetString(PyImanT_TimestampError, timestamp_handle->what());
+            } else if (trace_name_handle != nullptr) {
+                PyErr_SetString(PyImanT_TraceNameError, trace_name_handle->what());
             } else {
                 PyErr_SetString(PyImanT_TraceReaderError, trace_reader_handle->what());
             }
