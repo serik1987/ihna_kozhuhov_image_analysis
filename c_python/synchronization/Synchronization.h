@@ -67,7 +67,6 @@ extern "C" {
     }
 
     static int PyImanY_Synchronization_Create(PyObject* module){
-        printf("SO Create Synchronization...\n");
 
         PyImanY_SynchronizationType.tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT;
         PyImanY_SynchronizationType.tp_doc =

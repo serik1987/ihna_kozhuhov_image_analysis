@@ -6,7 +6,7 @@ import ihna.kozhukhov.imageanalysis.sourcefiles as files
 import ihna.kozhukhov.imageanalysis.compression as comp
 import ihna.kozhukhov.imageanalysis.tracereading as trace
 from ihna.kozhukhov.imageanalysis import manifest
-from ihna.kozhukhov.imageanalysis import synchronization as sync
+from ihna.kozhukhov.imageanalysis import synchronization as synchr
 from ihna.kozhukhov.imageanalysis.gui import synchronization as sync_edt
 
 
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     train.open()
 
     trace_reader = trace.TraceReader(train)
-
-
+    sync = sync_edt.ExternalSynchronizationEditor([], train)
+    print(sync)
 
     print("PY Test end")

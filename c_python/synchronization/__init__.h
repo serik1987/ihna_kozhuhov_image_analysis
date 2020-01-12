@@ -6,19 +6,23 @@
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS___Synchronization_INIT___H
 
 #include "../../cpp/synchronization/Synchronization.h"
+#include "../../cpp/synchronization/ExternalSynchronization.h"
 
 extern "C" {
     static PyObject *PyImanY_Synchronization_Handle = NULL;
+    static PyObject* PyImanY_ExternalSynchronization_Handle = NULL;
 }
 
 #include "exceptions.h"
 #include "Synchronization.h"
+#include "ExternalSynchronization.h"
 
 extern "C" {
 
     static void PyImanY_Destroy(){
         PyImanY_Exception_Destroy();
         Py_XDECREF(PyImanY_Synchronization_Handle);
+        Py_XDECREF(PyImanY_ExternalSynchronization_Handle);
     }
 
     static int PyImanY_Init(PyObject* module){
@@ -29,6 +33,11 @@ extern "C" {
         }
 
         if (PyImanY_Synchronization_Create(module) < 0){
+            PyImanY_Destroy();
+            return -1;
+        }
+
+        if (PyImanY_ExternalSynchronization_Create(module) < 0){
             PyImanY_Destroy();
             return -1;
         }
