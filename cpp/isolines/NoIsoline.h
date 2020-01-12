@@ -9,9 +9,14 @@
 
 namespace GLOBAL_NAMESPACE {
 
+    /**
+     * Provides no isoline remove except declining the average
+     */
     class NoIsoline: public Isoline {
     public:
         NoIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {};
+
+        [[nodiscard]] const char* getName() const noexcept override { return "no isoline"; }
 
     };
 

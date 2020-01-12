@@ -12,6 +12,18 @@
 
 namespace GLOBAL_NAMESPACE {
 
+    /**
+     * When the class supports a progress bar, this runs so called "progress function" after
+     * finishing processing of each 100 frames. The following input arguments will be passed:
+     *  completed - total frames that have already been processed
+     *  total - total number of frames.
+     *  stage - pointer to the C-style string that contains a short description of a certain stage.
+     *
+     * if the function returns bool, the frame processing is completed. However, if the function returns false,
+     * the processing will be aborted and the initial stage before the processing will be restored.
+     */
+    typedef bool (*ProgressFunction)(int completed, int total, const char* stage);
+
     class iman_exception : public std::exception {
     private:
         std::string message;

@@ -17,7 +17,7 @@ add_executable(test main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/Ch
         cpp/synchronization/NoSynchronization.cpp cpp/synchronization/QuasiStimulusSynchronization.cpp
         cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp
         cpp/isolines/Isoline.cpp cpp/isolines/NoIsoline.cpp cpp/isolines/LinearFitIsoline.cpp
-        cpp/isolines/TimeAverageIsoline.cpp)
+        cpp/isolines/TimeAverageIsoline.cpp cpp/tracereading/TraceReaderAndCleaner.cpp)
 
 include_directories(/usr/include/python3.6m)
 
@@ -35,4 +35,4 @@ add_library(imageanalysis SHARED imageanalysis.cpp cpp/source_files/SourceFile.c
         cpp/synchronization/NoSynchronization.cpp cpp/synchronization/QuasiStimulusSynchronization.cpp
         cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp
         cpp/isolines/Isoline.cpp cpp/isolines/NoIsoline.cpp cpp/isolines/LinearFitIsoline.cpp
-        cpp/isolines/TimeAverageIsoline.cpp)
+        cpp/isolines/TimeAverageIsoline.cpp cpp/tracereading/TraceReaderAndCleaner.cpp)

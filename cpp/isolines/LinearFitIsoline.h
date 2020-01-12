@@ -9,9 +9,14 @@
 
 namespace GLOBAL_NAMESPACE {
 
+    /**
+     * Provides the isoline remove based on the linear regression
+     */
     class LinearFitIsoline: public Isoline {
     public:
         LinearFitIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {};
+
+        [[nodiscard]] const char* getName() const noexcept override { return "linear fit isoline"; }
     };
 
 }

@@ -39,6 +39,8 @@ namespace GLOBAL_NAMESPACE {
         double phaseIncrement;
         double initialPhase;
 
+        ProgressFunction progressFunction;
+
     public:
         /**
          * Creating constructor

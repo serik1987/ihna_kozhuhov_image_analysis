@@ -9,6 +9,10 @@
 
 namespace GLOBAL_NAMESPACE {
 
+    /**
+     * Removes the isoline by smoothing the original signal and substracting the smoothed signal
+     * from the original one.
+     */
     class TimeAverageIsoline: public Isoline {
     private:
         int averageCycles;
@@ -18,6 +22,8 @@ namespace GLOBAL_NAMESPACE {
         TimeAverageIsoline(const TimeAverageIsoline& other);
 
         TimeAverageIsoline& operator=(const TimeAverageIsoline& other);
+
+        [[nodiscard]] const char* getName() const noexcept override { return "time average"; }
 
     };
 

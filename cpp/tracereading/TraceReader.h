@@ -40,6 +40,7 @@ namespace GLOBAL_NAMESPACE {
 
     protected:
         double* traces;
+        ProgressFunction progressFunction;
 
     public:
         explicit TraceReader(StreamFileTrain& train);
