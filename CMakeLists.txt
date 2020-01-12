@@ -15,7 +15,9 @@ add_executable(test main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/Ch
         cpp/compression/Compressor.cpp cpp/compression/Decompressor.cpp cpp/tracereading/PixelListItem.cpp
         cpp/tracereading/TraceReader.cpp cpp/synchronization/Synchronization.cpp
         cpp/synchronization/NoSynchronization.cpp cpp/synchronization/QuasiStimulusSynchronization.cpp
-        cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp)
+        cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp
+        cpp/isolines/Isoline.cpp cpp/isolines/NoIsoline.cpp cpp/isolines/LinearFitIsoline.cpp
+        cpp/isolines/TimeAverageIsoline.cpp)
 
 include_directories(/usr/include/python3.6m)
 
@@ -31,4 +33,6 @@ add_library(imageanalysis SHARED imageanalysis.cpp cpp/source_files/SourceFile.c
         cpp/compression/Compressor.cpp cpp/compression/Decompressor.cpp cpp/tracereading/PixelListItem.cpp
         cpp/tracereading/TraceReader.cpp cpp/synchronization/Synchronization.cpp
         cpp/synchronization/NoSynchronization.cpp cpp/synchronization/QuasiStimulusSynchronization.cpp
-        cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp)
+        cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp
+        cpp/isolines/Isoline.cpp cpp/isolines/NoIsoline.cpp cpp/isolines/LinearFitIsoline.cpp
+        cpp/isolines/TimeAverageIsoline.cpp)
