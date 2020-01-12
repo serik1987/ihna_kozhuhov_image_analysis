@@ -4,3 +4,5 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Synchro
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_ExternalSynchronization \
     as ExternalSynchronization
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_NoSynchronization as NoSynchronization
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_QuasiStimulusSynchronization as \
+    QuasiStimulusSynchronization

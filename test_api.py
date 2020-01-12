@@ -21,6 +21,7 @@ if __name__ == "__main__":
     train.open()
 
     trace_reader = trace.TraceReader(train)
-    sync = sync_edt.NoSynchronizationEditor([], train)
+    sync = sync_edt.QuasiStimulusSynchronizationEditor([], train)
+    print(sync)
 
     print("PY Test end")
