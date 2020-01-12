@@ -18,8 +18,6 @@ namespace GLOBAL_NAMESPACE {
      * This class provides the reading of stand-alone traces, synchronization channels, arrival times
      */
     class TraceReader {
-    public:
-        typedef int (*ProgressFunction)(int steps_completed, int steps_total);
 
     private:
         StreamFileTrain& train;

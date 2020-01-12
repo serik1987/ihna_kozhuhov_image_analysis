@@ -13,7 +13,9 @@ add_executable(test main.cpp cpp/source_files/SourceFile.cpp cpp/source_files/Ch
         cpp/source_files/CompressedSourceFile.cpp cpp/source_files/FileTrain.cpp cpp/source_files/StreamFileTrain.cpp
         cpp/source_files/CompressedFileTrain.cpp cpp/source_files/Frame.cpp cpp/compression/BaseCompressor.cpp
         cpp/compression/Compressor.cpp cpp/compression/Decompressor.cpp cpp/tracereading/PixelListItem.cpp
-        cpp/tracereading/TraceReader.cpp)
+        cpp/tracereading/TraceReader.cpp cpp/synchronization/Synchronization.cpp
+        cpp/synchronization/NoSynchronization.cpp cpp/synchronization/QuasiStimulusSynchronization.cpp
+        cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp)
 
 include_directories(/usr/include/python3.6m)
 
@@ -27,4 +29,6 @@ add_library(imageanalysis SHARED imageanalysis.cpp cpp/source_files/SourceFile.c
         cpp/source_files/CompressedSourceFile.cpp cpp/source_files/FileTrain.cpp cpp/source_files/StreamFileTrain.cpp
         cpp/source_files/CompressedFileTrain.cpp cpp/source_files/Frame.cpp cpp/compression/BaseCompressor.cpp
         cpp/compression/Compressor.cpp cpp/compression/Decompressor.cpp cpp/tracereading/PixelListItem.cpp
-        cpp/tracereading/TraceReader.cpp)
+        cpp/tracereading/TraceReader.cpp cpp/synchronization/Synchronization.cpp
+        cpp/synchronization/NoSynchronization.cpp cpp/synchronization/QuasiStimulusSynchronization.cpp
+        cpp/synchronization/QuasiTimeSynchronization.cpp cpp/synchronization/ExternalSynchronization.cpp)

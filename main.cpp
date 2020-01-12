@@ -4,6 +4,7 @@
 
 #include "cpp/source_files/StreamFileTrain.h"
 #include "cpp/tracereading/TraceReader.h"
+#include "cpp/synchronization/ExternalSynchronization.h"
 
 #define WORKING_DIR "/home/serik1987/vasomotor-oscillations/sample_data/c022z/"
 
@@ -24,20 +25,7 @@ int main() {
                               true);
         train.open();
 
-        TraceReader reader(train);
-        PixelListItem pixel1(reader, PixelListItem::ARRIVAL_TIME, 0);
-        PixelListItem pixel2(reader, PixelListItem::SYNCH, 0);
-        PixelListItem pixel3(reader, PixelListItem::SYNCH, 1);
-        PixelListItem pixel4(reader, 0, 0);
-        PixelListItem pixel5(reader, 0, 1);
-        PixelListItem pixel6(reader, 1, 0);
-
-        cout << pixel1 << endl;
-        cout << pixel2 << endl;
-        cout << pixel3 << endl;
-        cout << pixel4 << endl;
-        cout << pixel5 << endl;
-        cout << pixel6 << endl;
+        ExternalSynchronization sync(train);
     }
     return 0;
 }
