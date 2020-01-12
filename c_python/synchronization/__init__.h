@@ -7,15 +7,18 @@
 
 #include "../../cpp/synchronization/Synchronization.h"
 #include "../../cpp/synchronization/ExternalSynchronization.h"
+#include "../../cpp/synchronization/NoSynchronization.h"
 
 extern "C" {
     static PyObject *PyImanY_Synchronization_Handle = NULL;
     static PyObject* PyImanY_ExternalSynchronization_Handle = NULL;
+    static PyObject* PyImanY_NoSynchronization_Handle = NULL;
 }
 
 #include "exceptions.h"
 #include "Synchronization.h"
 #include "ExternalSynchronization.h"
+#include "NoSynchronization.h"
 
 extern "C" {
 
@@ -23,6 +26,7 @@ extern "C" {
         PyImanY_Exception_Destroy();
         Py_XDECREF(PyImanY_Synchronization_Handle);
         Py_XDECREF(PyImanY_ExternalSynchronization_Handle);
+        Py_XDECREF(PyImanY_NoSynchronization_Handle);
     }
 
     static int PyImanY_Init(PyObject* module){
@@ -38,6 +42,11 @@ extern "C" {
         }
 
         if (PyImanY_ExternalSynchronization_Create(module) < 0){
+            PyImanY_Destroy();
+            return -1;
+        }
+
+        if (PyImanY_NoSynchronization_Create(module) < 0){
             PyImanY_Destroy();
             return -1;
         }

@@ -53,7 +53,10 @@ extern "C" {
                 "2) The analysis epoch will be selected in such a way as it starts at the start of the stimulation\n"
                 "cycle and finishes at the stimulation cycle. What cycle starts/finishes the stimulation is defined\n"
                 "by the user\n"
-                "3) the reference sin/cos will be estimated based on timestamp-dependent stimulus phase";
+                "3) the reference sin/cos will be estimated based on timestamp-dependent stimulus phase\n"
+                "\n"
+                "Usage: sync = ExternalSynchronization(train)\n"
+                "train is an instance of StreamFileTrain already opened";
         PyImanY_ExternalSynchronizationType.tp_init = (initproc)PyImanT_ExternalSynchronization_Init;
 
         if (PyType_Ready(&PyImanY_ExternalSynchronizationType) < 0){
