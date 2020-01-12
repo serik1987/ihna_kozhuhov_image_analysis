@@ -6,6 +6,8 @@ import ihna.kozhukhov.imageanalysis.sourcefiles as files
 import ihna.kozhukhov.imageanalysis.compression as comp
 import ihna.kozhukhov.imageanalysis.tracereading as trace
 from ihna.kozhukhov.imageanalysis import manifest
+from ihna.kozhukhov.imageanalysis import synchronization as sync
+from ihna.kozhukhov.imageanalysis.gui import synchronization as sync_edt
 
 
 def progress_bar(perc):
@@ -19,8 +21,7 @@ if __name__ == "__main__":
     train.open()
 
     trace_reader = trace.TraceReader(train)
-    print(trace_reader)
 
-    print(trace_reader.get_pixel_trace(0, 0))
+
 
     print("PY Test end")
