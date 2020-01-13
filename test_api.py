@@ -9,6 +9,7 @@ from ihna.kozhukhov.imageanalysis import manifest
 from ihna.kozhukhov.imageanalysis import synchronization as synchr
 from ihna.kozhukhov.imageanalysis import isolines
 from ihna.kozhukhov.imageanalysis.gui import isolines as isoline_editors
+from ihna.kozhukhov.imageanalysis.gui.isolines.selector import IsolineSelector
 
 
 def progress_bar(perc):
@@ -23,7 +24,6 @@ if __name__ == "__main__":
 
     trace_reader = trace.TraceReader(train)
     sync = synchr.ExternalSynchronization(train)
-    editor = isoline_editors.LinearFitIsolineEditor([], sync)
-    print(editor)
+    selector = IsolineSelector()
 
     print("PY Test end")

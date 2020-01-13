@@ -8,21 +8,25 @@
 #include "../../cpp/isolines/Isoline.h"
 #include "../../cpp/isolines/NoIsoline.h"
 #include "../../cpp/isolines/LinearFitIsoline.h"
+#include "../../cpp/isolines/TimeAverageIsoline.h"
 
 extern "C" {
     PyTypeObject* PyImanI_Isoline_Handle = NULL;
     PyTypeObject* PyImanI_NoIsoline_Handle = NULL;
     PyTypeObject* PyImanI_LinearFitIsoline_Handle = NULL;
+    PyTypeObject* PyImanI_TimeAverageIsoline_Handle = NULL;
 };
 
 #include "exceptions.h"
 #include "isoline.h"
 #include "NoIsoline.h"
 #include "LinearFitIsoline.h"
+#include "TimeAverageIsoline.h"
 
 extern "C"{
 
     static void PyImanI_Destroy(){
+        Py_XDECREF(PyImanI_TimeAverageIsoline_Handle);
         Py_XDECREF(PyImanI_LinearFitIsoline_Handle);
         Py_XDECREF(PyImanI_NoIsoline_Handle);
         Py_XDECREF(PyImanI_Isoline_Handle);
@@ -47,6 +51,11 @@ extern "C"{
         }
 
         if (PyImanI_LinearFitIsoline_Create(module) < 0){
+            PyImanI_Destroy();
+            return -1;
+        }
+
+        if (PyImanI_TimeAverageIsoline_Create(module) < 0){
             PyImanI_Destroy();
             return -1;
         }

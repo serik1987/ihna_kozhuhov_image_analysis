@@ -18,11 +18,13 @@ namespace GLOBAL_NAMESPACE {
      *  completed - total frames that have already been processed
      *  total - total number of frames.
      *  stage - pointer to the C-style string that contains a short description of a certain stage.
+     *  handle - the pointer that was passed during the call of setProgressFunction method. An exact value of this
+     *  pointer will be passed to this function
      *
      * if the function returns bool, the frame processing is completed. However, if the function returns false,
      * the processing will be aborted and the initial stage before the processing will be restored.
      */
-    typedef bool (*ProgressFunction)(int completed, int total, const char* stage);
+    typedef bool (*ProgressFunction)(int completed, int total, const char* stage, void* handle);
 
     class iman_exception : public std::exception {
     private:
