@@ -23,20 +23,26 @@ class NativeDataManager(wx.Dialog):
 
     __case = None
     __train = None
+    __property = None
     __case_name = None
+    __TrainClass = None
 
     def __init__(self, parent, case, case_name="undefined"):
         self.__case = case
         self.__case_name = case_name
         pathname = self.__case['pathname']
         if self.__case.compressed_data_files_exist():
+            self.__property = 'compressed_data_files'
             filename = self.__case['compressed_data_files'][0]
             fullname = os.path.join(pathname, filename)
             self.__train = sfiles.CompressedFileTrain(fullname, "traverse")
+            self.__TrainClass = sfiles.CompressedFileTrain
         elif self.__case.native_data_files_exist():
+            self.__property = 'native_data_files'
             filename = self.__case['native_data_files'][0]
             fullname = os.path.join(pathname, filename)
             self.__train = sfiles.StreamFileTrain(fullname, "traverse")
+            self.__TrainClass = sfiles.StreamFileTrain
         else:
             raise RuntimeError("Error in opening native or compressed files")
         self.__train.open()
@@ -55,6 +61,8 @@ class NativeDataManager(wx.Dialog):
         general_layout.Add(main_layout, 1, wx.ALL | wx.EXPAND, 10)
         main_panel.SetSizer(general_layout)
         self.Centre()
+
+        self.__train.close()
 
     def __create_left_panel(self, main_panel):
         left_panel = wx.Notebook(main_panel, style=wx.BK_DEFAULT)
@@ -308,9 +316,16 @@ class NativeDataManager(wx.Dialog):
 
     def frame_view(self):
         try:
+            pathname = self.__case['pathname']
+            filename = self.__case[self.__property][0]
+            fullname = os.path.join(pathname, filename)
+            self.__train = self.__TrainClass(fullname)
+            self.__train.open()
+
             viewer = FrameViewer(self, self.__train, self.__case_name)
             viewer.ShowModal()
             viewer.close()
+            self.__train.close()
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Frame viewer", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
@@ -319,11 +334,13 @@ class NativeDataManager(wx.Dialog):
         print("NATIVE DATA MANAGER get averaged maps")
 
     def trace_analysis(self):
+        self.__train.close()
         try:
             pathname = self.__case['pathname']
             filename = self.__case['native_data_files'][0]
             fullname = os.path.join(pathname, filename)
             train = sfiles.StreamFileTrain(fullname)
+            train.open()
 
             properties_dlg = TraceAnalysisPropertiesDlg(self, train)
             if properties_dlg.ShowModal() == wx.ID_CANCEL:

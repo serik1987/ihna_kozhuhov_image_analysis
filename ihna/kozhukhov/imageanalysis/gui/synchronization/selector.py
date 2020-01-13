@@ -12,6 +12,8 @@ class SynchronizationSelector(wx.StaticBoxSizer):
     __parent = None
     __train = None
     __sync_editors = None
+    __do_precise_box = None
+    __harmonic_box = None
 
     def __init__(self, parent, train):
         super().__init__(wx.VERTICAL, parent, label="Synchronization")
@@ -23,11 +25,20 @@ class SynchronizationSelector(wx.StaticBoxSizer):
             editor = SyncEditor(parent, self.__train, self)
             self.__sync_editors.append(editor)
             space = 5
-            if len(self.__sync_editors) == len(synchronization_editors):
-                space = 0
             main_panel.Add(editor, 0, wx.EXPAND | wx.BOTTOM, space)
         self.select()
 
+        self.__do_precise_box = wx.CheckBox(parent, label="Do precise analysis")
+        main_panel.Add(self.__do_precise_box, 0, wx.EXPAND | wx.BOTTOM, 5)
+
+        harmonic_panel = wx.BoxSizer(wx.HORIZONTAL)
+        harmonic_caption = wx.StaticText(parent, label="Harmonic")
+        harmonic_panel.Add(harmonic_caption, wx.ALIGN_CENTER | wx.RIGHT, 5)
+
+        self.__harmonic_box = wx.TextCtrl(parent, value="1.0")
+        harmonic_panel.Add(self.__harmonic_box, wx.EXPAND)
+
+        main_panel.Add(harmonic_panel, 0, wx.EXPAND)
         self.Add(main_panel, 0, wx.EXPAND | wx.ALL, 5)
 
     def close(self):

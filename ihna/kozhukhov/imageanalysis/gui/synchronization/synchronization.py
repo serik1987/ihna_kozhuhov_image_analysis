@@ -50,7 +50,8 @@ class SynchronizationEditor(wx.BoxSizer):
         if self.has_parameters():
             main_panel = wx.BoxSizer(wx.HORIZONTAL)
             controls = self.put_controls()
-            main_panel.Add(controls, 1, wx.LEFT | wx.EXPAND, 20)
+            if controls is not None:
+                main_panel.Add(controls, 1, wx.LEFT | wx.EXPAND, 20)
             self.Add(main_panel, 0, wx.TOP | wx.EXPAND, 5)
 
     def close(self):

@@ -30,6 +30,9 @@ namespace GLOBAL_NAMESPACE{
     }
 
     void SourceFile::open() {
+#ifdef DEBUG_DELETE_CHECK
+        std::cout << "OPENING SOURCE FILE\n";
+#endif
         fileStream.open(fullName, std::ios_base::binary);
         if (fileStream.fail()){
             std::string originalName = fullName;
