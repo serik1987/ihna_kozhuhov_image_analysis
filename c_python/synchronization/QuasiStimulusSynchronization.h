@@ -39,7 +39,6 @@ extern "C" {
     }
 
     static int PyImanY_QuasiStimulusSynchronization_Create(PyObject* module){
-        printf("SO Creating QuasiStimulusSynchronization...\n");
 
         PyImanY_QuasiStimulusSynchronizationType.tp_base = &PyImanY_SynchronizationType;
         PyImanY_QuasiStimulusSynchronizationType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;

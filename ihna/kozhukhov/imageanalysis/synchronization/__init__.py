@@ -6,3 +6,5 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Externa
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_NoSynchronization as NoSynchronization
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_QuasiStimulusSynchronization as \
     QuasiStimulusSynchronization
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_QuasiTimeSynchronization as \
+    QuasiTimeSynchronization

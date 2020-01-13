@@ -38,7 +38,6 @@ extern "C" {
     }
 
     static int PyImanY_NoSynchronization_Create(PyObject* module){
-        printf("Creating NoSynchronization...\n");
 
         PyImanY_NoSynchronizationType.tp_base = &PyImanY_SynchronizationType;
         PyImanY_NoSynchronizationType.tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT;
