@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     trace_reader = trace.TraceReader(train)
     sync = synchr.ExternalSynchronization(train)
-    isoline = isoline_editors.NoIsolineEditor([], train)
-    print(isoline)
+    editor = isoline_editors.LinearFitIsolineEditor([], sync)
+    print(editor)
 
     print("PY Test end")

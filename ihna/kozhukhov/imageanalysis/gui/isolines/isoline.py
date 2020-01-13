@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis.sourcefiles import StreamFileTrain
 
 
 class IsolineEditor(wx.BoxSizer):
@@ -12,13 +13,13 @@ class IsolineEditor(wx.BoxSizer):
     _train = None
     _sync = None
 
-    def get_name(self):
+    def get_name(self) -> str:
         """
         Returns a string that will be drawn at the right of the radio button which selects this isoline
         """
         raise NotImplementedError("IsolineEditor is abstract. Use any of its derived classes")
 
-    def __init__(self, parent, train):
+    def __init__(self, parent, train: StreamFileTrain):
         """
         Isoline initialization
 
