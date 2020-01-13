@@ -46,7 +46,10 @@ extern "C" {
                 "Performs the synchronization that based on assumption that stimulus period equals to \n"
                 "integer number of timestamps. The class requires to set a stimulus period in timestamp number\n"
                 "1) Stimulus phase at timestamps that are multiple to the stimulus period is multiple of 2*PI\n"
-                "2) Initial and final frame are set in such a way as they contain integer number of stimulus periods\n";
+                "2) Initial and final frame are set in such a way as they contain integer number of stimulus periods\n"
+                "\n"
+                "Usage: sync = QuasiStimulusSynchronization(train)\n"
+                "where: train is a certain train which is assumed to be opened";
         PyImanY_QuasiStimulusSynchronizationType.tp_init = (initproc)PyImanY_QuasiStimulusSynchronization_Init;
 
         if (PyType_Ready(&PyImanY_QuasiStimulusSynchronizationType) < 0){

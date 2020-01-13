@@ -50,7 +50,10 @@ extern "C" {
                 "The reference signal will be plotted based on such assumption as its value at timestamps which \n"
                 "frame arrival time is close to the stimulus period multiplied by N is 2 * PI * M\n"
                 "Initial and final frame will be chosen in such a way as to contain integer number of cycles as this \n"
-                "defined by the user.";
+                "defined by the user.\n"
+                "\n"
+                "Usage: sync = QuasiStimulusSynchronization(train)\n"
+                "where: train is a certain train which is assumed to be opened";
         PyImanY_QuasiTimeSynchronizationType.tp_init = (initproc)PyImanY_QuasiTimeSynchronization_Init;
 
         if (PyType_Ready(&PyImanY_QuasiTimeSynchronizationType) < 0){

@@ -7,8 +7,8 @@ import ihna.kozhukhov.imageanalysis.compression as comp
 import ihna.kozhukhov.imageanalysis.tracereading as trace
 from ihna.kozhukhov.imageanalysis import manifest
 from ihna.kozhukhov.imageanalysis import synchronization as synchr
-from ihna.kozhukhov.imageanalysis.gui import synchronization as sync_edt
-from ihna.kozhukhov.imageanalysis.gui.synchronization.selector import SynchronizationSelector
+from ihna.kozhukhov.imageanalysis import isolines
+from ihna.kozhukhov.imageanalysis.gui import isolines as isoline_editors
 
 
 def progress_bar(perc):
@@ -22,5 +22,8 @@ if __name__ == "__main__":
     train.open()
 
     trace_reader = trace.TraceReader(train)
+    sync = synchr.ExternalSynchronization(train)
+    isoline = isoline_editors.IsolineEditor([], train)
+    print(isoline)
 
     print("PY Test end")
