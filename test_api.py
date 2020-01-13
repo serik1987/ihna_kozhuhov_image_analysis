@@ -12,8 +12,8 @@ from ihna.kozhukhov.imageanalysis.gui import isolines as isoline_editors
 from ihna.kozhukhov.imageanalysis.gui.isolines.selector import IsolineSelector
 
 
-def progress_bar(perc):
-    print("{0} percent completed".format(perc))
+def progress_bar(completed, total, message):
+    print("{0}: {1} percent completed".format(message, completed/total))
 
 
 if __name__ == "__main__":
@@ -22,8 +22,13 @@ if __name__ == "__main__":
     train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0200")
     train.open()
 
-    trace_reader = trace.TraceReader(train)
-    sync = synchr.ExternalSynchronization(train)
-    selector = IsolineSelector()
+    trace_reader = trace.TraceReaderAndCleaner(train)
+    print(trace_reader)
+
+    del train
+    print("PY Train was deleted")
+
+    del trace_reader
+    print("PY Trace reader was deleted")
 
     print("PY Test end")

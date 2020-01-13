@@ -5,3 +5,5 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TimestampE
 from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceNameError as TraceNameError
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceReader as TraceReader
+from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceReaderAndCleaner as \
+    TraceReaderAndCleaner
