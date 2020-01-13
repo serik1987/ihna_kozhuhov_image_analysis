@@ -11,5 +11,5 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
     def get_name(self):
         return "Synchronization by the external signal"
 
-    def __super__(self, parent, train):
-        super().__init__(parent, train)
+    def __super__(self, parent, train, selector):
+        super().__init__(parent, train, selector)

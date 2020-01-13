@@ -7,5 +7,5 @@ from .quasistimulussynchronization import QuasiStimulusSynchronizationEditor
 from .quasitimesynchronization import QuasiTimeSynchronizationEditor
 
 
-synchronization_editors = [ExternalSynchronizationEditor, NoSynchronizationEditor, QuasiStimulusSynchronizationEditor,
-                           QuasiTimeSynchronizationEditor]
+synchronization_editors = [NoSynchronizationEditor, QuasiStimulusSynchronizationEditor,
+                           QuasiTimeSynchronizationEditor, ExternalSynchronizationEditor]

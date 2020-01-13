@@ -11,5 +11,5 @@ class QuasiTimeSynchronizationEditor(SynchronizationEditor):
     def get_name(self):
         return "Quasi-time synchronization"
 
-    def __init__(self, parent, train):
-        super().__init__(parent, train)
+    def __init__(self, parent, train, selector):
+        super().__init__(parent, train, selector)

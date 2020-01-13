@@ -7,6 +7,7 @@ from ihna.kozhukhov.imageanalysis import compression
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
 from .compressiondlg import CompressionDlg
+from .traceanalysispropertiesdlg import TraceAnalysisPropertiesDlg
 
 
 class NativeDataManager(wx.Dialog):
@@ -318,4 +319,24 @@ class NativeDataManager(wx.Dialog):
         print("NATIVE DATA MANAGER get averaged maps")
 
     def trace_analysis(self):
-        print("NATIVE DATA MANAGER trace analysis")
+        try:
+            pathname = self.__case['pathname']
+            filename = self.__case['native_data_files'][0]
+            fullname = os.path.join(pathname, filename)
+            train = sfiles.StreamFileTrain(fullname)
+
+            properties_dlg = TraceAnalysisPropertiesDlg(self, train)
+            if properties_dlg.ShowModal() == wx.ID_CANCEL:
+                properties_dlg.close()
+                del train
+                return
+
+            print("PY Analysis continuation")
+
+            properties_dlg.close()
+            del train
+        except Exception as err:
+            dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            print("Exception class:", err.__class__.__name__)
+            print("Exception message:", str(err))
+            dlg.ShowModal()
