@@ -21,7 +21,6 @@ extern "C" {
 
     static PyImanY_SynchronizationObject* PyImanY_Synchronization_New(PyTypeObject* type,
             PyObject* args, PyObject* kwds){
-        printf("SO New Synchronization\n");
         auto* self = (PyImanY_SynchronizationObject*)type->tp_alloc(type, 0);
         if (self != NULL){
             self->parent_train = NULL;
@@ -33,7 +32,6 @@ extern "C" {
     static void PyImanY_Synchronization_Destroy(PyImanY_SynchronizationObject* self){
         using namespace GLOBAL_NAMESPACE;
 
-        printf("SO Destroy synchronization\n");
         Py_XDECREF(self->parent_train);
 
         if (self->synchronization_handle != NULL){

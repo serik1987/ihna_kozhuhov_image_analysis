@@ -8,6 +8,7 @@ import ihna.kozhukhov.imageanalysis.tracereading as trace
 from ihna.kozhukhov.imageanalysis import manifest
 from ihna.kozhukhov.imageanalysis import synchronization as synchr
 from ihna.kozhukhov.imageanalysis.gui import synchronization as sync_edt
+from ihna.kozhukhov.imageanalysis.gui.synchronization.selector import SynchronizationSelector
 
 
 def progress_bar(perc):
@@ -21,6 +22,5 @@ if __name__ == "__main__":
     train.open()
 
     trace_reader = trace.TraceReader(train)
-    sync = sync_edt.QuasiTimeSynchronizationEditor([], train)
 
     print("PY Test end")
