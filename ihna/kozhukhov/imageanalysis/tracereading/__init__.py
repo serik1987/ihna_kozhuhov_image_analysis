@@ -7,3 +7,5 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceNameE
 from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceReader as TraceReader
 from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceReaderAndCleaner as \
     TraceReaderAndCleaner
+
+from .traces import Traces

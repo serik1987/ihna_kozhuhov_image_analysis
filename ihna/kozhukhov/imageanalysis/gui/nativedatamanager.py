@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import os.path
+import time
 import wx
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression
@@ -8,6 +9,7 @@ from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
 from .compressiondlg import CompressionDlg
 from .traceanalysispropertiesdlg import TraceAnalysisPropertiesDlg
+from .readingprogressdlg import ReadingProgressDialog
 
 
 class NativeDataManager(wx.Dialog):
@@ -349,6 +351,19 @@ class NativeDataManager(wx.Dialog):
                 return
 
             print("PY Analysis continuation")
+
+            progress_dlg = ReadingProgressDialog(self, "Trace analysis", 9140, "Reading traces")
+            n = 0
+            while n < 9140:
+                if not progress_dlg.progress_function(n, 9140, "Reading traces"):
+                    print("PY Finish reading traces")
+                    progress_dlg.Destroy()
+                    properties_dlg.close()
+                    del train
+                    return
+                time.sleep(0.1)
+                n += 100
+            progress_dlg.done()
 
             properties_dlg.close()
             del train
