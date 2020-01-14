@@ -342,7 +342,7 @@ class NativeDataManager(wx.Dialog):
             train = sfiles.StreamFileTrain(fullname)
             train.open()
 
-            properties_dlg = TraceAnalysisPropertiesDlg(self, train)
+            properties_dlg = TraceAnalysisPropertiesDlg(self, train, self.__case['roi'])
             if properties_dlg.ShowModal() == wx.ID_CANCEL:
                 properties_dlg.close()
                 del train

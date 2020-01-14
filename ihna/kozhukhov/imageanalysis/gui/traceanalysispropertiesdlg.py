@@ -15,11 +15,16 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
     __sync_selector = None
     __isoline_selector = None
     __channel_selector = None
+    __sync_signal_widgets = None
+    __roi_box = None
+    __roi_list = None
+    __correctness_check_box = None
 
-    def __init__(self, parent, train):
+    def __init__(self, parent, train, roi_list):
         super().__init__(parent, title="Trace analysis properties", size=(800, 600))
         self.__parent = parent
         self.__train = train
+        self.__roi_list = roi_list
 
         main_panel = wx.Panel(self)
         general_layout = wx.BoxSizer(wx.VERTICAL)
@@ -50,22 +55,71 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         self.__isoline_selector = IsolineSelector(parent, self.__train)
         upper_right_panel.Add(self.__isoline_selector, 0, wx.BOTTOM | wx.EXPAND, 10)
 
-        self.__channel_selector = wx.Panel(parent, size=(200, 100))
-        self.__channel_selector.SetBackgroundColour("red")
+        self.__channel_selector = self.__init_channel_selector(parent)
         upper_right_panel.Add(self.__channel_selector, 0, wx.EXPAND)
 
         upper_panel.Add(upper_right_panel, 0)
         return upper_panel
 
+    def __init_channel_selector(self, parent):
+        box = wx.StaticBoxSizer(wx.VERTICAL, parent, label="Trace reading")
+
+        layout = wx.BoxSizer(wx.VERTICAL)
+
+        self.__sync_signal_widgets = []
+        try:
+            if not self.__train.is_opened:
+                raise RuntimeError("Please, open the train before creating this dialog box")
+            for chan in range(self.__train.synchronization_channel_number):
+                wid = wx.CheckBox(parent, label="Include synchronization signal # " + str(chan))
+                self.__sync_signal_widgets.append(wid)
+                layout.Add(wid, 0, wx.EXPAND | wx.BOTTOM, 5)
+
+            roi_layout = wx.BoxSizer(wx.HORIZONTAL)
+
+            roi_caption = wx.StaticText(parent, label="ROI")
+            roi_layout.Add(roi_caption, 0, wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5)
+
+            choices = []
+            for roi in self.__roi_list:
+                choices.append(roi.get_name())
+            self.__roi_box = wx.Choice(parent, choices=choices)
+            if len(choices) != 0:
+                self.__roi_box.SetSelection(0)
+            roi_layout.Add(self.__roi_box, 1, wx.EXPAND)
+
+            layout.Add(roi_layout, 0, wx.EXPAND)
+        except Exception as err:
+            print("Synchronization signal can't be included")
+            print("Reason:", err.__class__.__name__)
+            print("Comment:", str(err))
+
+        box.Add(layout, 1, wx.EXPAND | wx.ALL, 5)
+        return box
+
     def __init_middle_panel(self, parent):
-        middle_panel = wx.Panel(parent, size=(300, 50))
-        middle_panel.SetBackgroundColour("blue")
+        middle_panel = wx.BoxSizer(wx.HORIZONTAL)
+
+        check_button = wx.Button(parent, label="Check parameters for correctness")
+        check_button.Bind(wx.EVT_BUTTON, lambda evt: self.correctness_check())
+        middle_panel.Add(check_button, 0, wx.RIGHT, 5)
+
+        self.__correctness_check_box = wx.StaticText(parent,
+                                                     label="Please the button at the left to check and continue")
+        middle_panel.Add(self.__correctness_check_box, 0, wx.ALIGN_CENTER_VERTICAL)
 
         return middle_panel
 
     def __init_lower_panel(self, parent):
-        lower_panel = wx.Panel(parent, size=(100, 50))
-        lower_panel.SetBackgroundColour("orange")
+        lower_panel = wx.BoxSizer(wx.HORIZONTAL)
+
+        ok = wx.Button(parent, label="OK")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.EndModal(wx.ID_OK), ok)
+        lower_panel.Add(ok, 0, wx.RIGHT, 5)
+
+        cancel = wx.Button(parent, label="Cancel")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.EndModal(wx.ID_CANCEL), cancel)
+        lower_panel.Add(cancel)
 
         return lower_panel
 
@@ -80,3 +134,6 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
         self.__sync_selector.close()
         self.__isoline_selector.close()
+
+    def correctness_check(self):
+        print("correctness check")

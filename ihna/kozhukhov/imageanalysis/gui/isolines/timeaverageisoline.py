@@ -29,12 +29,11 @@ class TimeAverageIsolineEditor(IsolineEditor):
 
     def disable(self):
         self.__cycles_caption.Enable(False)
-        self.__cycle_box.Enable(False)
+        self.__cycles_box.Enable(False)
         self.__average_result.SetLabel("")
 
     def put_properties(self):
         properties = wx.BoxSizer(wx.VERTICAL)
-
         cycle_layout = wx.BoxSizer(wx.HORIZONTAL)
 
         self.__cycles_caption = wx.StaticText(self._parent, label="Average radius, cycles")
