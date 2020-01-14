@@ -10,6 +10,7 @@ from .frameviewer import FrameViewer
 from .compressiondlg import CompressionDlg
 from .traceanalysispropertiesdlg import TraceAnalysisPropertiesDlg
 from .readingprogressdlg import ReadingProgressDialog
+from .tracesdlg import TracesDlg
 
 
 class NativeDataManager(wx.Dialog):
@@ -349,13 +350,14 @@ class NativeDataManager(wx.Dialog):
                 properties_dlg.close()
                 del train
                 return
+            properties_dlg.close()
 
             print("PY Analysis continuation")
 
-            progress_dlg = ReadingProgressDialog(self, "Trace analysis", 9140, "Reading traces")
+            progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             n = 0
-            while n < 9140:
-                if not progress_dlg.progress_function(n, 9140, "Reading traces"):
+            while n < 1000:
+                if not progress_dlg.progress_function(n, 1000, "Reading traces"):
                     print("PY Finish reading traces")
                     progress_dlg.Destroy()
                     properties_dlg.close()
@@ -365,7 +367,18 @@ class NativeDataManager(wx.Dialog):
                 n += 100
             progress_dlg.done()
 
-            properties_dlg.close()
+            print("PY The processing has been completed")
+
+            traces_dlg = TracesDlg(self)
+            if traces_dlg.ShowModal() == wx.ID_CANCEL:
+                traces_dlg.close()
+                properties_dlg.close()
+                del train
+                return
+            traces_dlg.close()
+
+            print("PY Traces postprocessing")
+
             del train
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
