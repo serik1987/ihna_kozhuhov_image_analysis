@@ -12,8 +12,35 @@ class IsolineSelector(wx.StaticBoxSizer):
 
     __parent = None
     __train = None
+    __editors = None
 
     def __init__(self, parent, train: StreamFileTrain):
         super().__init__(wx.VERTICAL, parent, label="Isoline remove")
         self.__parent = parent
         self.__train = train
+
+        main_panel = wx.BoxSizer(wx.VERTICAL)
+
+        self.__editors = []
+        for IsolineEditor in editor_list:
+            editor = IsolineEditor(parent, train, self)
+            self.__editors.append(editor)
+            border = 5
+            main_panel.Add(editor, 0, wx.BOTTOM | wx.EXPAND, border)
+        self.select()
+
+        self.Add(main_panel, 1, wx.ALL | wx.EXPAND, 5)
+
+    def close(self):
+        self.__parent = None
+        self.__train = None
+
+        for editor in self.__editors:
+            editor.close()
+
+    def select(self):
+        for editor in self.__editors:
+            if editor.is_selected() and editor.has_properties():
+                editor.enable()
+            if not editor.is_selected() and editor.has_properties():
+                editor.disable()

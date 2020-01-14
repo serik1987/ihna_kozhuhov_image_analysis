@@ -13,5 +13,5 @@ class LinearFitIsolineEditor(IsolineEditor):
     def get_name(self) -> str:
         return "Linear fit"
 
-    def __init__(self, parent, train: StreamFileTrain):
-        super().__init__(parent, train)
+    def __init__(self, parent, train: StreamFileTrain, selector):
+        super().__init__(parent, train, selector)

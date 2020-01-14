@@ -2,6 +2,7 @@
 
 import wx
 from .synchronization.selector import SynchronizationSelector
+from .isolines.selector import IsolineSelector
 
 
 class TraceAnalysisPropertiesDlg(wx.Dialog):
@@ -46,8 +47,7 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
         upper_right_panel = wx.BoxSizer(wx.VERTICAL)
 
-        self.__isoline_selector = wx.Panel(parent, size=(300, 300))
-        self.__isoline_selector.SetBackgroundColour("black")
+        self.__isoline_selector = IsolineSelector(parent, self.__train)
         upper_right_panel.Add(self.__isoline_selector, 0, wx.BOTTOM | wx.EXPAND, 10)
 
         self.__channel_selector = wx.Panel(parent, size=(200, 100))
@@ -79,3 +79,4 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         self.__parent = None
 
         self.__sync_selector.close()
+        self.__isoline_selector.close()
