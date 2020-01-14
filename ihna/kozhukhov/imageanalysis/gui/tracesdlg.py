@@ -40,7 +40,7 @@ class TracesDlg(wx.Dialog):
         general_layout = wx.BoxSizer(wx.VERTICAL)
         main_layout = wx.BoxSizer(wx.VERTICAL)
 
-        draw_panel = wx.Panel(main_panel, size=(900, 700))
+        draw_panel = wx.Panel(main_panel, size=(900, 600))
         draw_panel.SetBackgroundColour("green")
         draw_sizer = wx.BoxSizer(wx.VERTICAL)
         fig = Figure(tight_layout=True)
