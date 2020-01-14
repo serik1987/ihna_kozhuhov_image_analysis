@@ -14,15 +14,18 @@ namespace GLOBAL_NAMESPACE {
 
     /**
      * When the class supports a progress bar, this runs so called "progress function" after
-     * finishing processing of each 100 frames. The following input arguments will be passed:
+     * finishing processing of each 100 frames. Its main role is to tell the user how long he shall wait, how
+     * much frames have been processed and how much frames are going to process
+     * The following input arguments will be passed by the frame processing object to the function:
      *  completed - total frames that have already been processed
      *  total - total number of frames.
      *  stage - pointer to the C-style string that contains a short description of a certain stage.
      *  handle - the pointer that was passed during the call of setProgressFunction method. An exact value of this
      *  pointer will be passed to this function
      *
-     * if the function returns bool, the frame processing is completed. However, if the function returns false,
-     * the processing will be aborted and the initial stage before the processing will be restored.
+     * The function shall return to the processing object one of the following values:
+     * true - the object has been processed. This is OK
+     * false - the function has not been processed. The process shall be interrupted
      */
     typedef bool (*ProgressFunction)(int completed, int total, const char* stage, void* handle);
 

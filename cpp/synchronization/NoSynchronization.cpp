@@ -16,4 +16,20 @@ namespace GLOBAL_NAMESPACE {
 
         return *this;
     }
+
+    void NoSynchronization::setInitialFrame(int frame) {
+        if (frame >= 0 && frame < finalFrame){
+            initialFrame = frame;
+        } else {
+            throw FrameRangeException();
+        }
+    }
+
+    void NoSynchronization::setFinalFrame(int frame) {
+        if (frame > initialFrame && frame < train.getTotalFrames()){
+            finalFrame = frame;
+        } else {
+            throw FrameRangeException();
+        }
+    }
 }

@@ -19,6 +19,7 @@ class ReadingProgressDialog(wx.ProgressDialog):
     The progress function.
     """
     def progress_function(self, processed_frames, total_frames, message):
+        print("\033[2K{0}: {1} out of {2}\033[1A".format(message, processed_frames, total_frames))
         if total_frames != self.__maximum:
             self.__maximum = total_frames
         if processed_frames == total_frames:
@@ -30,4 +31,5 @@ class ReadingProgressDialog(wx.ProgressDialog):
     Completely closes the dialog
     """
     def done(self):
+        print("\033[2KDone")
         self.Update(self.__maximum)

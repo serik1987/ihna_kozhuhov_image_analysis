@@ -40,6 +40,7 @@ namespace GLOBAL_NAMESPACE {
         double initialPhase;
 
         ProgressFunction progressFunction;
+        void* handle;
 
     public:
         /**
@@ -72,6 +73,114 @@ namespace GLOBAL_NAMESPACE {
          * @return the final frame of the selected record
          */
         [[nodiscard]] int getFinalFrame() const { return finalFrame; }
+
+        [[nodiscard]] int getFrameNumber() const { return finalFrame - initialFrame + 1; }
+
+        /**
+         *
+         * @return true if precise analysis if needed
+         */
+        [[nodiscard]] bool isDoPrecise() const { return doPrecise; }
+
+        /**
+         * Adjusts the precise analysis parameters
+         *
+         * @param value true if precise analysis is required, false otherwise
+         */
+        void setDoPrecise(bool value) { doPrecise = value; }
+
+        /**
+         *
+         * @return synchronization phase dependent on timestamp as contiguous C array
+         */
+        [[nodiscard]] const double* getSynchronizationPhase() const;
+
+        /**
+         *
+         * @return difference of stimulus phase between two consequtive frames or
+         * 0.0 if the train has not been synchronized
+         */
+        [[nodiscard]] double getPhaseIncrement() const { return phaseIncrement; }
+
+        /**
+         *
+         * @return stimulus phase at 0th timestamp or 0.0 if the train has not been synchronized
+         */
+        [[nodiscard]] double getInitialPhase() const { return initialPhase; }
+
+        /**
+         *
+         * @return the reference cosine as contiguous C array
+         */
+        [[nodiscard]] const double* getReferenceSignalCos() const;
+
+        /**
+         *
+         * @return the reference sine as contiguous C array
+         */
+        [[nodiscard]] const double* getReferenceSignalSin() const;
+
+        /**
+         *
+         * @return harmonic
+         */
+        [[nodiscard]] double getHarmonic() const { return harmonic;}
+
+        /**
+         *
+         * @param value harmonic value
+         */
+        void setHarmonic(double value) { harmonic = value; }
+
+        /**
+         * Sets the progress function. This function will be called every time where each 100 frames are synchronized
+         *
+         * @param f The function
+         * @param h the value to be passed to progress function when this is called. This may be a pointer to a
+         * progress bar window
+         */
+        void setProgressFunction(ProgressFunction f, void* h){
+            progressFunction = f;
+            handle = h;
+        }
+
+
+
+        class SynchronizationException: public iman_exception{
+        public:
+            explicit SynchronizationException(const std::string& msg): iman_exception(msg) {};
+        };
+
+        class FileNotOpenedException: public SynchronizationException{
+        public:
+            explicit FileNotOpenedException():
+                SynchronizationException("Synchronization failed because the file has not been opened") {};
+        };
+
+        class NotSynchronizedException: public SynchronizationException{
+        public:
+            explicit NotSynchronizedException():
+                SynchronizationException
+                ("The property is not accessible because the train has not been synchronize()'d") {};
+        };
+
+        class StimulusPeriodException: public SynchronizationException{
+        public:
+            explicit StimulusPeriodException():
+                SynchronizationException("Bad value of the stimulus period") {};
+        };
+
+        class InitialCycleException: public SynchronizationException{
+        public:
+            explicit InitialCycleException():
+                SynchronizationException("Bad value of the initial cycle") {};
+        };
+
+        class FinalCycleException: public SynchronizationException{
+        public:
+            explicit FinalCycleException():
+                SynchronizationException("Bad value of the final cycle") {};
+        };
 
     };
 

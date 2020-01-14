@@ -31,6 +31,47 @@ namespace GLOBAL_NAMESPACE {
         QuasiStimulusSynchronization& operator=(QuasiStimulusSynchronization&& other) noexcept;
 
         [[nodiscard]] const char* getName() const noexcept override {return "quasi-stimulus synchronization"; }
+
+        /**
+         *
+         * @return the stimulus period
+         */
+        [[nodiscard]] int getStimulusPeriod() const { return stimulusPeriod; }
+
+        /**
+         *
+         * @return initial cycle or -1 if the initial cycle has not been set. In this case the intitial cycle
+         * will be set during the synchronization automatically in such a way as to maximize the analysis epoch
+         */
+        [[nodiscard]] int getInitialCycle() const { return initialCycle; }
+
+        /**
+         *
+         * @return the final cycle or -1 if the final cycle has not been set. In this case the final cycle will
+         * be set automatically in such a way as to maximize the analysis epoch
+         */
+        [[nodiscard]] int getFinalCycle() const { return finalCycle; }
+
+        /**
+         * Sets the stimulus period
+         *
+         * @param period the stimulus period in frames
+         */
+        void setStimulusPeriod(int period);
+
+        /**
+         * Sets the cycle from which the analysis starts
+         *
+         * @param n number of cycle from which the analysis starts
+         */
+        void setInitialCycle(int n);
+
+        /**
+         * Sets the cycle at which the analysis finishes
+         *
+         * @param n number of cycle at which analysis finishes
+         */
+        void setFinalCycle(int n);
     };
 
 }

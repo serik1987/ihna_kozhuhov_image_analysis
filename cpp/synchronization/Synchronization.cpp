@@ -17,6 +17,11 @@ namespace GLOBAL_NAMESPACE {
         synchronizationPhase = nullptr;
         phaseIncrement = 0.0;
         initialPhase = 0.0;
+        progressFunction = nullptr;
+
+        if (!train.isOpened()){
+            throw FileNotOpenedException();
+        }
     }
 
     Synchronization::~Synchronization(){
@@ -62,5 +67,29 @@ namespace GLOBAL_NAMESPACE {
         initialPhase = other.initialPhase;
 
         return *this;
+    }
+
+    const double *Synchronization::getSynchronizationPhase() const {
+        if (!synchronized || synchronizationPhase  == nullptr){
+            throw NotSynchronizedException();
+        } else {
+            return synchronizationPhase;
+        }
+    }
+
+    const double *Synchronization::getReferenceSignalCos() const {
+        if (!synchronized || referenceSignalCos == nullptr){
+            throw NotSynchronizedException();
+        } else {
+            return referenceSignalCos;
+        }
+    }
+
+    const double *Synchronization::getReferenceSignalSin() const {
+        if (!synchronized || referenceSignalSin == nullptr){
+            throw NotSynchronizedException();
+        } else {
+            return referenceSignalSin;
+        }
     }
 }

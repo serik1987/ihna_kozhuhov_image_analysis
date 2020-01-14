@@ -24,7 +24,25 @@ namespace GLOBAL_NAMESPACE {
         NoSynchronization& operator=(const NoSynchronization& other) = delete;
         NoSynchronization& operator=(NoSynchronization&& other) noexcept;
 
+        /**
+         * Sets the initial frame
+         *
+         * @param frame
+         */
+        void setInitialFrame(int frame);
+
+        /**
+         * Sets the final frame
+         * @param frame
+         */
+        void setFinalFrame(int frame);
+
         [[nodiscard]] const char* getName() const noexcept override { return "no synchronization"; }
+
+        class FrameRangeException: public SynchronizationException{
+        public:
+            FrameRangeException(): SynchronizationException("Incorrect analysis range") {};
+        };
     };
 
 }
