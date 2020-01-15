@@ -4,6 +4,7 @@
 
 #include "cpp/source_files/StreamFileTrain.h"
 #include "cpp/synchronization/ExternalSynchronization.h"
+#include "cpp/isolines/TimeAverageIsoline.h"
 
 #define WORKING_DIR "/home/serik1987/vasomotor-oscillations/sample_data/c022z/"
 
@@ -25,23 +26,14 @@ int main() {
         train.open();
 
         ExternalSynchronization sync(train);
+        TimeAverageIsoline isoline(train, sync);
 
-        sync.setSynchronizationChannel(1);
-        sync.setInitialCycle(2);
-        sync.setFinalCycle(10);
-        sync.setDoPrecise(true);
-        sync.setHarmonic(2.0);
-
-        cout << "Initial frame: " << sync.getInitialFrame() << endl;
-        cout << "Final frame: " << sync.getFinalFrame() << endl;
-        cout << "Frame number: " << sync.getFrameNumber() << endl;
-        cout << "Precise: " << sync.isDoPrecise() << endl;
-        cout << "Phase increment: " << sync.getPhaseIncrement() << endl;
-        cout << "Initial phase: " << sync.getInitialPhase() << endl;
-        cout << "Harmonic: " << sync.getHarmonic() << endl;
-        cout << "Synchronization channel: " << sync.getSynchronizationChannel() << endl;
-        cout << "Initial cycle: " << sync.getInitialCycle() << endl;
-        cout << "Final cycle: " << sync.getFinalCycle() << endl;
+        cout << "Frame offset: " << isoline.getFrameOffset() << endl;
+        cout << "Analysis epoch (cycles): " << isoline.getAnalysisInitialCycle() << " " << isoline.getAnalysisFinalCycle() << "\n";
+        cout << "Analysis epoch (frames): " << isoline.getAnalysisInitialFrame() << " " << isoline.getAnalysisFinalFrame() << "\n";
+        cout << "Time average epoch (cycles): " << isoline.getIsolineInitialCycle() << " " << isoline.getIsolineFinalCycle() << "\n";
+        cout << "Time average epoch (frames): " << isoline.getIsolineInitialFrame() << " " << isoline.getIsolineFinalFrame() << "\n";
+        cout << "Time average radius (cycles): " << isoline.getAverageCycles() << "\n";
 
     }
     return 0;

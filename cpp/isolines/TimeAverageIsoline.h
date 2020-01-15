@@ -25,6 +25,26 @@ namespace GLOBAL_NAMESPACE {
 
         [[nodiscard]] const char* getName() const noexcept override { return "time average"; }
 
+        /**
+         *
+         * @return the smooth radius, in cycles. When NoSynchronization is used, the smooth radius is given in frames
+         */
+        [[nodiscard]] int getAverageCycles() const { return averageCycles; }
+
+        /**
+         * Sets number of the averaged cycles.
+         *
+         * @param r number of the averaged cycles.
+         * For the purpose of time averaging r cycles will be taken from the left of the analyzing frame and r cycles
+         * will be taken from the right of the analyzing frame
+         */
+        void setAverageCycles(int r);
+
+        class AverageCyclesException: public IsolineException {
+        public:
+            AverageCyclesException(): IsolineException("bad value of averaged cycles") {};
+        };
+
     };
 
 }

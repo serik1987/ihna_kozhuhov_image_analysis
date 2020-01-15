@@ -20,4 +20,12 @@ namespace GLOBAL_NAMESPACE {
 
         return *this;
     }
+
+    void TimeAverageIsoline::setAverageCycles(int r) {
+        if (r > 0){
+            averageCycles = r;
+        } else {
+            throw AverageCyclesException();
+        }
+    }
 }

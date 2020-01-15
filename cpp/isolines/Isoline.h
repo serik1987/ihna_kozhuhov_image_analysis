@@ -25,6 +25,16 @@ namespace GLOBAL_NAMESPACE {
     protected:
         int offset;
 
+        int analysisInitialCycle;
+        int analysisFinalCycle;
+        int isolineInitialCycle;
+        int isolineFinalCycle;
+
+        int analysisInitialFrame;
+        int analysisFinalFrame;
+        int isolineInitialFrame;
+        int isolineFinalFrame;
+
         Synchronization& sync() { return *psync; }
         StreamFileTrain& train() { return *ptrain; }
 
@@ -37,10 +47,68 @@ namespace GLOBAL_NAMESPACE {
 
         Isoline& operator=(const Isoline& other) noexcept;
 
-        int initial_frame() { return psync->getInitialFrame(); }
-        int final_frame() { return psync->getFinalFrame(); }
-
         [[nodiscard]] virtual const char* getName() const noexcept = 0;
+
+        /**
+         *
+         * @return number of frames at the beginning of the isoline that are excluded from the analysis
+         * or -1 if the isoline has not been removed
+         */
+        [[nodiscard]] int getFrameOffset() const { return offset; }
+
+        /**
+         *
+         * @return initial cycle for the analysis or -1 if the isoline has not been removed
+         */
+        [[nodiscard]] int getAnalysisInitialCycle() const { return analysisInitialCycle; }
+
+        /**
+         *
+         * @return final cycle for the analysis or -1 if the isoline has not been removed
+         */
+        [[nodiscard]] int getAnalysisFinalCycle() const { return analysisFinalCycle; }
+
+        /**
+         *
+         * @return initial cycle, used for isoline calculation
+         */
+        [[nodiscard]] int getIsolineInitialCycle() const { return isolineInitialCycle; }
+
+        /**
+         *
+         * @return final cycle used for isoline calculation
+         */
+        [[nodiscard]] int getIsolineFinalCycle() const { return isolineFinalCycle; }
+
+        /**
+         *
+         * @return the first frame included into the analysis
+         */
+        [[nodiscard]] int getAnalysisInitialFrame() const { return analysisInitialFrame; }
+
+        /**
+         *
+         * @return the last frame included into the analysis
+         */
+        [[nodiscard]] int getAnalysisFinalFrame() const { return analysisFinalFrame; }
+
+        /**
+         *
+         * @return the first frame participated in the isoline calculation
+         */
+        [[nodiscard]] int getIsolineInitialFrame() const { return isolineInitialFrame; }
+
+        /**
+         *
+         * @return the last frame participated in the isoline calculation
+         */
+        [[nodiscard]] int getIsolineFinalFrame() const { return isolineFinalFrame; }
+
+
+        class IsolineException: public iman_exception{
+        public:
+            explicit IsolineException(const std::string& msg): iman_exception(msg) {};
+        };
     };
 
 }
