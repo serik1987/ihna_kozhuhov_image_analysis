@@ -20,6 +20,8 @@ namespace GLOBAL_NAMESPACE {
         double* isolines;
         Isoline* isolineRemover;
 
+        bool cleaned;
+
     public:
         explicit TraceReaderAndCleaner(StreamFileTrain& train);
         TraceReaderAndCleaner(const TraceReaderAndCleaner& other) = delete;
@@ -28,6 +30,32 @@ namespace GLOBAL_NAMESPACE {
 
         TraceReaderAndCleaner& operator=(const TraceReaderAndCleaner& other) = delete;
         TraceReaderAndCleaner& operator=(TraceReaderAndCleaner&& other) noexcept;
+
+        /**
+         * Sets the Isoline object that will remove isolines from given traces
+         *
+         * @param isoline reference to the object
+         */
+        void setIsolineRemover(Isoline& isoline) { isolineRemover = &isoline; }
+
+        /**
+         *
+         * @return true if all isolines were successfully read and cleaned
+         */
+        [[nodiscard]] bool isCleaned() const { return hasRead() && cleaned; }
+
+        /**
+         *
+         * @return a 2D C-type array containing all isolines for all data pixels and native signals
+         * for data pixels
+         */
+        [[nodiscard]] const double* getIsolines() const;
+
+        /**
+         *
+         * @return traces before remove
+         */
+        [[nodiscard]] const double* getTracesBeforeRemove() const;
     };
 
 }

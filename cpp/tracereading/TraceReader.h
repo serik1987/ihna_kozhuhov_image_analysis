@@ -41,6 +41,8 @@ namespace GLOBAL_NAMESPACE {
     protected:
         double* traces;
         ProgressFunction progressFunction;
+        std::string progressMessage;
+        void* handle;
 
     public:
         explicit TraceReader(StreamFileTrain& train);
@@ -130,6 +132,20 @@ namespace GLOBAL_NAMESPACE {
         [[nodiscard]] int getMapSizeX() const { return train.getXSize(); }
         [[nodiscard]] int getMapSizeY() const { return train.getYSize(); }
         [[nodiscard]] int getSynchChannelNumber() const { return train.getSynchronizationChannelNumber(); }
+
+        /**
+         * Sets the progress function
+         *
+         * @param f function handle. The function a handle pointer to will be called each time where 100 frames
+         * will be processed
+         * @param progress_message to be substituted to the function f
+         * @param dlg a pointer that will be substituted to the last parameter of the function f
+         */
+        void setProgressFunction(ProgressFunction f, const std::string& progress_message, void* dlg){
+            progressFunction = f;
+            progressMessage = progress_message;
+            handle = dlg;
+        }
 
         /**
          *

@@ -10,6 +10,7 @@ namespace GLOBAL_NAMESPACE {
         tracesBeforeRemove = nullptr;
         isolines = nullptr;
         isolineRemover = nullptr;
+        cleaned = false;
     }
 
     TraceReaderAndCleaner::TraceReaderAndCleaner(TraceReaderAndCleaner &&other) noexcept:
@@ -41,5 +42,21 @@ namespace GLOBAL_NAMESPACE {
         isolineRemover = other.isolineRemover;
 
         return *this;
+    }
+
+    const double *TraceReaderAndCleaner::getTracesBeforeRemove() const {
+        if (hasRead() && tracesBeforeRemove != nullptr){
+            return tracesBeforeRemove;
+        } else {
+            throw TracesNotReadException();
+        }
+    }
+
+    const double *TraceReaderAndCleaner::getIsolines() const {
+        if (cleaned && isolines != nullptr){
+            return isolines;
+        } else {
+            throw TracesNotReadException();
+        }
     }
 }

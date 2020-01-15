@@ -144,6 +144,12 @@ namespace GLOBAL_NAMESPACE {
             handle = h;
         }
 
+        /**
+         *
+         * @return true if synchronization was successfully completed
+         */
+        [[nodiscard]] bool isSynchronized() const { return synchronized; }
+
 
 
         class SynchronizationException: public iman_exception{

@@ -8,4 +8,4 @@ class TraceProcessor:
     """
 
     def __init__(self, reader):
-        print("")
+        print("TraceProcessor: Trace postprocessing")

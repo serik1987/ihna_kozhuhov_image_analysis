@@ -5,6 +5,7 @@
 #include "cpp/source_files/StreamFileTrain.h"
 #include "cpp/synchronization/ExternalSynchronization.h"
 #include "cpp/isolines/TimeAverageIsoline.h"
+#include "cpp/tracereading/TraceReaderAndCleaner.h"
 
 #define WORKING_DIR "/home/serik1987/vasomotor-oscillations/sample_data/c022z/"
 
@@ -27,6 +28,8 @@ int main() {
 
         ExternalSynchronization sync(train);
         TimeAverageIsoline isoline(train, sync);
+        TraceReaderAndCleaner reader(train);
+        reader.setIsolineRemover(isoline);
 
         cout << "Frame offset: " << isoline.getFrameOffset() << endl;
         cout << "Analysis epoch (cycles): " << isoline.getAnalysisInitialCycle() << " " << isoline.getAnalysisFinalCycle() << "\n";
