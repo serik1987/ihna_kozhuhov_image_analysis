@@ -22,13 +22,7 @@ if __name__ == "__main__":
     train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0200")
     train.open()
 
-    trace_reader = trace.TraceReaderAndCleaner(train)
+    trace_reader = trace.TraceReader(train)
     print(trace_reader)
-
-    del train
-    print("PY Train was deleted")
-
-    del trace_reader
-    print("PY Trace reader was deleted")
 
     print("PY Test end")

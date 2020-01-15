@@ -112,5 +112,11 @@ namespace GLOBAL_NAMESPACE {
         return out;
     }
 
+    void TraceReader::printAllPixels() {
+        for (auto& item: pixelList){
+            std::cout << item;
+        }
+    }
+
 
 }

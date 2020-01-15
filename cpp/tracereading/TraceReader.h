@@ -148,6 +148,23 @@ namespace GLOBAL_NAMESPACE {
         }
 
         /**
+         * Prints all pixels one by one
+         */
+        void printAllPixels();
+
+        /**
+         * Adds a pixel to the pixel list
+         *
+         * @param pixel
+         */
+        void addPixel(const PixelListItem& pixel) { pixelList.push_back(pixel); }
+
+        /**
+         * Clears all pixels
+         */
+        void clearPixels() { pixelList.clear(); }
+
+        /**
          *
          * @return the string "TRACE READER" if nothing else is defined in the derived class
          */

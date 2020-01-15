@@ -38,6 +38,22 @@ int main() {
         cout << "Time average epoch (frames): " << isoline.getIsolineInitialFrame() << " " << isoline.getIsolineFinalFrame() << "\n";
         cout << "Time average radius (cycles): " << isoline.getAverageCycles() << "\n";
 
+        cout << reader << endl;
+
+        reader.addPixel(PixelListItem(reader, PixelListItem::ARRIVAL_TIME, 0));
+        reader.addPixel(PixelListItem(reader, PixelListItem::SYNCH, 0));
+        reader.addPixel(PixelListItem(reader, PixelListItem::SYNCH, 1));
+
+        for (int i=100; i < 200; i++){
+            for (int j=100; j < 200; j++){
+                reader.addPixel(PixelListItem(reader, i, j));
+            }
+        }
+
+        reader.clearPixels();
+
+        reader.printAllPixels();
+
     }
     return 0;
 }

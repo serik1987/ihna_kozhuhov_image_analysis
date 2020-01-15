@@ -68,6 +68,7 @@ namespace GLOBAL_NAMESPACE{
 
         out << "Displacement: 0x" << hex << other.getDisplacement() << dec << endl;
         out << "Size: " << other.getPointSize() << endl;
+        out << "---------------------------------------------\n";
 
         return out;
     }

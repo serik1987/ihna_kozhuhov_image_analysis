@@ -56,6 +56,8 @@ namespace GLOBAL_NAMESPACE {
          * @return traces before remove
          */
         [[nodiscard]] const double* getTracesBeforeRemove() const;
+
+        const char* getReaderName() const override { return "TRACE READER AND CLEANER"; };
     };
 
 }
