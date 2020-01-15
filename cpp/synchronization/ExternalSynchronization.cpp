@@ -9,8 +9,12 @@ namespace GLOBAL_NAMESPACE {
     ExternalSynchronization::ExternalSynchronization(StreamFileTrain &train) : Synchronization(train) {
         synchronizationChannel = 0;
         synchronizationSignal = nullptr;
-        initialCycle = 1;
-        finalCycle = 1;
+        initialCycle = -1;
+        finalCycle = -1;
+
+        if (train.getExperimentalMode() != FileTrain::Continuous){
+            throw FileTrain::experiment_mode_exception(&train);
+        }
     }
 
     ExternalSynchronization::ExternalSynchronization(ExternalSynchronization &&other) noexcept:
@@ -41,5 +45,45 @@ namespace GLOBAL_NAMESPACE {
         finalCycle = other.finalCycle;
 
         return *this;
+    }
+
+    void ExternalSynchronization::setSynchronizationChannel(int chan) {
+        if (chan >= 0 && chan < train.getSynchronizationChannelNumber()){
+            synchronizationChannel = chan;
+        } else {
+            throw SynchronizationChannelException();
+        }
+    }
+
+    void ExternalSynchronization::setInitialCycle(int n) {
+        bool assert = false;
+
+        if (finalCycle == -1){
+            assert = n > 0;
+        } else {
+            assert = n > 0 && n <= finalCycle;
+        }
+
+        if (assert){
+            initialCycle = n;
+        } else {
+            throw InitialCycleException();
+        }
+    }
+
+    void ExternalSynchronization::setFinalCycle(int n) {
+        bool assert = false;
+
+        if (initialCycle == -1){
+            assert = n > 0;
+        } else {
+            assert = n >= initialCycle;
+        }
+
+        if (assert){
+            finalCycle = n;
+        } else {
+            throw FinalCycleException();
+        }
     }
 }

@@ -36,6 +36,52 @@ namespace GLOBAL_NAMESPACE {
 
         [[nodiscard]] const char* getName() const noexcept override { return "quasi-time synchronization"; }
 
+        /**
+         *
+         * @return stimulus period in ms
+         */
+        [[nodiscard]] double getStimulusPeriod() const { return stimulusPeriod; }
+
+        /**
+         *
+         * @return initial cycle
+         * In case where the initial cycle is not set, the function will return -1 before the synchronization.
+         * This means that the initial cycle will set automatically during the synchronization process in such
+         * a way as to maximize the analysis epoch
+         */
+        [[nodiscard]] int getInitialCycle() const { return initialCycle; }
+
+        /**
+         *
+         * @return final cycle
+         * In case where the final cycle is not set, the function will return -1 before the synchronization.
+         * This means that the final cycle will be set automatically during the synchronization process in such
+         * a way as to maximize the analysis epoch
+         */
+        [[nodiscard]] int getFinalCycle() const { return finalCycle; }
+
+        /**
+         * Sets the stimulus period
+         *
+         * @param period stimulus period in ms
+         */
+        void setStimulusPeriod(double period);
+
+        /**
+         * Sets the initial cycle
+         *
+         * @param n the initial cycle
+         */
+        void setInitialCycle(int n);
+
+
+        /**
+         * Sets the final cycle
+         *
+         * @param n the final cycle
+         */
+        void setFinalCycle(int n);
+
     };
 
 }

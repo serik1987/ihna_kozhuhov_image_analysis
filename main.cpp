@@ -3,7 +3,7 @@
  */
 
 #include "cpp/source_files/StreamFileTrain.h"
-#include "cpp/synchronization/QuasiStimulusSynchronization.h"
+#include "cpp/synchronization/ExternalSynchronization.h"
 
 #define WORKING_DIR "/home/serik1987/vasomotor-oscillations/sample_data/c022z/"
 
@@ -24,12 +24,13 @@ int main() {
                               true);
         train.open();
 
-        QuasiStimulusSynchronization sync(train);
-        sync.setHarmonic(2.0);
+        ExternalSynchronization sync(train);
 
-        sync.setStimulusPeriod(1000);
-        sync.setInitialCycle(3);
-        sync.setFinalCycle(8);
+        sync.setSynchronizationChannel(1);
+        sync.setInitialCycle(2);
+        sync.setFinalCycle(10);
+        sync.setDoPrecise(true);
+        sync.setHarmonic(2.0);
 
         cout << "Initial frame: " << sync.getInitialFrame() << endl;
         cout << "Final frame: " << sync.getFinalFrame() << endl;
@@ -38,7 +39,7 @@ int main() {
         cout << "Phase increment: " << sync.getPhaseIncrement() << endl;
         cout << "Initial phase: " << sync.getInitialPhase() << endl;
         cout << "Harmonic: " << sync.getHarmonic() << endl;
-        cout << "Stimulus period: " << sync.getStimulusPeriod() << endl;
+        cout << "Synchronization channel: " << sync.getSynchronizationChannel() << endl;
         cout << "Initial cycle: " << sync.getInitialCycle() << endl;
         cout << "Final cycle: " << sync.getFinalCycle() << endl;
 
