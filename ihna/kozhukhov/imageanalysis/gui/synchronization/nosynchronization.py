@@ -2,6 +2,7 @@
 
 import wx
 from .synchronization import SynchronizationEditor
+from ihna.kozhukhov.imageanalysis.synchronization import NoSynchronization
 
 
 class NoSynchronizationEditor(SynchronizationEditor):
@@ -72,3 +73,10 @@ class NoSynchronizationEditor(SynchronizationEditor):
         self.__initFrameBox.Enable(False)
         self.__isFinalFrameBox.Enable(False)
         self.__finalFrameBox.Enable(False)
+
+    def is_selected(self):
+        return self._rb.GetValue()
+
+    def create_synchronization(self, train):
+        sync = NoSynchronization(train)
+        return sync

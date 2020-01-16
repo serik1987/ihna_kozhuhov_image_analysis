@@ -6,7 +6,7 @@
 
 namespace GLOBAL_NAMESPACE {
 
-    QuasiStimulusSynchronization::QuasiStimulusSynchronization(StreamFileTrain &other) : Synchronization(other) {
+    QuasiStimulusSynchronization::QuasiStimulusSynchronization(StreamFileTrain &train) : Synchronization(train) {
         stimulusPeriod = 1;
         initialCycle = -1;
         finalCycle = -1;

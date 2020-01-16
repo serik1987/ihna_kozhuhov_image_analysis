@@ -28,7 +28,8 @@ extern "C" {
 
         try{
             auto* train_object = self->super.parent_train;
-            auto* train = (StreamFileTrain*)train_object;
+            auto* train = (StreamFileTrain*)train_object->super.train_handle;
+            printf("SO passed\n");
             auto* sync = new QuasiStimulusSynchronization(*train);
             self->super.synchronization_handle = sync;
             return 0;

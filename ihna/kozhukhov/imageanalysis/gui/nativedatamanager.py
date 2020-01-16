@@ -356,10 +356,6 @@ class NativeDataManager(wx.Dialog):
 
             print("PY Traces reading")
             reader = TraceReader(train)
-            reader.add_pixels(properties_dlg.get_pixel_list())
-            for n in range(10):
-                print(reader.pixels[n])
-            print("Total number of channels:", reader.channel_number)
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             n = 0

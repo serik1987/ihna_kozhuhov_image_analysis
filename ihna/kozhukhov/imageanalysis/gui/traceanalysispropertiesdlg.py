@@ -136,7 +136,17 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         self.__isoline_selector.close()
 
     def correctness_check(self):
-        print("correctness check")
+        print("PY correctness check")
+        sync = self.create_synchronization()
+        print("PY Synchronization type:", sync.__class__)
+        print("PY Synchronized:", sync.synchronized)
+        print("PY Initial frame:", sync.initial_frame)
+        print("PY Final frame:", sync.final_frame)
+        print("PY Do precise:", sync.do_precise)
+        print("PY Phase increment:", sync.phase_increment)
+        print("PY Initial phase:", sync.initial_phase)
+        print("PY Harmonic:", sync.harmonic)
+        print("")
 
     def get_pixel_list(self):
         roi_number = self.__roi_box.GetSelection()
@@ -150,3 +160,6 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
             chan += 1
         pixel_list.append(('TIME', 0))
         return pixel_list
+
+    def create_synchronization(self):
+        return self.__sync_selector.create_synchronization()

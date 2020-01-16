@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis.synchronization import ExternalSynchronization
 from .synchronization import SynchronizationEditor
 
 
@@ -102,3 +103,7 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
         else:
             self.__final_cycle_box.Enable(False)
             self.__final_cycle_box.SetValue("")
+
+    def create_synchronization(self, train):
+        sync = ExternalSynchronization(train)
+        return sync

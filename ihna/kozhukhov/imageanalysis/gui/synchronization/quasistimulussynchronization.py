@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis.synchronization import QuasiStimulusSynchronization
 from .synchronization import SynchronizationEditor
 
 
@@ -81,3 +82,7 @@ class QuasiStimulusSynchronizationEditor(SynchronizationEditor):
         else:
             self.__finalCycleBox.Enable(False)
             self.__finalCycleBox.SetValue("")
+
+    def create_synchronization(self, train):
+        sync = QuasiStimulusSynchronization(train)
+        return sync

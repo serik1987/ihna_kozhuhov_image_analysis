@@ -64,6 +64,224 @@ extern "C" {
         return -1;
     }
 
+    static PyObject* PyImanY_Synchronization_GetInitialFrame(PyImanY_SynchronizationObject* self, void*){
+
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getInitialFrame());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetFinalFrame(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getFinalFrame());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetDoPrecise(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyBool_FromLong(sync->isDoPrecise());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_Synchronization_SetDoPrecise(PyImanY_SynchronizationObject* self, PyObject* value, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+        if (!PyBool_Check(value)){
+            PyErr_SetString(PyExc_ValueError, "do_precise parameter requires boolean value");
+            return -1;
+        }
+
+        try{
+            sync->setDoPrecise(value == Py_True);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetSynchronizationPhase(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            const double* phase = sync->getSynchronizationPhase();
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetPhaseIncrement(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyFloat_FromDouble(sync->getPhaseIncrement());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetInitialPhase(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyFloat_FromDouble(sync->getInitialPhase());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetReferenceCos(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            const double* ref = sync->getReferenceSignalCos();
+            return Py_BuildValue("");
+        } catch(std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetReferenceSin(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            const double* ref = sync->getReferenceSignalSin();
+            return Py_BuildValue("");
+        } catch(std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetHarmonic(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyFloat_FromDouble(sync->getHarmonic());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_Synchronization_SetHarmonic(PyImanY_SynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+        if (!PyFloat_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "Bad value for harmonic property");
+            return -1;
+        }
+        double value = PyFloat_AsDouble(arg);
+
+        try{
+            sync->setHarmonic(value);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_GetSynchronized(PyImanY_SynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyBool_FromLong(sync->isSynchronized());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyGetSetDef PyImanY_Synchronization_Properties[] = {
+            {(char*)"initial_frame", (getter)PyImanY_Synchronization_GetInitialFrame, NULL,
+                    (char*)"Initial frame from which the analysis starts\n"
+                           "The is a read-only property. In order to set this property for NoSynchronization\n"
+                           "please, use set_initial_frame() method\n"
+                           "As for the other synchronization types, this parameter will be set automatically during\n"
+                           "the synchronization process", NULL},
+
+            {(char*)"final_frame", (getter)PyImanY_Synchronization_GetFinalFrame, NULL,
+             (char*)"The frame where the analysis finishes\n"
+                    "This is a read-only property. In order to set this property for NoSynchronization\n"
+                    "please, use set_final_frame() method\n"
+                    "As for the other synchronization types, this parameter will be set automatically during\n"
+                    "the synchronization process", NULL},
+
+            {(char*)"do_precise", (getter)PyImanY_Synchronization_GetDoPrecise,
+            (setter)PyImanY_Synchronization_SetDoPrecise,
+            (char*)"True if you need a precise synchronization, false otherwise\n"
+                   "The precise synchronization requires more time but will given an exact result", NULL},
+
+            {(char*)"synchronization_phase", (getter)PyImanY_Synchronization_GetSynchronizationPhase, NULL,
+             (char*)"The synchronization phase as numpy array. The phase is dependent on the timestamp"},
+
+            {(char*)"phase_increment", (getter)PyImanY_Synchronization_GetPhaseIncrement, NULL,
+             (char*)"The averaged difference in stimulus phases between two consequtive frames\n"
+                    "This is a read-only property because it will be set during the synchronization\n"
+                    "When the train is not synchronize()'d this property equals to 0.0"},
+
+            {(char*)"initial_phase", (getter)PyImanY_Synchronization_GetInitialPhase, NULL,
+             (char*)"The stimulus phase for the very first phase subjected to the analysis\n"
+                    "This ios a read-only property because it will be set during the synchronization\n"
+                    "When the train is not synchronize()'d this property always equal to 0.0\n"
+                    "This property is usually 0.0 if you the do_precise property is False"},
+
+            {(char*)"reference_cos", (getter)PyImanY_Synchronization_GetReferenceCos, NULL,
+             (char*)"Returns the reference cosine. Scalar-product the signal to this cosine to reveal the real part\n"
+                    "of the averaged signal\n"
+                    "This is a read-only property. It will be calculated during the synchronization"},
+
+            {(char*)"reference_sin", (getter)PyImanY_Synchronization_GetReferenceSin, NULL,
+             (char*)"The reference sine. Scalar-product the signal to this sine will reveal the imaginary part\n"
+                    "of the averaged signal\n"
+                    "This is a read-only property. It will be calculated during the synchronization"},
+
+            {(char*)"harmonic", (getter)PyImanY_Synchronization_GetHarmonic,
+             (setter)PyImanY_Synchronization_SetHarmonic,
+             (char*)"Harmonic value. The harmonic is a ratio of the period of the stimulus value of interest to\n"
+                    "the period of the stimulus selectivity. If the stimulus is drifting gratings using 2.0 \n"
+                    "as harmonic will give an orientation selectivity maps and using 1.0 will give \n"
+                    "direction selectivity maps. However, when the grating is stationary, 1.0 will give direction \n"
+                    "selectivity"},
+
+            {(char*)"synchronized", (getter)PyImanY_Synchronization_GetSynchronized, NULL,
+             (char*)"True after successful synchronization process, False before this"},
+
+            {NULL}
+
+    };
+
     static int PyImanY_Synchronization_Create(PyObject* module){
 
         PyImanY_SynchronizationType.tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT;
@@ -83,6 +301,7 @@ extern "C" {
         PyImanY_SynchronizationType.tp_new = (newfunc)PyImanY_Synchronization_New;
         PyImanY_SynchronizationType.tp_dealloc = (destructor)PyImanY_Synchronization_Destroy;
         PyImanY_SynchronizationType.tp_init = (initproc)PyImanY_Synchronization_Init;
+        PyImanY_SynchronizationType.tp_getset = PyImanY_Synchronization_Properties;
 
         if (PyType_Ready(&PyImanY_SynchronizationType) < 0){
             return -1;

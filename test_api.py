@@ -21,18 +21,6 @@ if __name__ == "__main__":
 
     train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0200")
     train.open()
-
-    trace_reader = trace.TraceReader(train)
-    print(trace_reader)
-
-    trace_reader.add_pixel(('TIME', 0))
-    trace_reader.add_pixel(('SYNC', 0))
-    trace_reader.add_pixel(('SYNC', 1))
-    trace_reader.add_pixel((300, 200))
-    trace_reader.add_pixel((301, 200))
-    trace_reader.add_pixels([(100, 100), (100, 101), (100, 102)])
-    # trace_reader.clear_pixels()
-
-    trace_reader.print_all_pixels()
+    sync = synchr.QuasiStimulusSynchronization(train)
 
     print("PY Test end")

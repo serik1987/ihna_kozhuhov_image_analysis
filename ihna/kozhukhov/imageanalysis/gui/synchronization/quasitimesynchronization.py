@@ -2,6 +2,7 @@
 
 
 import wx
+from ihna.kozhukhov.imageanalysis.synchronization import QuasiTimeSynchronization
 from .synchronization import SynchronizationEditor
 
 
@@ -82,3 +83,7 @@ class QuasiTimeSynchronizationEditor(SynchronizationEditor):
         else:
             self.__final_cycle_box.Enable(False)
             self.__final_cycle_box.SetValue("")
+
+    def create_synchronization(self, train):
+        sync = QuasiTimeSynchronization(train)
+        return sync
