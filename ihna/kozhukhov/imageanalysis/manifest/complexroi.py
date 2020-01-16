@@ -103,7 +103,7 @@ class ComplexRoi(Roi):
         for i in range(m.shape[0]):
             for j in range(m.shape[1]):
                 if m[i, j]:
-                    lst.append([i, j])
+                    lst.append((i, j))
         return lst
 
     def get_area(self):

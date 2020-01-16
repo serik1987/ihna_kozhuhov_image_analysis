@@ -124,7 +124,7 @@ class SimpleRoi(Roi):
         coordinate_list = []
         for x in range(self.get_left(), self.get_right()):
             for y in range(self.get_top(), self.get_bottom()):
-                coordinate_list.append([y, x])
+                coordinate_list.append((y, x))
         return coordinate_list
 
     def _save_details(self, xml):

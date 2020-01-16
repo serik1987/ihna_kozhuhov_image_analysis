@@ -20,6 +20,9 @@ extern "C" {
             .tp_itemsize = 0,
     };
 
+    static PyObject* PyImanT_PixelListItem_AsTuple(PyImanT_TraceReaderObject* reader,
+            const GLOBAL_NAMESPACE::PixelListItem& item);
+
     static PyImanT_TraceReaderObject *PyImanT_TraceReader_New(PyTypeObject *type, PyObject *arg, PyObject *kwds) {
         PyImanT_TraceReaderObject *self = NULL;
         self = (PyImanT_TraceReaderObject *) type->tp_alloc(type, 0);
@@ -91,7 +94,15 @@ extern "C" {
         try {
             PyObject *pixel_list = PyList_New(0);
             if (pixel_list == NULL) return NULL;
-            auto item = reader->getPixelItem(0);
+            for (int i=0; i < reader->getChannelNumber(); ++i){
+                const PixelListItem& pixel = reader->getPixelItem(i);
+                PyObject* pixel_object = PyImanT_PixelListItem_AsTuple(self, pixel);
+                if (PyList_Append(pixel_list, pixel_object) < 0){
+                    Py_DECREF(pixel_list);
+                    Py_XDECREF(pixel_object);
+                    return NULL;
+                }
+            }
             return pixel_list;
         } catch (std::exception &e) {
             PyIman_Exception_process(&e);
@@ -139,6 +150,18 @@ extern "C" {
         try {
             return PyLong_FromLong(reader->getFrameNumber());
         } catch (std::exception &e) {
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanT_TraceReader_GetChannelNumber(PyImanT_TraceReaderObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+
+        try{
+            return PyLong_FromLong(reader->getChannelNumber());
+        } catch (std::exception& e){
             PyIman_Exception_process(&e);
             return NULL;
         }
@@ -217,7 +240,7 @@ static GLOBAL_NAMESPACE::PixelListItem PyImanT_PixelListItem_FromTuple(PyImanT_T
     PyObject* first = PyTuple_GetItem(tuple, 0);
     PyObject* second = PyTuple_GetItem(tuple, 1);
 
-    int i, j;
+    int i = -5, j;
     bool parsed;
 
     if (!PyLong_Check(second)){
@@ -246,6 +269,7 @@ static GLOBAL_NAMESPACE::PixelListItem PyImanT_PixelListItem_FromTuple(PyImanT_T
     if (parsed){
         return PixelListItem(*reader, i, j);
     } else {
+        printf("i = %d, j = %d\n", i, j);
         throw TraceReader::TraceNameException();
     }
 }
@@ -366,6 +390,85 @@ extern "C"{
         }
     }
 
+    static PyObject* PyImanT_TraceReader_PrintAllPixels(PyImanT_TraceReaderObject* self,
+            PyObject* args, PyObject* kwds){
+
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+
+        try{
+            reader->printAllPixels();
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+
+    }
+
+    static PyObject* PyImanT_TraceReader_AddPixel(PyImanT_TraceReaderObject* self,
+            PyObject* args, PyObject* kwds){
+
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+        PyObject* arg;
+
+        if (!PyArg_ParseTuple(args, "O!", &PyTuple_Type, &arg)){
+            return NULL;
+        }
+
+        try{
+            PixelListItem pixel = PyImanT_PixelListItem_FromTuple(self, arg);
+            reader->addPixel(pixel);
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+
+    }
+
+    static PyObject* PyImanT_TraceReader_AddPixels(PyImanT_TraceReaderObject* self,
+            PyObject* args, PyObject* kwds){
+
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+        PyObject* arg_list = NULL;
+
+        if (!PyArg_ParseTuple(args, "O!", &PyList_Type, &arg_list)){
+            return NULL;
+        }
+
+        try{
+            for (Py_ssize_t i=0; i < PyList_GET_SIZE(arg_list); ++i){
+                PyObject* pixel_object = PyList_GetItem(arg_list, i);
+                if (pixel_object == NULL) return NULL;
+                PixelListItem item = PyImanT_PixelListItem_FromTuple(self, pixel_object);
+                reader->addPixel(item);
+            }
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanT_TraceReader_ClearPixels(PyImanT_TraceReaderObject* self,
+            PyObject* args, PyObject* kwds){
+
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+
+        try{
+            reader->clearPixels();
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+
+    }
+
     static PyGetSetDef PyImanT_TraceReaderProperties[] = {
             {(char*)"arrival_time_displacement", (getter)PyImanT_TraceReader_GetArrivalTimeDisplacement, NULL,
              (char*)"arrival time displacement. This property is read-only becase is determined by \n"
@@ -423,6 +526,11 @@ extern "C"{
              (char*)"Total number of frames or timestamps in the read signal\n"
                     "This is a read-only property because this is fully defined by the initial_frame and final_frame"},
 
+            {(char*)"channel_number", (getter)PyImanT_TraceReader_GetChannelNumber, NULL,
+             (char*)"Total number of traces that will be read.\n"
+                    "This is a read-only property. Use add_pixel, add_pixels and clear_pixels method to manipulate \n"
+                    "the value of this property"},
+
             {NULL}
     };
 
@@ -475,6 +583,29 @@ extern "C"{
              "Arguments:\n"
              "\ti - ordinate of this pixel\n"
              "\tj - abscissa of this pixel"},
+
+            {"print_all_pixels", (PyCFunction)PyImanT_TraceReader_PrintAllPixels, METH_NOARGS,
+             "Prints information about all pixels.\n"
+             "The function doesn't require any arguments"},
+
+            {"add_pixel", (PyCFunction)PyImanT_TraceReader_AddPixel, METH_VARARGS,
+             "Adds a pixel to read from\n"
+             "\n"
+             "Usage: add_pixel(coordinates)\n"
+             "The only argument depends on what kind of pixel you would like to read:\n"
+             "('TIME', 0) is a pixel containing frame arrival times\n"
+             "('SYNC', n) is a pixel containing data from synchronization channel n\n"
+             "(i, j) is a pixel on the map with coordinates i on vertical and j on horizontal"},
+
+            {"add_pixels", (PyCFunction)PyImanT_TraceReader_AddPixels, METH_VARARGS,
+             "Adds several pixels to the pixel list\n"
+             "\n"
+             "Usage: add_pixels(coordinate_list)\n"
+             "where coordinate_list is a list of tuples like those that shall be put into add_pixe argument"},
+
+            {"clear_pixels", (PyCFunction)PyImanT_TraceReader_ClearPixels, METH_NOARGS,
+             "Clears the pixel list\n"
+             "The function requires no arguments"},
 
             {NULL}
     };

@@ -5,6 +5,7 @@ import time
 import wx
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression
+from ihna.kozhukhov.imageanalysis.tracereading import TraceReader
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
 from .compressiondlg import CompressionDlg
@@ -354,6 +355,11 @@ class NativeDataManager(wx.Dialog):
             properties_dlg.close()
 
             print("PY Traces reading")
+            reader = TraceReader(train)
+            reader.add_pixels(properties_dlg.get_pixel_list())
+            for n in range(10):
+                print(reader.pixels[n])
+            print("Total number of channels:", reader.channel_number)
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             n = 0
@@ -361,6 +367,7 @@ class NativeDataManager(wx.Dialog):
                 if not progress_dlg.progress_function(n, 1000, "Reading traces"):
                     print("PY Finish reading traces")
                     progress_dlg.Destroy()
+                    del reader
                     del train
                     return
                 time.sleep(0.1)
@@ -372,6 +379,7 @@ class NativeDataManager(wx.Dialog):
             traces_dlg = TracesDlg(self)
             if traces_dlg.ShowModal() == wx.ID_CANCEL:
                 traces_dlg.close()
+                del reader
                 del train
                 return
             traces_dlg.close()
@@ -381,12 +389,14 @@ class NativeDataManager(wx.Dialog):
             final_traces_dlg = FinalTracesDlg(self)
             if final_traces_dlg.ShowModal() == wx.ID_CANCEL:
                 final_traces_dlg.close()
+                del reader
                 del train
                 return
             final_traces_dlg.close()
 
             print("PY Traces saving")
 
+            del reader
             del train
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)

@@ -137,3 +137,16 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
     def correctness_check(self):
         print("correctness check")
+
+    def get_pixel_list(self):
+        roi_number = self.__roi_box.GetSelection()
+        roi_name = self.__roi_box.GetItems()[roi_number]
+        roi = self.__roi_list[roi_name]
+        pixel_list = roi.get_coordinate_list()
+        chan = 0
+        for sync_signal_box in self.__sync_signal_widgets:
+            if sync_signal_box.IsChecked():
+                pixel_list.append(('SYNC', chan))
+            chan += 1
+        pixel_list.append(('TIME', 0))
+        return pixel_list
