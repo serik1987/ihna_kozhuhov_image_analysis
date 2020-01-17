@@ -37,6 +37,54 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanY_NoSynchronization_SetInitialFrame(PyImanY_NoSynchronizationObject* self,
+            PyObject* args, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (NoSynchronization*)self->super.synchronization_handle;
+        int value;
+
+        if (!PyArg_ParseTuple(args, "i", &value)){
+            return NULL;
+        }
+
+        try{
+            sync->setInitialFrame(value);
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_NoSynchronization_SetFinalFrame(PyImanY_NoSynchronizationObject* self,
+        PyObject* args, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (NoSynchronization*)self->super.synchronization_handle;
+        int value;
+
+        if (!PyArg_ParseTuple(args, "i", &value)){
+            return NULL;
+        }
+
+        try{
+            sync->setFinalFrame(value);
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyMethodDef PyImanY_NoSynchronization_Methods[] = {
+            {"set_initial_frame", (PyCFunction)PyImanY_NoSynchronization_SetInitialFrame, METH_VARARGS,
+             "Sets the frame that starts an analysis"},
+
+            {"set_final_frame", (PyCFunction)PyImanY_NoSynchronization_SetFinalFrame, METH_VARARGS,
+             "Sets the frame that finishes an analysis"},
+
+            {NULL}
+    };
+
     static int PyImanY_NoSynchronization_Create(PyObject* module){
 
         PyImanY_NoSynchronizationType.tp_base = &PyImanY_SynchronizationType;
@@ -52,6 +100,7 @@ extern "C" {
                 "Usage: sync = ExternalSynchronization(train)\n"
                 "train is an instance of StreamFileTrain already opened";
         PyImanY_NoSynchronizationType.tp_init = (initproc)PyImanY_NoSynchronization_Init;
+        PyImanY_NoSynchronizationType.tp_methods = PyImanY_NoSynchronization_Methods;
 
         if (PyType_Ready(&PyImanY_NoSynchronizationType) < 0){
             return -1;

@@ -147,6 +147,10 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         print("PY Initial phase:", sync.initial_phase)
         print("PY Harmonic:", sync.harmonic)
         print("")
+        print("PY Stimulus period:", sync.stimulus_period)
+        print("PY Initial cycle:", sync.initial_cycle)
+        print("PY Final cycle:", sync.final_cycle)
+        print("")
 
     def get_pixel_list(self):
         roi_number = self.__roi_box.GetSelection()

@@ -79,4 +79,16 @@ class NoSynchronizationEditor(SynchronizationEditor):
 
     def create_synchronization(self, train):
         sync = NoSynchronization(train)
+        if self.__isInitFrameBox.IsChecked():
+            try:
+                value = int(self.__initFrameBox.GetValue())
+                sync.set_initial_frame(value)
+            except ValueError:
+                raise ValueError("Please, type the a correct value of the initial frame")
+        if self.__isFinalFrameBox.IsChecked():
+            try:
+                value = int(self.__finalFrameBox.GetValue())
+                sync.set_final_frame(value)
+            except ValueError:
+                raise ValueError("Please, type a correct value of the final frame")
         return sync

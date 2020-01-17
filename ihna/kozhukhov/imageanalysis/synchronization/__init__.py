@@ -3,6 +3,11 @@
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_SynchronizationError as SynchronizationError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_FileNotOpenedError as \
     FileNotOpenedError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_NotSynchronizedError as \
+    NotSynchronizedError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_FrameRangeError as FrameRangeError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_StimulusPeriodError as StimulusPeriodError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_InitialCycleError as InitialCycleError
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Synchronization as Synchronization
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_ExternalSynchronization \

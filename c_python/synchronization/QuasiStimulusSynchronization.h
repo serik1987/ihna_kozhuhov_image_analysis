@@ -29,7 +29,6 @@ extern "C" {
         try{
             auto* train_object = self->super.parent_train;
             auto* train = (StreamFileTrain*)train_object->super.train_handle;
-            printf("SO passed\n");
             auto* sync = new QuasiStimulusSynchronization(*train);
             self->super.synchronization_handle = sync;
             return 0;
@@ -38,6 +37,131 @@ extern "C" {
             return -1;
         }
     }
+
+    static PyObject* PyImanY_QuasiStimulusSynchronization_GetStimulusPeriod
+        (PyImanY_QuasiStimulusSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiStimulusSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getStimulusPeriod());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_QuasiStimulusSynchronization_SetStimulusPeriod
+            (PyImanY_QuasiStimulusSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiStimulusSynchronization*)self->super.synchronization_handle;
+        int period;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "Stimulus period shall be positive integer");
+            return -1;
+        }
+        period = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setStimulusPeriod(period);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_QuasiStimulusSynchronization_GetInitialCycle
+            (PyImanY_QuasiStimulusSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiStimulusSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getInitialCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_QuasiStimulusSynchronization_SetInitialCycle
+            (PyImanY_QuasiStimulusSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiStimulusSynchronization*)self->super.synchronization_handle;
+        int value;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "initial cycle for the quasi-stimulus synchronization shall be integer");
+            return -1;
+        }
+        value = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setInitialCycle(value);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_QuasiStimulusSynchronization_GetFinalCycle
+            (PyImanY_QuasiStimulusSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiStimulusSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getFinalCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_QuasiStimulusSynchronization_SetFinalCycle
+            (PyImanY_QuasiStimulusSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiStimulusSynchronization*)self->super.synchronization_handle;
+        int final_cycle;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "The final cycle for quasi-stimulus synchronization shall be integer");
+            return -1;
+        }
+        final_cycle = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setFinalCycle(final_cycle);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyGetSetDef PyImanY_QuasiStimulusSynchronization_Properties[] = {
+            {(char*)"stimulus_period", (getter)PyImanY_QuasiStimulusSynchronization_GetStimulusPeriod,
+                    (setter)PyImanY_QuasiStimulusSynchronization_SetStimulusPeriod,
+                    (char*)"Stimulus period, shall be an integer reflecting the whole number of frames"},
+
+            {(char*)"initial_cycle", (getter)PyImanY_QuasiStimulusSynchronization_GetInitialCycle,
+             (setter)PyImanY_QuasiStimulusSynchronization_SetInitialCycle,
+             (char*)"The very first stimulus cycle included in the analysis\n"
+                    "If you didn't set this value, it will be equal to -1 before synchronization\n"
+                    "which means that the initial cycle \n"
+                    "will be set automatically during the synchronization in such a way as to maximize the \n"
+                    "analysis epoch"},
+
+            {(char*)"final_cycle", (getter)PyImanY_QuasiStimulusSynchronization_GetFinalCycle,
+             (setter)PyImanY_QuasiStimulusSynchronization_SetFinalCycle,
+             (char*)"The very last stimulus cycle included in the analysis\n"
+                    "If you didn't set the final cycle value this value will be equal to -1 before synchronization\n"
+                    "This means that such value will be set automatically during the synchronization in such a way\n"
+                    "as to maximize the analysis epoch"},
+
+            {NULL}
+    };
 
     static int PyImanY_QuasiStimulusSynchronization_Create(PyObject* module){
 
@@ -52,6 +176,7 @@ extern "C" {
                 "Usage: sync = QuasiStimulusSynchronization(train)\n"
                 "where: train is a certain train which is assumed to be opened";
         PyImanY_QuasiStimulusSynchronizationType.tp_init = (initproc)PyImanY_QuasiStimulusSynchronization_Init;
+        PyImanY_QuasiStimulusSynchronizationType.tp_getset = PyImanY_QuasiStimulusSynchronization_Properties;
 
         if (PyType_Ready(&PyImanY_QuasiStimulusSynchronizationType) < 0){
             return -1;
