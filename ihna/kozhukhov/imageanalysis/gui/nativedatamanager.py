@@ -5,7 +5,7 @@ import time
 import wx
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression
-from ihna.kozhukhov.imageanalysis.tracereading import TraceReader
+from ihna.kozhukhov.imageanalysis.tracereading import TraceReaderAndCleaner as TraceReader
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
 from .compressiondlg import CompressionDlg
@@ -352,7 +352,6 @@ class NativeDataManager(wx.Dialog):
                 properties_dlg.close()
                 del train
                 return
-            properties_dlg.close()
 
             print("PY Traces reading")
             reader = TraceReader(train)

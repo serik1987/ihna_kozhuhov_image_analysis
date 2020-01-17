@@ -7,20 +7,6 @@
 
 extern "C" {
 
-    typedef struct {
-        PyObject_HEAD
-        void* parent_train;
-        void* parent_synchronization;
-        void* isoline_handle;
-    } PyImanI_IsolineObject;
-
-    static PyTypeObject PyImanI_IsolineType = {
-            PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.isolines.Isoline",
-            .tp_basicsize = sizeof(PyImanI_IsolineObject),
-            .tp_itemsize = 0,
-    };
-
     static PyImanI_IsolineObject* PyImanI_Isoline_New(PyTypeObject* type, PyObject* args, PyObject* kwds){
         printf("SO New Isoline\n");
         auto* self = (PyImanI_IsolineObject*)type->tp_alloc(type, 0);
