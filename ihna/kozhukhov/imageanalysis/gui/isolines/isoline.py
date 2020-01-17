@@ -74,3 +74,6 @@ class IsolineEditor(wx.BoxSizer):
 
     def disable(self):
         raise NotImplementedError("disable()")
+
+    def create_isoline(self, train, sync):
+        raise NotImplementedError("create_isoline(sync)")

@@ -1,7 +1,8 @@
 # -*- coding: utf-8
 
-from .isoline import IsolineEditor
 from ihna.kozhukhov.imageanalysis.sourcefiles import StreamFileTrain
+from ihna.kozhukhov.imageanalysis.isolines import NoIsoline
+from .isoline import IsolineEditor
 
 
 class NoIsolineEditor(IsolineEditor):
@@ -17,3 +18,7 @@ class NoIsolineEditor(IsolineEditor):
 
     def is_first(self):
         return True
+
+    def create_isoline(self, train, sync):
+        isoline = NoIsoline(train, sync)
+        return isoline

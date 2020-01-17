@@ -1,8 +1,9 @@
 # -*- coding: utf-8
 
 import wx
-from .isoline import IsolineEditor
 from ihna.kozhukhov.imageanalysis.sourcefiles import StreamFileTrain
+from ihna.kozhukhov.imageanalysis.isolines import TimeAverageIsoline
+from .isoline import IsolineEditor
 
 
 class TimeAverageIsolineEditor(IsolineEditor):
@@ -48,3 +49,11 @@ class TimeAverageIsolineEditor(IsolineEditor):
         properties.Add(self.__average_result, 0, wx.EXPAND)
 
         return properties
+
+    def create_isoline(self, train, sync):
+        isoline = TimeAverageIsoline(train, sync)
+        try:
+            isoline.average_cycles = int(self.__cycles_box.GetValue())
+        except ValueError:
+            raise ValueError("Please, specify a correct value in the 'Average radius' box")
+        return isoline

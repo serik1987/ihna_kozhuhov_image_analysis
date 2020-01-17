@@ -138,19 +138,21 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
     def correctness_check(self):
         print("PY correctness check")
         sync = self.create_synchronization()
-        print("PY Synchronization type:", sync.__class__)
-        print("PY Synchronized:", sync.synchronized)
-        print("PY Initial frame:", sync.initial_frame)
-        print("PY Final frame:", sync.final_frame)
-        print("PY Do precise:", sync.do_precise)
-        print("PY Phase increment:", sync.phase_increment)
-        print("PY Initial phase:", sync.initial_phase)
-        print("PY Harmonic:", sync.harmonic)
-        print("")
-        print("PY Synchronization channel:", sync.channel_number)
-        print("PY Initial cycle:", sync.initial_cycle)
-        print("PY Final cycle:", sync.final_cycle)
-        print("")
+        isoline = self.create_isoline(sync)
+        print("Isoline:", isoline)
+        print("Isoline class:", isoline.__class__)
+        print("Analysis initial frame:", isoline.analysis_initial_frame)
+        print("Analysis final frame:", isoline.analysis_final_frame)
+        print("Isoline initial frame:", isoline.isoline_initial_frame)
+        print("Isoline final frame:", isoline.isoline_final_frame)
+        print("Analysis initial cycle:", isoline.analysis_initial_cycle)
+        print("Analysis final cycle:", isoline.analysis_final_cycle)
+        print("Isoline initial cycle:", isoline.isoline_initial_cycle)
+        print("Isoline final cycle:", isoline.isoline_final_cycle)
+        try:
+            print("TA radius:", isoline.average_cycles)
+        except AttributeError:
+            print("No TA was selected")
 
     def get_pixel_list(self):
         roi_number = self.__roi_box.GetSelection()
@@ -167,3 +169,6 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
     def create_synchronization(self):
         return self.__sync_selector.create_synchronization()
+
+    def create_isoline(self, sync):
+        return self.__isoline_selector.create_isoline(sync)

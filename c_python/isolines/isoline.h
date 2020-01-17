@@ -68,6 +68,138 @@ extern "C" {
         return -1;
     }
 
+    static PyObject* PyImanI_Isoline_GetAnalysisInitialFrame(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getAnalysisInitialFrame());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanI_Isoline_GetAnalysisFinalFrame(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getAnalysisFinalFrame());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanI_Isoline_GetIsolineInitialFrame(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getIsolineInitialFrame());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanI_Isoline_GetIsolineFinalFrame(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getIsolineFinalFrame());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanI_Isoline_GetAnalysisInitialCycle(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getAnalysisInitialCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanI_Isoline_GetAnalysisFinalCycle(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getAnalysisFinalCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanI_Isoline_GetIsolineInitialCycle(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getIsolineInitialCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanI_Isoline_GetIsolineFinalCycle(PyImanI_IsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getIsolineFinalCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyGetSetDef PyImanI_Isoline_Properties[] = {
+            {(char*)"analysis_initial_frame", (getter)PyImanI_Isoline_GetAnalysisInitialFrame, NULL,
+                    (char*)"Number of frame that starts the analysis or -1 before the isoline remove\n"
+                           "This is a read-only property. Its value will be calculated during the isoline remove"},
+
+            {(char*)"analysis_final_frame", (getter)PyImanI_Isoline_GetAnalysisFinalFrame, NULL,
+             (char*)"Number of frame where analysis finishes or -1 before the isoline remove\n"
+                    "This is a read-only property and will be calculated during the isoline remove"},
+
+            {(char*)"isoline_initial_frame", (getter)PyImanI_Isoline_GetIsolineInitialFrame, NULL,
+             (char*)"Number of first frame participated in the isoline estimation or -1 before isoline remove\n"
+                    "This is a read-only property and will be calculated during the isoline remove"},
+
+            {(char*)"isoline_final_frame", (getter)PyImanI_Isoline_GetIsolineFinalFrame, NULL,
+             (char*)"Number of the very last frame participated in isoline estimation or -1 before isoline remove\n"
+                    "This is a read-only property and will be calculated during the isoline remove"},
+
+            {(char*)"analysis_initial_cycle", (getter)PyImanI_Isoline_GetAnalysisInitialCycle, NULL,
+             (char*)"Number of the first cycles used for analysis or -1 before isoline remove\n"
+                    "This is a read-only property and will be calculated during the isoline remove"},
+
+            {(char*)"analysis_final_cycle", (getter)PyImanI_Isoline_GetAnalysisFinalCycle, NULL,
+             (char*)"Number of the last cycle used for analysis or -1 before isoline remove\n"
+                    "This is a read-only property and wll be calculated during the isoline remove"},
+
+            {(char*)"isoline_initial_cycle", (getter)PyImanI_Isoline_GetIsolineInitialCycle, NULL,
+             (char*)"Number of the very first cycle used for isoline estimation or -1 before the isoline remove\n"
+                    "This is a read-only property and will be calculated during the isoline remove"},
+
+            {(char*)"isoline_final_cycle", (getter)PyImanI_Isoline_GetIsolineFinalCycle, NULL,
+             (char*)"Number of the very last cycle used for isoline estimation or -1 before isoline remove\n"
+                    "This is a read-only property and will be calculated during the isoline remove"},
+
+            {NULL}
+    };
+
     static int PyImanI_Isoline_Create(PyObject* module){
 
         PyImanI_IsolineType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
@@ -94,6 +226,7 @@ extern "C" {
         PyImanI_IsolineType.tp_new = (newfunc)PyImanI_Isoline_New;
         PyImanI_IsolineType.tp_dealloc = (destructor)PyImanI_Isoline_Destroy;
         PyImanI_IsolineType.tp_init = (initproc)PyImanI_Isoline_Init;
+        PyImanI_IsolineType.tp_getset = PyImanI_Isoline_Properties;
 
         if (PyType_Ready(&PyImanI_IsolineType) < 0){
             return -1;

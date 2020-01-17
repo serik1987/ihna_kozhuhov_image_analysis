@@ -39,6 +39,48 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanI_TimeAverageIsoline_GetAverageCycles(PyImanI_TimeAverageIsolineObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (TimeAverageIsoline*)self->super.isoline_handle;
+
+        try{
+            return PyLong_FromLong(isoline->getAverageCycles());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanI_TimeAverageIsoline_SetAverageCycles
+        (PyImanI_TimeAverageIsolineObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (TimeAverageIsoline*)self->super.isoline_handle;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "Number of time average shall be an integer number of cycles");
+            return -1;
+        }
+        int radius = (int)PyLong_AsLong(arg);
+
+        try{
+            isoline->setAverageCycles(radius);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyGetSetDef PyImanI_TimeAverageIsoline_Properties[] = {
+            {(char*)"average_cycles", (getter)PyImanI_TimeAverageIsoline_GetAverageCycles,
+                    (setter)PyImanI_TimeAverageIsoline_SetAverageCycles,
+                    (char*)"time average radius, cycles\n"
+                           "The isoline will be calculated by averaging the signal 'average_cycles' cycles before the \n"
+                           "considering point and 'average_cycles' cycles after the considering point"},
+
+            {NULL}
+    };
+
     static int PyImanI_TimeAverageIsoline_Create(PyObject* module){
 
         PyImanI_TimeAverageIsolineType.tp_base = &PyImanI_IsolineType;
@@ -48,6 +90,7 @@ extern "C" {
                 "timestamp x is defined as signal average at the interval [x - N*C, x + N*C] where: \n"
                 "C is a length of a single cycle in timestamps and N is some user-defined natural number\n";
         PyImanI_TimeAverageIsolineType.tp_init = (initproc)PyImanI_TimeAverageIsoline_Init;
+        PyImanI_TimeAverageIsolineType.tp_getset = PyImanI_TimeAverageIsoline_Properties;
 
         if (PyType_Ready(&PyImanI_TimeAverageIsolineType) < 0){
             return -1;

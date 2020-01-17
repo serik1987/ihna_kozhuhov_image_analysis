@@ -1,8 +1,8 @@
 # -*- coding: utf-8
 
-
-from .isoline import IsolineEditor
 from ihna.kozhukhov.imageanalysis.sourcefiles import StreamFileTrain
+from ihna.kozhukhov.imageanalysis.isolines import LinearFitIsoline
+from .isoline import IsolineEditor
 
 
 class LinearFitIsolineEditor(IsolineEditor):
@@ -15,3 +15,7 @@ class LinearFitIsolineEditor(IsolineEditor):
 
     def __init__(self, parent, train: StreamFileTrain, selector):
         super().__init__(parent, train, selector)
+
+    def create_isoline(self, train, sync):
+        isoline = LinearFitIsoline(train, sync)
+        return isoline
