@@ -14,6 +14,7 @@ extern "C" {
     static PyObject* PyImanY_StimulusPeriodError = NULL;
     static PyObject* PyImanY_InitialCycleError = NULL;
     static PyObject* PyImanY_FinalCycleError = NULL;
+    static PyObject* PyImanY_SynchronizationChannelError = NULL;
 
     static int PyImanY_Exception_Init(PyObject* module){
         PyImanY_SynchronizationError = PyErr_NewExceptionWithDoc(
@@ -76,6 +77,16 @@ extern "C" {
             return -1;
         }
 
+        PyImanY_SynchronizationChannelError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.synchronization.SynchronizationChannelError",
+                "This error will be generated when the channel_number property of the ExternalSynchronization\n"
+                "is set to non-existent channel",
+                PyImanY_SynchronizationError, NULL);
+        if (PyModule_AddObject(module, "_synchronization_SynchronizationChannelError",
+                PyImanY_SynchronizationChannelError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -107,6 +118,8 @@ extern "C" {
                     dynamic_cast<QuasiStimulusSynchronization::InitialCycleException*>(synchronization_handle);
             auto* final_cycle_handle =
                     dynamic_cast<QuasiStimulusSynchronization::FinalCycleException*>(synchronization_handle);
+            auto* synchronization_channel_handle =
+                    dynamic_cast<ExternalSynchronization::SynchronizationChannelException*>(synchronization_handle);
 
             if (file_not_opened_handle != nullptr) {
                 PyErr_SetString(PyImanY_FileNotOpenedError, file_not_opened_handle->what());
@@ -125,6 +138,9 @@ extern "C" {
                 return -1;
             } else if (final_cycle_handle != nullptr) {
                 PyErr_SetString(PyImanY_FinalCycleError, final_cycle_handle->what());
+                return -1;
+            } else if (synchronization_channel_handle != nullptr){
+                PyErr_SetString(PyImanY_SynchronizationChannelError, synchronization_channel_handle->what());
                 return -1;
             } else {
                 PyErr_SetString(PyImanY_SynchronizationError, synchronization_handle->what());

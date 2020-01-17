@@ -38,6 +38,126 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanY_ExternalSynchronization_GetChannelNumber
+            (PyImanY_ExternalSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getSynchronizationChannel());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_ExternalSynchronization_SetChannelNumber
+            (PyImanY_ExternalSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        if (!PyLong_Check(arg)){
+            return -1;
+        }
+        int channel = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setSynchronizationChannel(channel);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_ExternalSynchronization_GetInitialCycle
+            (PyImanY_ExternalSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getInitialCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_ExternalSynchronization_SetInitialCycle
+            (PyImanY_ExternalSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "initial cycle shall be integer");
+            return -1;
+        }
+        int initial_cycle = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setInitialCycle(initial_cycle);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_ExternalSychronization_GetFinalCycle
+            (PyImanY_ExternalSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getFinalCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_ExternalSynchronization_SetFinalCycle
+            (PyImanY_ExternalSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "final cycle for the external synchronization shall be integer");
+        }
+        int final_cycle = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setFinalCycle(final_cycle);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyGetSetDef PyImanY_ExternalSynchronization_Properties[] = {
+
+            {(char*)"channel_number", (getter)PyImanY_ExternalSynchronization_GetChannelNumber,
+                    (setter)PyImanY_ExternalSynchronization_SetChannelNumber,
+                    (char*)"channel that shall be used for the signal synchronization"},
+
+            {(char*)"initial_cycle", (getter)PyImanY_ExternalSynchronization_GetInitialCycle,
+             (setter)PyImanY_ExternalSynchronization_SetInitialCycle,
+             (char*)"The very beginning cycle of the analysis\n"
+                    "When the initial cycle is not set, this property equals to -1 before the synchronization\n"
+                    "This means the the initial cycle will be set automatically during the synchronization\n"
+                    "in such a way as to maximize the analysis epoch"},
+
+            {(char*)"final_cycle", (getter)PyImanY_ExternalSychronization_GetFinalCycle,
+             (setter)PyImanY_ExternalSynchronization_SetFinalCycle,
+             (char*)"Cycle where the analysis finishes\n"
+                    "When the final cycle is not set, this property equals to -1 before the synchronization\n"
+                    "This means that the final cycle will be set automatically during the synchronization\n"
+                    "in such a way as to maximize the analysis epoch"},
+
+            {NULL}
+    };
+
     static int PyImanY_ExternalSynchronization_Create(PyObject* module){
 
         PyImanY_ExternalSynchronizationType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
@@ -58,6 +178,7 @@ extern "C" {
                 "Usage: sync = ExternalSynchronization(train)\n"
                 "train is an instance of StreamFileTrain already opened";
         PyImanY_ExternalSynchronizationType.tp_init = (initproc)PyImanT_ExternalSynchronization_Init;
+        PyImanY_ExternalSynchronizationType.tp_getset = PyImanY_ExternalSynchronization_Properties;
 
         if (PyType_Ready(&PyImanY_ExternalSynchronizationType) < 0){
             return -1;

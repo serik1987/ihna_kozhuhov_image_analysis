@@ -106,4 +106,15 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
 
     def create_synchronization(self, train):
         sync = ExternalSynchronization(train)
+        sync.channel_number = self.__channel_box.GetCurrentSelection()
+        if self.__initial_cycle_set_box.IsChecked():
+            try:
+                sync.initial_cycle = int(self.__initial_cycle_box.GetValue())
+            except ValueError:
+                raise ValueError("Please, set the correct value of the initial cycle or don't check this box")
+        if self.__final_cycle_set_box.IsChecked():
+            try:
+                sync.final_cycle = int(self.__final_cycle_box.GetValue())
+            except ValueError:
+                raise ValueError("Please, set the correct value of the final cycle or don't check this box")
         return sync

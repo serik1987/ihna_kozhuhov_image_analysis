@@ -9,6 +9,8 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_FrameRa
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_StimulusPeriodError as StimulusPeriodError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_InitialCycleError as InitialCycleError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_FinalCycleError as FinalCycleError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_SynchronizationChannelError as \
+    SynchronizationChannelError
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Synchronization as Synchronization
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_ExternalSynchronization \

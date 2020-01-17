@@ -147,7 +147,7 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         print("PY Initial phase:", sync.initial_phase)
         print("PY Harmonic:", sync.harmonic)
         print("")
-        print("PY Stimulus period:", sync.stimulus_period)
+        print("PY Synchronization channel:", sync.channel_number)
         print("PY Initial cycle:", sync.initial_cycle)
         print("PY Final cycle:", sync.final_cycle)
         print("")
