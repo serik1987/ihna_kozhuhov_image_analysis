@@ -38,6 +38,130 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanY_QuasiTimeSynchronization_GetStimulusPeriod
+            (PyImanY_QuasiTimeSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiTimeSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyFloat_FromDouble(sync->getStimulusPeriod());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_QuasiTimeSynchronization_SetStimulusPeriod
+            (PyImanY_QuasiTimeSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiTimeSynchronization*)self->super.synchronization_handle;
+        double period;
+
+        if (!PyFloat_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "Stimulus period for the quasi-time synchronization must be integer");
+            return -1;
+        }
+        period = PyFloat_AsDouble(arg);
+
+        try{
+            sync->setStimulusPeriod(period);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_QuasiTimeSynchronization_GetInitialCycle
+            (PyImanY_QuasiTimeSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiTimeSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getInitialCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_QuasiTimeSynchronization_SetInitialCycle
+            (PyImanY_QuasiTimeSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiTimeSynchronization*)self->super.synchronization_handle;
+        int init_cycle;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "Value for the initial cycle shall be integer");
+            return -1;
+        }
+        init_cycle = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setInitialCycle(init_cycle);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyObject* PyImanY_QuasiTimeSynchronization_GetFinalCycle
+            (PyImanY_QuasiTimeSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiTimeSynchronization*)self->super.synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getFinalCycle());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_QuasiTimeSynchronization_SetFinalCycle
+            (PyImanY_QuasiTimeSynchronizationObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (QuasiTimeSynchronization*)self->super.synchronization_handle;
+
+        if (!PyLong_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "final_cycle for QuasiTimeSynchronization shall be integer");
+            return -1;
+        }
+        int final_cycle = (int)PyLong_AsLong(arg);
+
+        try{
+            sync->setFinalCycle(final_cycle);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
+    static PyGetSetDef PyImanY_QuasiTimeSynchronization_Properties[] = {
+
+            {(char*)"stimulus_period", (getter)PyImanY_QuasiTimeSynchronization_GetStimulusPeriod,
+                    (setter)PyImanY_QuasiTimeSynchronization_SetStimulusPeriod,
+                    (char*)"Stimulus period, ms"},
+
+            {(char*)"initial_cycle", (getter)PyImanY_QuasiTimeSynchronization_GetInitialCycle,
+             (setter)PyImanY_QuasiTimeSynchronization_SetInitialCycle,
+             (char*)"Initial cycle\n"
+                    "When the initial cycle is not set, this property equals to -1 before the synchronization\n"
+                    "This means that this property will be set automatically during the synchronization in such\n"
+                    "a way as to maximize the analysis epoch"},
+
+            {(char*)"final_cycle", (getter)PyImanY_QuasiTimeSynchronization_GetFinalCycle,
+             (setter)PyImanY_QuasiTimeSynchronization_SetFinalCycle,
+             (char*)"Final cycle\n"
+                    "When the final cycle is not set, this property equals to -1 before the synchronization\n"
+                    "This means that this property will be set automatically during the synchronization in such\n"
+                    "a way as to maximize the analysis epoch"},
+
+            {NULL}
+    };
+
     static int PyImanY_QuasiTimeSynchronization_Create(PyObject* module){
 
         PyImanY_QuasiTimeSynchronizationType.tp_base = &PyImanY_SynchronizationType;
@@ -55,6 +179,7 @@ extern "C" {
                 "Usage: sync = QuasiStimulusSynchronization(train)\n"
                 "where: train is a certain train which is assumed to be opened";
         PyImanY_QuasiTimeSynchronizationType.tp_init = (initproc)PyImanY_QuasiTimeSynchronization_Init;
+        PyImanY_QuasiTimeSynchronizationType.tp_getset = PyImanY_QuasiTimeSynchronization_Properties;
 
         if (PyType_Ready(&PyImanY_QuasiTimeSynchronizationType) < 0){
             return -1;

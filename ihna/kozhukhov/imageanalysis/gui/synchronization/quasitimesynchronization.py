@@ -86,4 +86,18 @@ class QuasiTimeSynchronizationEditor(SynchronizationEditor):
 
     def create_synchronization(self, train):
         sync = QuasiTimeSynchronization(train)
+        try:
+            sync.stimulus_period = float(self.__stimulus_period_box.GetValue())
+        except ValueError:
+            raise ValueError("Please, enter a correct value of the stimulus period in ms")
+        if self.__initial_cycle_set_box.IsChecked():
+            try:
+                sync.initial_cycle = int(self.__initial_cycle_box.GetValue())
+            except ValueError:
+                raise ValueError("Please, enter a correct value of the initial cycle or don't check this option")
+        if self.__final_cycle_set_box.IsChecked():
+            try:
+                sync.final_cycle = int(self.__final_cycle_box.GetValue())
+            except ValueError:
+                raise ValueError("Please, enter a correct value of the final cycle or don't check this option")
         return sync
