@@ -86,4 +86,10 @@ namespace GLOBAL_NAMESPACE {
             throw FinalCycleException();
         }
     }
+
+    void ExternalSynchronization::specialPrint(std::ostream &out) const {
+        out << "Synchronization channel: " << getSynchronizationChannel() << "\n";
+        out << "Initial cycle: " << getInitialCycle() << "\n";
+        out << "Final cycle: " << getFinalCycle() << "\n";
+    }
 }

@@ -32,4 +32,8 @@ namespace GLOBAL_NAMESPACE {
             throw FrameRangeException();
         }
     }
+
+    void NoSynchronization::specialPrint(std::ostream &out) const {
+
+    }
 }

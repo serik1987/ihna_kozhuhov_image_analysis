@@ -223,6 +223,32 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanY_Synchronization_GetFrameNumber(PyImanY_SynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            return PyLong_FromLong(sync->getFrameNumber());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanY_Synchronization_Print(PyImanY_SynchronizationObject* self){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            std::stringstream ss;
+            ss << *sync << std::endl;
+            return PyUnicode_FromString(ss.str().c_str());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyGetSetDef PyImanY_Synchronization_Properties[] = {
             {(char*)"initial_frame", (getter)PyImanY_Synchronization_GetInitialFrame, NULL,
                     (char*)"Initial frame from which the analysis starts\n"
@@ -237,6 +263,12 @@ extern "C" {
                     "please, use set_final_frame() method\n"
                     "As for the other synchronization types, this parameter will be set automatically during\n"
                     "the synchronization process", NULL},
+
+            {(char*)"frame_number", (getter)PyImanY_Synchronization_GetFrameNumber, NULL,
+             (char*)"Returns total number of frames that will be used for the analysis\n"
+                    "This is a read-only property. To manipulate it use set_initial_frame and set_final_frame\n"
+                    "methods in NoSynchronization object and try to set initial_cycle and final_cycle properties\n"
+                    "in all other Synchronization objects"},
 
             {(char*)"do_precise", (getter)PyImanY_Synchronization_GetDoPrecise,
             (setter)PyImanY_Synchronization_SetDoPrecise,
@@ -302,6 +334,7 @@ extern "C" {
         PyImanY_SynchronizationType.tp_dealloc = (destructor)PyImanY_Synchronization_Destroy;
         PyImanY_SynchronizationType.tp_init = (initproc)PyImanY_Synchronization_Init;
         PyImanY_SynchronizationType.tp_getset = PyImanY_Synchronization_Properties;
+        PyImanY_SynchronizationType.tp_str = (reprfunc)PyImanY_Synchronization_Print;
 
         if (PyType_Ready(&PyImanY_SynchronizationType) < 0){
             return -1;

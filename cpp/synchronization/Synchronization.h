@@ -42,6 +42,8 @@ namespace GLOBAL_NAMESPACE {
         ProgressFunction progressFunction;
         void* handle;
 
+        virtual void specialPrint(std::ostream& out) const = 0;
+
     public:
         /**
          * Creating constructor
@@ -74,6 +76,10 @@ namespace GLOBAL_NAMESPACE {
          */
         [[nodiscard]] int getFinalFrame() const { return finalFrame; }
 
+        /**
+         *
+         * @return total number of frames available for the analysis
+         */
         [[nodiscard]] int getFrameNumber() const { return finalFrame - initialFrame + 1; }
 
         /**
@@ -149,6 +155,8 @@ namespace GLOBAL_NAMESPACE {
          * @return true if synchronization was successfully completed
          */
         [[nodiscard]] bool isSynchronized() const { return synchronized; }
+
+        friend std::ostream& operator<<(std::ostream& out, const Synchronization& sync);
 
 
 

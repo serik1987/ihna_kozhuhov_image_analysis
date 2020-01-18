@@ -355,21 +355,24 @@ class NativeDataManager(wx.Dialog):
 
             print("PY Traces reading")
             reader = TraceReader(train)
+            sync = properties_dlg.create_synchronization()
+            print(sync)
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
-            reader.progress_bar = progress_dlg
             reader.progress_bar = progress_dlg
             n = 0
             while n < 1000:
                 if not progress_dlg.progress_function(n, 1000, "Reading traces"):
                     print("PY Finish reading traces")
                     progress_dlg.Destroy()
+                    del sync
                     del reader
                     del train
                     return
                 time.sleep(0.1)
                 n += 100
             progress_dlg.done()
+            del sync
 
             print("PY Finish of traces reading")
 

@@ -92,4 +92,30 @@ namespace GLOBAL_NAMESPACE {
             return referenceSignalSin;
         }
     }
+
+    std::ostream &operator<<(std::ostream &out, const Synchronization &sync) {
+        out << "===== SYNCHRONIZATION =====\n";
+        out << "Synchronization type: " << sync.getName() << "\n";
+        out << "Initial frame: " << sync.getInitialFrame() << "\n";
+        out << "Final frame: " << sync.getFinalFrame() << "\n";
+        out << "Frame number: " << sync.getFrameNumber() << "\n";
+        if (sync.isDoPrecise()) {
+            out << "Precise analysis is ON\n";
+        } else {
+            out << "Precise analysis is OFF\n";
+        }
+        out << "Harmonic: " << sync.getHarmonic() << "\n";
+        if (sync.isSynchronized()){
+            out << "Synchronization is completed\n";
+            out << "Phase increment, rad: " << sync.getPhaseIncrement() << "\n";
+            out << "Initial phase, rad: " << sync.getInitialPhase() << "\n";
+
+        } else {
+            out << "Synchronization is not completed\n";
+        }
+
+        sync.specialPrint(out);
+
+        return out;
+    }
 }

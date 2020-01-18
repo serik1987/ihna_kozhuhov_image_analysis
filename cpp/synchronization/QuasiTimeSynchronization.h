@@ -26,6 +26,9 @@ namespace GLOBAL_NAMESPACE {
         int initialCycle;
         int finalCycle;
 
+    protected:
+        void specialPrint(std::ostream& out) const override;
+
     public:
         explicit QuasiTimeSynchronization(StreamFileTrain& train);
         QuasiTimeSynchronization(const QuasiTimeSynchronization& other) = delete;

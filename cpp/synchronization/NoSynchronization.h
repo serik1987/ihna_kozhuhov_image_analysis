@@ -16,6 +16,9 @@ namespace GLOBAL_NAMESPACE {
      * 3) Reference cosine and reference sine are usually meaningless
      */
     class NoSynchronization: public Synchronization {
+    protected:
+        void specialPrint(std::ostream& out) const override;
+
     public:
         explicit NoSynchronization(StreamFileTrain& train);
         NoSynchronization(const NoSynchronization& other) = delete;

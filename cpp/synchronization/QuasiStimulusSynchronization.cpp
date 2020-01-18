@@ -70,5 +70,11 @@ namespace GLOBAL_NAMESPACE {
         }
     }
 
+    void QuasiStimulusSynchronization::specialPrint(std::ostream &out) const {
+        out << "Stimulus period: " << getStimulusPeriod() << "\n";
+        out << "Initial cycle: " << getInitialCycle() << "\n";
+        out << "Final cycle: " << getFinalCycle() << "\n";
+    }
+
 
 }
