@@ -11,6 +11,7 @@ extern "C" {
         PyObject_HEAD
         void *trace_reader_handle;
         PyImanS_StreamFileTrainObject *file_train;
+        PyObject* progress_bar;
     } PyImanT_TraceReaderObject;
 
     static PyTypeObject PyImanT_TraceReaderType = {
@@ -29,6 +30,7 @@ extern "C" {
         if (self != NULL) {
             self->trace_reader_handle = NULL;
             self->file_train = NULL;
+            self->progress_bar = NULL;
         }
         return self;
     }
@@ -41,6 +43,7 @@ extern "C" {
         }
 
         Py_INCREF(self->file_train);
+        Py_XDECREF(self->progress_bar);
 
         auto *train = (StreamFileTrain *) self->file_train->super.train_handle;
         self->trace_reader_handle = new TraceReader(*train);
@@ -57,6 +60,7 @@ extern "C" {
         }
 
         Py_XDECREF(self->file_train);
+        Py_XDECREF(self->progress_bar);
 
         Py_TYPE(self)->tp_free(self);
     }
@@ -469,6 +473,28 @@ extern "C"{
 
     }
 
+    static int PyImanT_TraceReader_SetProgressBar(PyImanT_TraceReaderObject* self, PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+        int frame_number = reader->getFrameNumber();
+        if (frame_number <= 0){
+            frame_number = 10000;
+        }
+
+        PyObject* result = PyObject_CallMethod(arg, "progress_function", "iis", 0, frame_number, "Trace reading");
+        if (result == NULL){
+            return -1;
+        }
+        Py_XDECREF(result);
+
+        Py_XDECREF(self->progress_bar);
+        Py_INCREF(arg);
+        self->progress_bar = arg;
+        reader->setProgressFunction(PyIman_ReadingProgressFunction, "Trace reading", self->progress_bar);
+
+        return 0;
+    }
+
     static PyGetSetDef PyImanT_TraceReaderProperties[] = {
             {(char*)"arrival_time_displacement", (getter)PyImanT_TraceReader_GetArrivalTimeDisplacement, NULL,
              (char*)"arrival time displacement. This property is read-only becase is determined by \n"
@@ -524,12 +550,22 @@ extern "C"{
 
             {(char*)"frame_number", (getter)PyImanT_TraceReader_GetFrameNumber, NULL,
              (char*)"Total number of frames or timestamps in the read signal\n"
-                    "This is a read-only property because this is fully defined by the initial_frame and final_frame"},
+                    "This is a read-only property because it is fully defined by the initial_frame and final_frame"},
 
             {(char*)"channel_number", (getter)PyImanT_TraceReader_GetChannelNumber, NULL,
              (char*)"Total number of traces that will be read.\n"
                     "This is a read-only property. Use add_pixel, add_pixels and clear_pixels method to manipulate \n"
                     "the value of this property"},
+
+            {(char*)"progress_bar", NULL, (setter)PyImanT_TraceReader_SetProgressBar,
+             (char*)"Sets the progress bar that will be updated each time when the reader is in the progress\n"
+                    "This is a white-only property\n"
+                    "the property accepts any Python object that contains the following method:\n"
+                    "def progress_function(self, processed_frames, total_frames, message)\n"
+                    "\t...\n"
+                    "\n"
+                    "All its arguments are defined by the object. The method shall return True or False\n"
+                    "If it returns False, the reading process will be interrupted"},
 
             {NULL}
     };

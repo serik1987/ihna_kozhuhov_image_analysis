@@ -357,6 +357,8 @@ class NativeDataManager(wx.Dialog):
             reader = TraceReader(train)
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
+            reader.progress_bar = progress_dlg
+            reader.progress_bar = progress_dlg
             n = 0
             while n < 1000:
                 if not progress_dlg.progress_function(n, 1000, "Reading traces"):

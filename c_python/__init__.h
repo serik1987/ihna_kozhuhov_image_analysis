@@ -12,6 +12,7 @@ extern "C" {
 
 static PyObject *PyIman_ImanError = NULL;
 static void PyIman_Exception_process(const void *);
+static bool PyIman_ReadingProgressFunction(int processed, int total, const char* message, void* handle);
 
 }
 
@@ -22,6 +23,12 @@ static void PyIman_Exception_process(const void *);
 #include "isolines/__init__.h"
 
 extern "C" {
+
+    static bool PyIman_ReadingProgressFunction(int processed, int total, const char* message, void* handle){
+        printf("SO %d out of %d steps were completed\n", processed, total);
+        printf("SO Message: %s\n", message);
+        return true;
+    }
 
     static void PyIman_Exception_process(const void* handle){
         using namespace GLOBAL_NAMESPACE;
