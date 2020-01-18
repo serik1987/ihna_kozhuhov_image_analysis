@@ -59,4 +59,17 @@ namespace GLOBAL_NAMESPACE {
             throw TracesNotReadException();
         }
     }
+
+    std::ostream &operator<<(std::ostream &out, TraceReaderAndCleaner &reader) {
+        TraceReader* handle = &reader;
+
+        out << *handle;
+        if (reader.isCleaned()){
+            out << "Traces were cleaned\n";
+        } else {
+            out << "Traces were not cleaned\n";
+        }
+
+        return out;
+    }
 }

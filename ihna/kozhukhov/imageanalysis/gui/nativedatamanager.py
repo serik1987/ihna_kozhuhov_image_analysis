@@ -356,7 +356,8 @@ class NativeDataManager(wx.Dialog):
             print("PY Traces reading")
             reader = TraceReader(train)
             sync = properties_dlg.create_synchronization()
-            print(sync)
+            isoline = properties_dlg.create_isoline(sync)
+            reader.isoline_remover = isoline
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             reader.progress_bar = progress_dlg
@@ -366,6 +367,7 @@ class NativeDataManager(wx.Dialog):
                     print("PY Finish reading traces")
                     progress_dlg.Destroy()
                     del sync
+                    del isoline
                     del reader
                     del train
                     return
@@ -373,8 +375,10 @@ class NativeDataManager(wx.Dialog):
                 n += 100
             progress_dlg.done()
             del sync
+            del isoline
 
             print("PY Finish of traces reading")
+            print(reader)
 
             traces_dlg = TracesDlg(self)
             if traces_dlg.ShowModal() == wx.ID_CANCEL:

@@ -139,6 +139,20 @@ extern "C" {
         return 0;
     }
 
+    static PyObject* PyImanT_TraceReaderAndCleaner_Print(PyImanT_TraceReaderAndCleanerObject* self){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReaderAndCleaner*)self->super.trace_reader_handle;
+
+        try{
+            std::stringstream ss;
+            ss << *reader << "\n";
+            return PyUnicode_FromString(ss.str().c_str());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyGetSetDef PyImanI_TraceReaderAndCleaner_Properties[] = {
             {(char*)"has_cleaned", (getter)PyImanI_TraceReaderAndCleaner_HasRead, NULL,
                     (char*)"True if the traces have been read and cleaned, False otherwise"},
@@ -166,6 +180,7 @@ extern "C" {
         PyImanT_TraceReaderAndCleanerType.tp_init = (initproc)PyImanT_TraceReaderAndCleaner_Init;
         PyImanT_TraceReaderAndCleanerType.tp_dealloc = (destructor)PyImanT_TraceReaderAndCleaner_Destroy;
         PyImanT_TraceReaderAndCleanerType.tp_getset = PyImanI_TraceReaderAndCleaner_Properties;
+        PyImanT_TraceReaderAndCleanerType.tp_str = (reprfunc)PyImanT_TraceReaderAndCleaner_Print;
 
         if (PyType_Ready(&PyImanT_TraceReaderAndCleanerType) < 0){
             return -1;

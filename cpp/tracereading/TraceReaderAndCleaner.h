@@ -57,7 +57,9 @@ namespace GLOBAL_NAMESPACE {
          */
         [[nodiscard]] const double* getTracesBeforeRemove() const;
 
-        const char* getReaderName() const override { return "TRACE READER AND CLEANER"; };
+        [[nodiscard]] const char* getReaderName() const override { return "TRACE READER AND CLEANER"; };
+
+        friend std::ostream& operator<<(std::ostream& out, TraceReaderAndCleaner& reader);
     };
 
 }
