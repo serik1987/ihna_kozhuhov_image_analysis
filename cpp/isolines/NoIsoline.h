@@ -13,6 +13,9 @@ namespace GLOBAL_NAMESPACE {
      * Provides no isoline remove except declining the average
      */
     class NoIsoline: public Isoline {
+    protected:
+        void printSpecial(std::ostream& out) const override {};
+
     public:
         NoIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {};
 

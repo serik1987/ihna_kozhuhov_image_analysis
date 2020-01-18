@@ -40,6 +40,8 @@ namespace GLOBAL_NAMESPACE {
 
         ProgressFunction progressFunction;
 
+        virtual void printSpecial(std::ostream& out) const = 0;
+
     public:
         Isoline(StreamFileTrain& train, Synchronization& sync);
         Isoline(const Isoline& other);
@@ -103,6 +105,8 @@ namespace GLOBAL_NAMESPACE {
          * @return the last frame participated in the isoline calculation
          */
         [[nodiscard]] int getIsolineFinalFrame() const { return isolineFinalFrame; }
+
+        friend std::ostream& operator<<(std::ostream& out, const Isoline& isoline);
 
 
         class IsolineException: public iman_exception{

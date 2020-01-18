@@ -30,4 +30,24 @@ namespace GLOBAL_NAMESPACE {
 
         return *this;
     }
+
+    std::ostream &operator<<(std::ostream &out, const Isoline &isoline) {
+        out << "===== ISOLINE =====\n";
+        out << "Isoline name: " << isoline.getName() << "\n";
+        out << "Analysis range: " << isoline.getAnalysisInitialCycle() << " - " << isoline.getAnalysisFinalCycle()
+            << " cycles (" << isoline.getAnalysisInitialFrame() << "-" << isoline.getAnalysisFinalFrame() <<
+            " frames)\n";
+        out << "Isoline plotting range: "
+            << isoline.getIsolineInitialCycle()
+            << " - "
+            << isoline.getIsolineFinalCycle()
+            << " cycles ("
+            << isoline.getIsolineInitialFrame()
+            << "-"
+            << isoline.getIsolineFinalFrame()
+            << " frames)\n";
+        isoline.printSpecial(out);
+
+        return out;
+    }
 }

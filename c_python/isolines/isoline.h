@@ -150,6 +150,20 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanI_Isoline_Print(PyImanI_IsolineObject* self){
+        using namespace GLOBAL_NAMESPACE;
+        auto* isoline = (Isoline*)self->isoline_handle;
+
+        try{
+            std::stringstream ss;
+            ss << *isoline << "\n";
+            return PyUnicode_FromString(ss.str().c_str());
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyGetSetDef PyImanI_Isoline_Properties[] = {
             {(char*)"analysis_initial_frame", (getter)PyImanI_Isoline_GetAnalysisInitialFrame, NULL,
                     (char*)"Number of frame that starts the analysis or -1 before the isoline remove\n"
@@ -213,6 +227,7 @@ extern "C" {
         PyImanI_IsolineType.tp_dealloc = (destructor)PyImanI_Isoline_Destroy;
         PyImanI_IsolineType.tp_init = (initproc)PyImanI_Isoline_Init;
         PyImanI_IsolineType.tp_getset = PyImanI_Isoline_Properties;
+        PyImanI_IsolineType.tp_str = (reprfunc)PyImanI_Isoline_Print;
 
         if (PyType_Ready(&PyImanI_IsolineType) < 0){
             return -1;

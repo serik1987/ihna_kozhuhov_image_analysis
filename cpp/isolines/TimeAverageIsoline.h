@@ -17,6 +17,8 @@ namespace GLOBAL_NAMESPACE {
     private:
         int averageCycles;
 
+        void printSpecial(std::ostream& out) const override;
+
     public:
         TimeAverageIsoline(StreamFileTrain& train, Synchronization& sync);
         TimeAverageIsoline(const TimeAverageIsoline& other);

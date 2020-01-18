@@ -28,4 +28,8 @@ namespace GLOBAL_NAMESPACE {
             throw AverageCyclesException();
         }
     }
+
+    void TimeAverageIsoline::printSpecial(std::ostream &out) const {
+        out << "Average radius, cycles: " << getAverageCycles() << "\n";
+    }
 }

@@ -140,6 +140,7 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         sync = self.create_synchronization()
         isoline = self.create_isoline(sync)
         print(sync)
+        print(isoline)
 
     def get_pixel_list(self):
         roi_number = self.__roi_box.GetSelection()

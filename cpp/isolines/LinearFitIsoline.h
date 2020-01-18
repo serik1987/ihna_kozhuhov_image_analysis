@@ -13,6 +13,9 @@ namespace GLOBAL_NAMESPACE {
      * Provides the isoline remove based on the linear regression
      */
     class LinearFitIsoline: public Isoline {
+    protected:
+        void printSpecial(std::ostream& out) const override {};
+
     public:
         LinearFitIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {};
 
