@@ -3,6 +3,8 @@
 //
 
 #include <algorithm>
+#include "../synchronization/Synchronization.h"
+#include "../synchronization/NoSynchronization.h"
 #include "TraceReader.h"
 #include "../source_files/SoftChunk.h"
 
@@ -251,6 +253,23 @@ namespace GLOBAL_NAMESPACE {
                 }
             }
         }
+    }
+
+    void TraceReader::setFrameRange(Synchronization &sync) {
+        if (!sync.isSynchronized()){
+            throw Synchronization::NotSynchronizedException();
+        }
+        if (sync.getInitialFrame() < 0 || sync.getInitialFrame() >= train.getTotalFrames()){
+            throw NoSynchronization::FrameRangeException();
+        }
+        if (sync.getFinalFrame() < 0 || sync.getFinalFrame() >= train.getTotalFrames()){
+            throw NoSynchronization::FrameRangeException();
+        }
+        if (sync.getFinalFrame() < sync.getInitialFrame()){
+            throw NoSynchronization::FrameRangeException();
+        }
+        initialFrame = sync.getInitialFrame();
+        finalFrame = sync.getFinalFrame();
     }
 
 

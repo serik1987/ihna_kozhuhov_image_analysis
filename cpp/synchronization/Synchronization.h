@@ -44,6 +44,14 @@ namespace GLOBAL_NAMESPACE {
 
         virtual void specialPrint(std::ostream& out) const = 0;
 
+        /**
+         * Initializes and calculates the following protected data:
+         * synchronizationPhase - represents values of stimulus phases at different timestamps
+         * initialFrame - the very first frame participated in the analysis
+         * finalFrame - the very last frame participated in the analysis
+         */
+        virtual void calculateSynchronizationPhase() = 0;
+
     public:
         /**
          * Creating constructor
@@ -149,6 +157,16 @@ namespace GLOBAL_NAMESPACE {
             progressFunction = f;
             handle = h;
         }
+
+        /**
+         * Clears the previous synchronized state
+         */
+        virtual void clearState();
+
+        /**
+         * Synchronizes the signal
+         */
+        void synchronize();
 
         /**
          *

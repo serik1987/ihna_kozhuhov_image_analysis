@@ -118,4 +118,22 @@ namespace GLOBAL_NAMESPACE {
 
         return out;
     }
+
+    void Synchronization::synchronize() {
+        printf("\n");
+        clearState();
+        calculateSynchronizationPhase();
+
+        printf("C++: Synchronization started\n");
+        printf("\n");
+
+        synchronized = true;
+    }
+
+    void Synchronization::clearState() {
+        synchronized = false;
+        delete [] referenceSignalCos;
+        delete [] referenceSignalSin;
+        delete [] synchronizationPhase;
+    }
 }

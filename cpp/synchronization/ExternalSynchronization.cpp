@@ -92,4 +92,8 @@ namespace GLOBAL_NAMESPACE {
         out << "Initial cycle: " << getInitialCycle() << "\n";
         out << "Final cycle: " << getFinalCycle() << "\n";
     }
+
+    void ExternalSynchronization::calculateSynchronizationPhase() {
+        printf("C++: calculating the synchronization phase\n");
+    }
 }

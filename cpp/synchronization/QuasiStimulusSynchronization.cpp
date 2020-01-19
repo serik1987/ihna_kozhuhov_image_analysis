@@ -76,5 +76,9 @@ namespace GLOBAL_NAMESPACE {
         out << "Final cycle: " << getFinalCycle() << "\n";
     }
 
+    void QuasiStimulusSynchronization::calculateSynchronizationPhase() {
+        printf("QuasiStimulusSynchronization: calculating the synchronization phase\n");
+    }
+
 
 }

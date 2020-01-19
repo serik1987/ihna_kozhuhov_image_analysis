@@ -21,6 +21,12 @@ extern "C" {
             .tp_itemsize = 0,
     };
 
+    typedef struct {
+        PyObject_HEAD
+        PyImanS_StreamFileTrainObject* parent_train;
+        void* synchronization_handle;
+    } PyImanY_SynchronizationObject;
+
     static PyObject* PyImanT_PixelListItem_AsTuple(PyImanT_TraceReaderObject* reader,
             const GLOBAL_NAMESPACE::PixelListItem& item);
 
@@ -237,6 +243,22 @@ extern "C" {
             str << *reader;
             return PyUnicode_FromString(str.str().c_str());
         } catch (std::exception &e) {
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanT_TraceReader_SetFrameRange(PyImanT_TraceReaderObject* self,
+            PyObject* sync_arg, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+        auto* sync_object = (PyImanY_SynchronizationObject*)sync_arg;
+        auto* sync = (Synchronization*)sync_object->synchronization_handle;
+
+        try{
+            reader->setFrameRange(*sync);
+            return Py_BuildValue("");
+        } catch (std::exception& e){
             PyIman_Exception_process(&e);
             return NULL;
         }
@@ -674,6 +696,13 @@ extern "C"{
             {"read", (PyCFunction)PyImanT_TraceReader_Read, METH_NOARGS,
              "Reads all traces from the hard disk"},
 
+            {"set_frame_range", (PyCFunction)PyImanT_TraceReader_SetFrameRange, METH_O,
+             "Sets the initial and final frames of the analysis based on the synchronization results\n"
+             "\n"
+             "Usage: set_frame_range(sync)\n"
+             "where sync is a Synchronization object (see ihna.kozhukhov.imageanalysis.synchronization.Synchronization)\n"
+             "The sync shall be synchronize()'d"},
+
             {NULL}
     };
 
@@ -681,7 +710,7 @@ extern "C"{
 
         PyImanT_TraceReaderType.tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT;
         PyImanT_TraceReaderType.tp_doc = "This is an engine to read the temporal-dependent signal from a certain \n"
-                                         "map pixel, sychronization channel or arrival timestamp\n"
+                                         "map pixel, synchronization channel or arrival timestamp\n"
                                          "\n"
                                          "Usage: trace = TraceReader(train)\n"
                                          "where train is an instance of StreamFileTrain";

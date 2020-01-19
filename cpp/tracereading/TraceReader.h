@@ -14,6 +14,8 @@
 
 namespace GLOBAL_NAMESPACE {
 
+    class Synchronization;
+
     /**
      * This class provides the reading of stand-alone traces, synchronization channels, arrival times
      */
@@ -177,6 +179,13 @@ namespace GLOBAL_NAMESPACE {
          * @return the string "TRACE READER" if nothing else is defined in the derived class
          */
         [[nodiscard]] virtual const char* getReaderName() const  { return "TRACE READER"; }
+
+        /**
+         * Sets the frame range based on synchronization. Note, that the synchronization shall be completed
+         *
+         * @param sync the Synchronization object
+         */
+        void setFrameRange(Synchronization& sync);
 
         /**
          * Reads the traces

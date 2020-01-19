@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import numpy as np
+from scipy import diff
 from scipy.fftpack import fft
 
 
@@ -15,6 +16,7 @@ class TraceProcessor:
     __time_arrivals = None
     __synch_channels = None
     __data = None
+    __reference_signal = None
 
     def __init__(self, reader, sync):
         """
@@ -36,6 +38,7 @@ class TraceProcessor:
                 self.__data.append(reader.get_trace(idx).reshape((reader.frame_number, 1)))
             idx += 1
         self.__data = np.hstack(self.__data)
+        self.__reference_signal = sync.synchronization_phase
 
     def get_frame_lim(self):
         """
@@ -75,3 +78,7 @@ class TraceProcessor:
         spectrum = fft(data, n=256, axis=0)
         return np.abs(spectrum)
 
+    def get_reference_signal(self):
+        rs = diff(self.__reference_signal)
+        rs = np.hstack((rs, rs[-1]))
+        return rs

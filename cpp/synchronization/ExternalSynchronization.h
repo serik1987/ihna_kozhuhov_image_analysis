@@ -24,6 +24,8 @@ namespace GLOBAL_NAMESPACE {
     protected:
         void specialPrint(std::ostream& out) const override;
 
+        void calculateSynchronizationPhase() override;
+
     public:
         explicit ExternalSynchronization(StreamFileTrain& train);
         ExternalSynchronization(const ExternalSynchronization& other) = delete;

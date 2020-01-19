@@ -72,7 +72,14 @@ class TracesDlg(wx.Dialog):
         self.__psd_before_correction_axes.tick_params(labelsize=10)
 
         self.__reference_signal_axes = fig.add_subplot(5, 3, 4)
+        self.__reference_signal_axes.plot(processor.get_frame_vector(), processor.get_reference_signal())
+        m = processor.get_reference_signal().mean()
+        s = processor.get_reference_signal().std()
+        if abs(s) < 1e-2:
+            s = 1e-2
         self.__reference_signal_axes.get_xaxis().set_ticks([])
+        self.__reference_signal_axes.set_xlim(processor.get_frame_lim())
+        self.__reference_signal_axes.set_ylim((m - 3*s, m + 3*s))
         self.__reference_signal_axes.set_title("Reference signal", fontdict=caption_font)
         self.__reference_signal_axes.tick_params(labelsize=10)
 

@@ -365,7 +365,10 @@ class NativeDataManager(wx.Dialog):
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             reader.progress_bar = progress_dlg
             try:
+                sync.synchronize()
+                reader.set_frame_range(sync)
                 reader.read()
+                print(sync)
             except Exception as err:
                 dlg = wx.MessageDialog(self, str(err), caption="Trace analysis",
                                        style=wx.OK | wx.CENTRE | wx.ICON_ERROR)

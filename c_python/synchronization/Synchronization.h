@@ -7,12 +7,6 @@
 
 extern "C" {
 
-    typedef struct {
-        PyObject_HEAD
-        PyImanS_StreamFileTrainObject* parent_train;
-        void* synchronization_handle;
-    } PyImanY_SynchronizationObject;
-
     static PyTypeObject PyImanY_SynchronizationType = {
             PyVarObject_HEAD_INIT(NULL, 0)
             .tp_name = "ihna.kozhukhov.imageanalysis.synchronization.Synchronization",
@@ -124,7 +118,13 @@ extern "C" {
 
         try{
             const double* phase = sync->getSynchronizationPhase();
-            return Py_BuildValue("");
+            npy_intp dims[] = {sync->getFrameNumber()};
+            PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+            if (result == NULL) return NULL;
+            for (int i=0; i < sync->getFrameNumber(); ++i){
+                *(double*)PyArray_GETPTR1((PyArrayObject*)result, i) = phase[i];
+            }
+            return result;
         } catch (std::exception& e){
             PyIman_Exception_process(&e);
             return NULL;
@@ -249,6 +249,20 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanY_Synchronization_Synchronize(PyImanY_SynchronizationObject* self,
+            PyObject* arg, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (Synchronization*)self->synchronization_handle;
+
+        try{
+            sync->synchronize();
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyGetSetDef PyImanY_Synchronization_Properties[] = {
             {(char*)"initial_frame", (getter)PyImanY_Synchronization_GetInitialFrame, NULL,
                     (char*)"Initial frame from which the analysis starts\n"
@@ -314,6 +328,13 @@ extern "C" {
 
     };
 
+    static PyMethodDef PyImanY_Synchronization_Methods[] = {
+            {"synchronize", (PyCFunction)PyImanY_Synchronization_Synchronize, METH_NOARGS,
+             "Runs the synchronization process"},
+
+            {NULL}
+    };
+
     static int PyImanY_Synchronization_Create(PyObject* module){
 
         PyImanY_SynchronizationType.tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT;
@@ -335,6 +356,7 @@ extern "C" {
         PyImanY_SynchronizationType.tp_init = (initproc)PyImanY_Synchronization_Init;
         PyImanY_SynchronizationType.tp_getset = PyImanY_Synchronization_Properties;
         PyImanY_SynchronizationType.tp_str = (reprfunc)PyImanY_Synchronization_Print;
+        PyImanY_SynchronizationType.tp_methods = PyImanY_Synchronization_Methods;
 
         if (PyType_Ready(&PyImanY_SynchronizationType) < 0){
             return -1;

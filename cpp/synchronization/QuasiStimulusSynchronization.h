@@ -25,6 +25,8 @@ namespace GLOBAL_NAMESPACE {
     protected:
         void specialPrint(std::ostream& out) const override;
 
+        void calculateSynchronizationPhase() override;
+
     public:
         explicit QuasiStimulusSynchronization(StreamFileTrain& other);
         QuasiStimulusSynchronization(const QuasiStimulusSynchronization& other) = delete;

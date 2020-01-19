@@ -2,6 +2,7 @@
 // Created by serik1987 on 12.01.2020.
 //
 
+#include <cmath>
 #include "NoSynchronization.h"
 
 namespace GLOBAL_NAMESPACE {
@@ -35,5 +36,13 @@ namespace GLOBAL_NAMESPACE {
 
     void NoSynchronization::specialPrint(std::ostream &out) const {
 
+    }
+
+    void NoSynchronization::calculateSynchronizationPhase() {
+        int n = getFrameNumber();
+        synchronizationPhase = new double[n];
+        for (int i=0; i < n; ++i){
+            synchronizationPhase[i] = 2 * M_PI * i;
+        }
     }
 }
