@@ -212,8 +212,15 @@ extern "C" {
             if (idx < 0 || idx >= reader->getChannelNumber()) {
                 throw TraceReader::PixelItemIndexException();
             }
-            const double *traces = reader->getTraces();
-            return Py_BuildValue("");
+            const double *traces = reader->getTraces() + idx;
+            npy_intp dims[] = {reader->getFrameNumber()};
+            auto* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+            if (result == NULL) return NULL;
+            for (int i=0; i < reader->getFrameNumber(); ++i){
+                *(double*)PyArray_GETPTR1((PyArrayObject*)result, i) = *traces;
+                traces += reader->getChannelNumber();
+            }
+            return result;
         } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;

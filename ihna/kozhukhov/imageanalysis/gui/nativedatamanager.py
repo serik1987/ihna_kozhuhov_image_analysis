@@ -386,6 +386,10 @@ class NativeDataManager(wx.Dialog):
             print("PY Finish of traces reading")
             print(reader)
             print(reader.traces)
+            print(reader.get_trace(0))
+            print(reader.get_trace(1))
+            print(reader.get_trace(2))
+            print(reader.get_trace(3))
 
             traces_dlg = TracesDlg(self)
             if traces_dlg.ShowModal() == wx.ID_CANCEL:
