@@ -25,9 +25,18 @@ static bool PyIman_ReadingProgressFunction(int processed, int total, const char*
 extern "C" {
 
     static bool PyIman_ReadingProgressFunction(int processed, int total, const char* message, void* handle){
-        printf("SO %d out of %d steps were completed\n", processed, total);
-        printf("SO Message: %s\n", message);
-        return true;
+        auto* dlg = (PyObject*)handle;
+        PyObject* result = PyObject_CallMethod(dlg, "progress_function", "iis", processed, total, message);
+        if (result == NULL){
+            printf("SO progress_function was completed with an exception\n");
+            return true;
+        }
+        if (!PyBool_Check(result)){
+            printf("SO progress_function has returned value dufferent from bool\n");
+        }
+        bool r = result == Py_True;
+        Py_DECREF(result);
+        return r;
     }
 
     static void PyIman_Exception_process(const void* handle){

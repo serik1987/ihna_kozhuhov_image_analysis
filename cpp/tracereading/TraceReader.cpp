@@ -128,6 +128,7 @@ namespace GLOBAL_NAMESPACE {
         dataTypes = nullptr;
         delete [] traces;
         traces = nullptr;
+        _hasRead = false;
     }
 
     void TraceReader::read() {
@@ -139,10 +140,9 @@ namespace GLOBAL_NAMESPACE {
             pixelList.erase(last_item, pixelList.end());
         }
         extractDisplacements();
+        _hasRead = true;
 
         readFromFile();
-
-        _hasRead = true;
 
         printf("\n");
         printf("C++: reading traces\n");
@@ -167,84 +167,90 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void TraceReader::readFromFile() {
-        std::ofstream f;
-        f.open("/home/serik1987/vasomotor-oscillations/displacements.log", std::ios_base::out);
-        if (f.fail()){
-            throw std::runtime_error("Failed to open the test file!");
-        }
         double* local_traces = traces = new double[getChannelNumber() * getFrameNumber()];
         auto next_fit = train.begin(); ++next_fit;
         auto fit = train.begin();
         int localInitialFrame = 0;
         int localFinalFrame = (*next_fit)->offsetFrame - 1;
         bool veryFirst = true;
+        int progress_frame = 0;
         for (int n = initialFrame; n <= finalFrame; ++n){
-            f << "n = " << n << "\t";
-            uint32_t offset;
-            if (n > localFinalFrame) {
-                ++fit, ++next_fit;
-                localInitialFrame = (*fit)->offsetFrame;
-                if (next_fit == train.end()) {
-                    localFinalFrame = train.getTotalFrames() - 1;
-                } else {
-                    localFinalFrame = (*next_fit)->offsetFrame - 1;
-                }
-                veryFirst = true;
-            }
-            if (veryFirst){
-                int m = n - localInitialFrame;
-                offset = train.getFileHeaderSize() + m * train.getFrameSize() + initialDisplacement;
-                (*fit)->getFileStream().seekg(offset, std::ios_base::beg);
-                if ((*fit)->getFileStream().fail()){
-                    throw SourceFile::file_read_exception(*fit);
-                }
-                veryFirst = false;
-            } else {
-                offset = dataDisplacements[getChannelNumber()-1];
-                (*fit)->getFileStream().seekg(offset, std::ios_base::cur);
-                if ((*fit)->getFileStream().fail()){
-                    throw SourceFile::file_read_exception(*fit);
+            auto& file = selectFileAndOffset(n, localFinalFrame, localInitialFrame, fit, next_fit, veryFirst);
+            readTimestamp(file, fit, local_traces);
+            if (progress_frame % 100 == 0 && progressFunction != nullptr){
+                bool status = progressFunction(progress_frame, getFrameNumber(), progressMessage.c_str(), handle);
+                if (!status){
+                    clearState();
+                    break;
                 }
             }
-
-            std::ifstream& file = (*fit)->getFileStream();
-            for (int chan = 0; chan < getChannelNumber(); ++chan){
-                if (dataTypes[chan] == PixelListItem::ArrivalTime){
-                    uint64_t pix;
-                    file.read((char*)&pix, 8);
-                    if (file.fail()){
-                        throw SourceFile::file_read_exception(*fit);
-                    }
-                    *(local_traces++) = pix;
-                    f << pix << "\t";
-                } else if (dataTypes[chan] == PixelListItem::SynchronizationChannel){
-                    uint32_t pix;
-                    file.read((char*)&pix, 4);
-                    if (file.fail()){
-                        throw SourceFile::file_read_exception(*fit);
-                    }
-                    *(local_traces++) = pix;
-                    f << pix << "\t";
-                } else if (dataTypes[chan] == PixelListItem::PixelValue){
-                    uint16_t pix;
-                    file.read((char*)&pix, 2);
-                    if (file.fail()){
-                        throw SourceFile::file_read_exception(*fit);
-                    }
-                    *(local_traces++) = pix;
-                    f << pix << "\t";
-                }
-                if (chan != getChannelNumber() - 1){
-                    file.seekg(dataDisplacements[chan], std::ios_base::cur);
-                    if (file.fail()){
-                        throw SourceFile::file_read_exception(*fit);
-                    }
-                }
-            }
-
-            f << std::endl;
+            ++progress_frame;
         }
-        f.close();
+    }
+
+    std::ifstream& TraceReader::selectFileAndOffset(int n, int& localFinalFrame, int& localInitialFrame,
+            decltype(train.end())& fit, decltype(train.end())& next_fit, bool& veryFirst){
+        uint32_t offset;
+        if (n > localFinalFrame) {
+            ++fit, ++next_fit;
+            localInitialFrame = (*fit)->offsetFrame;
+            if (next_fit == train.end()) {
+                localFinalFrame = train.getTotalFrames() - 1;
+            } else {
+                localFinalFrame = (*next_fit)->offsetFrame - 1;
+            }
+            veryFirst = true;
+        }
+        if (veryFirst){
+            int m = n - localInitialFrame;
+            offset = train.getFileHeaderSize() + m * train.getFrameSize() + initialDisplacement;
+            (*fit)->getFileStream().seekg(offset, std::ios_base::beg);
+            if ((*fit)->getFileStream().fail()){
+                throw SourceFile::file_read_exception(*fit);
+            }
+            veryFirst = false;
+        } else {
+            offset = dataDisplacements[getChannelNumber()-1];
+            (*fit)->getFileStream().seekg(offset, std::ios_base::cur);
+            if ((*fit)->getFileStream().fail()){
+                throw SourceFile::file_read_exception(*fit);
+            }
+        }
+
+        return (*fit)->getFileStream();
+    }
+
+    void TraceReader::readTimestamp(std::ifstream& file, decltype(train.end())& fit, double*& local_traces){
+        for (int chan = 0; chan < getChannelNumber(); ++chan){
+            if (dataTypes[chan] == PixelListItem::ArrivalTime){
+                uint64_t pix;
+                file.read((char*)&pix, 8);
+                if (file.fail()){
+                    throw SourceFile::file_read_exception(*fit);
+                }
+                *(local_traces++) = 1e-3 * pix;
+            } else if (dataTypes[chan] == PixelListItem::SynchronizationChannel){
+                uint32_t pix;
+                file.read((char*)&pix, 4);
+                if (file.fail()){
+                    throw SourceFile::file_read_exception(*fit);
+                }
+                *(local_traces++) = pix;
+            } else if (dataTypes[chan] == PixelListItem::PixelValue){
+                uint16_t pix;
+                file.read((char*)&pix, 2);
+                if (file.fail()){
+                    throw SourceFile::file_read_exception(*fit);
+                }
+                *(local_traces++) = pix;
+            }
+            if (chan != getChannelNumber() - 1){
+                file.seekg(dataDisplacements[chan], std::ios_base::cur);
+                if (file.fail()){
+                    throw SourceFile::file_read_exception(*fit);
+                }
+            }
+        }
     }
 
 

@@ -119,7 +119,15 @@ extern "C" {
         auto *reader = (TraceReader *) self->trace_reader_handle;
         try {
             auto *traces = reader->getTraces();
-            return Py_BuildValue("");
+            npy_intp dims[] = {reader->getFrameNumber(), reader->getChannelNumber()};
+            PyObject* result = PyArray_SimpleNew(2, dims, NPY_DOUBLE);
+            if (result == NULL) return NULL;
+            for (int i=0; i < reader->getFrameNumber(); ++i){
+                for (int j=0; j < reader->getChannelNumber(); ++j, ++traces){
+                    *(double*)PyArray_GETPTR2((PyArrayObject*)result, i, j) = *traces;
+                }
+            }
+            return result;
         } catch (std::exception &e) {
             PyIman_Exception_process(&e);
             return NULL;

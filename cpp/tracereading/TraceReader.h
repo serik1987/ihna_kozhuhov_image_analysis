@@ -40,6 +40,9 @@ namespace GLOBAL_NAMESPACE {
 
         inline void extractDisplacements();
         inline void readFromFile();
+        inline std::ifstream& selectFileAndOffset(int n, int& localFinalFrame, int& localInitialFrame,
+                decltype(train.end())& fit, decltype(train.end())& next_fit, bool& veryFirst);
+        inline void readTimestamp(std::ifstream& in, decltype(train.end())& fit, double*& local_traces);
 
     protected:
         double* traces;
