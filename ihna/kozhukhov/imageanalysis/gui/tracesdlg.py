@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from scipy import diff
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 
@@ -34,7 +35,7 @@ class TracesDlg(wx.Dialog):
     __fig = None
     __fig_canvas = None
 
-    def __init__(self, parent):
+    def __init__(self, parent, processor):
         super().__init__(parent, title="Trace analysis", size=(800, 600))
         main_panel = wx.Panel(self)
         general_layout = wx.BoxSizer(wx.VERTICAL)
@@ -45,9 +46,18 @@ class TracesDlg(wx.Dialog):
         draw_sizer = wx.BoxSizer(wx.VERTICAL)
         fig = Figure(tight_layout=True)
         caption_font = {"fontsize": 10}
+        fr = processor.get_frame_vector()
+        diff_fr = fr[:-1]
 
         self.__time_arrival_axes = fig.add_subplot(5, 3, 1)
+        delta = diff(processor.get_time_arrivals())
+        self.__time_arrival_axes.plot(diff_fr, delta)
+        m = delta.mean()
+        s = delta.std()
         self.__time_arrival_axes.get_xaxis().set_ticks([])
+        self.__time_arrival_axes.set_xlim(processor.get_frame_lim())
+        self.__time_arrival_axes.set_ylim((m - 3 * s, m + 3 * s))
+        self.__time_arrival_axes.get_yaxis().set_ticks([m - 2*s, m, m + 2*s])
         self.__time_arrival_axes.set_title("Arrival time difference, ms", fontdict=caption_font)
         self.__time_arrival_axes.tick_params(labelsize=10)
 
@@ -77,16 +87,26 @@ class TracesDlg(wx.Dialog):
         self.__psd_isolines_axes.tick_params(labelsize=10)
 
         self.__synchronization_axes = fig.add_subplot(5, 3, 7)
+        chan_list = []
+        for chan in range(processor.get_synch_channel_number()):
+            chan_data = processor.get_synch_channel(chan)
+            self.__synchronization_axes.plot(fr, chan_data)
+            chan_list.append("{0}".format(chan))
         self.__synchronization_axes.set_xlabel("Timestamp", fontdict=caption_font)
+        self.__synchronization_axes.set_xlim(processor.get_frame_lim())
         self.__synchronization_axes.set_title("Synchronization channels", fontdict=caption_font)
+        self.__synchronization_axes.legend(chan_list, fontsize="small", loc="upper right")
         self.__synchronization_axes.tick_params(labelsize=10)
 
         self.__traces_after_correction_axes = fig.add_subplot(5, 3, 8)
+        self.__traces_after_correction_axes.plot(processor.get_frame_vector(), processor.get_data()[:, 0:7])
+        self.__traces_after_correction_axes.set_xlim(processor.get_frame_lim())
         self.__traces_after_correction_axes.get_xaxis().set_ticks([])
         self.__traces_after_correction_axes.set_title("Traces, after isoline remove", fontdict=caption_font)
         self.__traces_after_correction_axes.tick_params(labelsize=10)
 
         self.__psd_after_correction_axes = fig.add_subplot(5, 3, 9)
+        self.__psd_after_correction_axes.plot(processor.get_psd()[:, 0:7])
         self.__psd_after_correction_axes.get_xaxis().set_ticks([])
         self.__psd_after_correction_axes.set_title("Traces PSD, after isoline remove", fontdict=caption_font)
         self.__psd_after_correction_axes.tick_params(labelsize=10)

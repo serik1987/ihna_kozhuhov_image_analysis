@@ -3,9 +3,11 @@
 import os.path
 import time
 import wx
+import scipy
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression
 from ihna.kozhukhov.imageanalysis.tracereading import TraceReaderAndCleaner as TraceReader
+from ihna.kozhukhov.imageanalysis.tracereading import TraceProcessor
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
 from .compressiondlg import CompressionDlg
@@ -378,26 +380,20 @@ class NativeDataManager(wx.Dialog):
                 del reader
                 del train
                 return
-            print("PY Closing the dialog")
+            print("PY Finish of traces reading")
             progress_dlg.done()
-            del sync
             del isoline
 
-            print("PY Finish of traces reading")
-            print(reader)
-            print(reader.traces)
-            print(reader.get_trace(0))
-            print(reader.get_trace(1))
-            print(reader.get_trace(2))
-            print(reader.get_trace(3))
-
-            traces_dlg = TracesDlg(self)
+            trace_processor = TraceProcessor(reader, sync)
+            traces_dlg = TracesDlg(self, trace_processor)
             if traces_dlg.ShowModal() == wx.ID_CANCEL:
                 traces_dlg.close()
                 del reader
+                del sync
                 del train
                 return
             traces_dlg.close()
+            del sync
 
             print("PY Traces postprocessing")
 

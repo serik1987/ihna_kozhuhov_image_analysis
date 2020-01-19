@@ -8,4 +8,5 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceReade
 from ihna.kozhukhov.imageanalysis._imageanalysis import _tracereading_TraceReaderAndCleaner as \
     TraceReaderAndCleaner
 
+from .traceprocessor import TraceProcessor
 from .traces import Traces
