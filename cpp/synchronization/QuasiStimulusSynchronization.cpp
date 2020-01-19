@@ -2,6 +2,7 @@
 // Created by serik1987 on 12.01.2020.
 //
 
+#include <cmath>
 #include "QuasiStimulusSynchronization.h"
 
 namespace GLOBAL_NAMESPACE {
@@ -10,6 +11,7 @@ namespace GLOBAL_NAMESPACE {
         stimulusPeriod = 1;
         initialCycle = -1;
         finalCycle = -1;
+        cycleNumber = -1;
     }
 
     QuasiStimulusSynchronization::QuasiStimulusSynchronization(QuasiStimulusSynchronization &&other) noexcept:
@@ -18,6 +20,7 @@ namespace GLOBAL_NAMESPACE {
         stimulusPeriod = other.stimulusPeriod;
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
+        cycleNumber = other.cycleNumber;
 
     }
 
@@ -28,6 +31,7 @@ namespace GLOBAL_NAMESPACE {
         stimulusPeriod = other.stimulusPeriod;
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
+        cycleNumber = other.cycleNumber;
 
         return *this;
     }
@@ -77,7 +81,21 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void QuasiStimulusSynchronization::calculateSynchronizationPhase() {
-        printf("QuasiStimulusSynchronization: calculating the synchronization phase\n");
+        cycleNumber = train.getTotalFrames() / stimulusPeriod;
+        if (initialCycle == -1){
+            initialCycle = 1;
+        }
+        if (finalCycle == -1){
+            finalCycle = cycleNumber;
+        }
+        initialFrame = stimulusPeriod * (initialCycle - 1);
+        finalFrame = stimulusPeriod * finalCycle - 1;
+
+        int n = getFrameNumber();
+        synchronizationPhase = new double[n];
+        for (int i=0; i < n; ++i){
+            synchronizationPhase[i] = 2 * M_PI * i / stimulusPeriod;
+        }
     }
 
 

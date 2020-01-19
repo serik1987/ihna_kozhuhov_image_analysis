@@ -21,6 +21,7 @@ namespace GLOBAL_NAMESPACE {
         int stimulusPeriod;
         int initialCycle;
         int finalCycle;
+        int cycleNumber;
 
     protected:
         void specialPrint(std::ostream& out) const override;
@@ -56,6 +57,12 @@ namespace GLOBAL_NAMESPACE {
          * be set automatically in such a way as to maximize the analysis epoch
          */
         [[nodiscard]] int getFinalCycle() const { return finalCycle; }
+
+        /**
+         *
+         * @return total number of cycles within the record
+         */
+        [[nodiscard]] int getCycleNumber() const { return cycleNumber; }
 
         /**
          * Sets the stimulus period
