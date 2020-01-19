@@ -38,11 +38,16 @@ namespace GLOBAL_NAMESPACE {
                 2 * sizeof(ChunkHeader::DATA_CHUNK) + sizeof(FramChunk::FRAM_CHUNK)
                 + offsetof(FramCostChunk::FRAM_COST_CHUNK, SynchChannel);
 
+        inline void extractDisplacements();
+        inline void readFromFile();
+
     protected:
         double* traces;
         ProgressFunction progressFunction;
         std::string progressMessage;
         void* handle;
+
+        virtual void clearState();
 
     public:
         explicit TraceReader(StreamFileTrain& train);
@@ -170,6 +175,11 @@ namespace GLOBAL_NAMESPACE {
          */
         [[nodiscard]] virtual const char* getReaderName() const  { return "TRACE READER"; }
 
+        /**
+         * Reads the traces
+         */
+        virtual void read();
+
         friend std::ostream& operator<<(std::ostream& out, const TraceReader& reader);
 
         class TraceReaderException: public iman_exception{
@@ -184,7 +194,7 @@ namespace GLOBAL_NAMESPACE {
 
         class TracesNotReadException: public TraceReaderException {
         public:
-            TracesNotReadException(): TraceReaderException("Traces has not read") {};
+            TracesNotReadException(): TraceReaderException("Traces have not read") {};
         };
 
         class TimestampException: public TraceReaderException {

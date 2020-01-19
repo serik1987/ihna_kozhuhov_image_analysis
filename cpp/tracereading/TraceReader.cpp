@@ -2,7 +2,9 @@
 // Created by serik1987 on 11.01.2020.
 //
 
+#include <algorithm>
 #include "TraceReader.h"
+#include "../source_files/SoftChunk.h"
 
 
 namespace GLOBAL_NAMESPACE {
@@ -71,7 +73,7 @@ namespace GLOBAL_NAMESPACE {
     }
 
     const double *TraceReader::getTraces() const {
-        if (_hasRead){
+        if (_hasRead && traces != nullptr){
             return traces;
         } else {
             throw TracesNotReadException();
@@ -116,6 +118,133 @@ namespace GLOBAL_NAMESPACE {
         for (auto& item: pixelList){
             std::cout << item;
         }
+    }
+
+    void TraceReader::clearState(){
+        initialDisplacement = 0;
+        delete [] dataDisplacements;
+        dataDisplacements = nullptr;
+        delete [] dataTypes;
+        dataTypes = nullptr;
+        delete [] traces;
+        traces = nullptr;
+    }
+
+    void TraceReader::read() {
+
+        clearState();
+        std::sort(pixelList.begin(), pixelList.end());
+        auto last_item = std::unique(pixelList.begin(), pixelList.end());
+        if (last_item != pixelList.end()){
+            pixelList.erase(last_item, pixelList.end());
+        }
+        extractDisplacements();
+
+        readFromFile();
+
+        _hasRead = true;
+
+        printf("\n");
+        printf("C++: reading traces\n");
+    }
+
+    void TraceReader::extractDisplacements() {
+        auto it = pixelList.begin();
+        auto first = it;
+        initialDisplacement = it->getDisplacement();
+        dataTypes = new PixelListItem::PointType[pixelList.size()];
+        dataDisplacements = new size_t[pixelList.size()];
+        ++it;
+        int idx = 0;
+        auto current_it = pixelList.begin();
+        for (; it != pixelList.end(); ++current_it, ++it, ++idx){
+            dataTypes[idx] = current_it->getPointType();
+            dataDisplacements[idx] = it->getDisplacement() - current_it->getDisplacement() - current_it->getPointSize();
+        }
+        dataTypes[idx] = current_it->getPointType();
+        dataDisplacements[idx] = train.getFrameSize() - current_it->getDisplacement() - current_it->getPointSize() +
+                first->getDisplacement();
+    }
+
+    void TraceReader::readFromFile() {
+        std::ofstream f;
+        f.open("/home/serik1987/vasomotor-oscillations/displacements.log", std::ios_base::out);
+        if (f.fail()){
+            throw std::runtime_error("Failed to open the test file!");
+        }
+        double* local_traces = traces = new double[getChannelNumber() * getFrameNumber()];
+        auto next_fit = train.begin(); ++next_fit;
+        auto fit = train.begin();
+        int localInitialFrame = 0;
+        int localFinalFrame = (*next_fit)->offsetFrame - 1;
+        bool veryFirst = true;
+        for (int n = initialFrame; n <= finalFrame; ++n){
+            f << "n = " << n << "\t";
+            uint32_t offset;
+            if (n > localFinalFrame) {
+                ++fit, ++next_fit;
+                localInitialFrame = (*fit)->offsetFrame;
+                if (next_fit == train.end()) {
+                    localFinalFrame = train.getTotalFrames() - 1;
+                } else {
+                    localFinalFrame = (*next_fit)->offsetFrame - 1;
+                }
+                veryFirst = true;
+            }
+            if (veryFirst){
+                int m = n - localInitialFrame;
+                offset = train.getFileHeaderSize() + m * train.getFrameSize() + initialDisplacement;
+                (*fit)->getFileStream().seekg(offset, std::ios_base::beg);
+                if ((*fit)->getFileStream().fail()){
+                    throw SourceFile::file_read_exception(*fit);
+                }
+                veryFirst = false;
+            } else {
+                offset = dataDisplacements[getChannelNumber()-1];
+                (*fit)->getFileStream().seekg(offset, std::ios_base::cur);
+                if ((*fit)->getFileStream().fail()){
+                    throw SourceFile::file_read_exception(*fit);
+                }
+            }
+
+            std::ifstream& file = (*fit)->getFileStream();
+            for (int chan = 0; chan < getChannelNumber(); ++chan){
+                if (dataTypes[chan] == PixelListItem::ArrivalTime){
+                    uint64_t pix;
+                    file.read((char*)&pix, 8);
+                    if (file.fail()){
+                        throw SourceFile::file_read_exception(*fit);
+                    }
+                    *(local_traces++) = pix;
+                    f << pix << "\t";
+                } else if (dataTypes[chan] == PixelListItem::SynchronizationChannel){
+                    uint32_t pix;
+                    file.read((char*)&pix, 4);
+                    if (file.fail()){
+                        throw SourceFile::file_read_exception(*fit);
+                    }
+                    *(local_traces++) = pix;
+                    f << pix << "\t";
+                } else if (dataTypes[chan] == PixelListItem::PixelValue){
+                    uint16_t pix;
+                    file.read((char*)&pix, 2);
+                    if (file.fail()){
+                        throw SourceFile::file_read_exception(*fit);
+                    }
+                    *(local_traces++) = pix;
+                    f << pix << "\t";
+                }
+                if (chan != getChannelNumber() - 1){
+                    file.seekg(dataDisplacements[chan], std::ios_base::cur);
+                    if (file.fail()){
+                        throw SourceFile::file_read_exception(*fit);
+                    }
+                }
+            }
+
+            f << std::endl;
+        }
+        f.close();
     }
 
 

@@ -36,6 +36,13 @@ namespace GLOBAL_NAMESPACE {
         [[nodiscard]] int getPointSize() const { return POINT_SIZE[pointType]; }
         [[nodiscard]] int getI() const { return i; }
         [[nodiscard]] int getJ() const { return j; }
+
+        bool operator<(const PixelListItem& other) { return displacement < other.displacement; }
+        bool operator<=(const PixelListItem& other) { return displacement <= other.displacement; }
+        bool operator>(const PixelListItem& other) { return displacement > other.displacement; }
+        bool operator>=(const PixelListItem& other) { return displacement >= other.displacement; }
+        bool operator!=(const PixelListItem& other) { return displacement != other.displacement; }
+        bool operator==(const PixelListItem& other) { return displacement == other.displacement; }
     };
 
 }

@@ -21,8 +21,8 @@ class ReadingProgressDialog(wx.ProgressDialog):
     def progress_function(self, processed_frames, total_frames, message):
         print("\033[2K{0}: {1} out of {2}\033[1A".format(message, processed_frames, total_frames))
         if total_frames != self.__maximum:
-            self.__maximum = total_frames
-        if processed_frames == total_frames:
+            processed_frames = processed_frames * self.__maximum // total_frames
+        if processed_frames == self.__maximum:
             processed_frames -= 1
         status = self.Update(processed_frames, message)
         return status[0]

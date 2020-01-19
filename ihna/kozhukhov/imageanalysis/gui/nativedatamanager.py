@@ -358,27 +358,34 @@ class NativeDataManager(wx.Dialog):
             sync = properties_dlg.create_synchronization()
             isoline = properties_dlg.create_isoline(sync)
             reader.isoline_remover = isoline
+            reader.add_pixels(properties_dlg.get_pixel_list())
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             reader.progress_bar = progress_dlg
-            n = 0
-            while n < 1000:
-                if not progress_dlg.progress_function(n, 1000, "Reading traces"):
-                    print("PY Finish reading traces")
-                    progress_dlg.Destroy()
-                    del sync
-                    del isoline
-                    del reader
-                    del train
-                    return
-                time.sleep(0.1)
-                n += 100
+            try:
+                reader.read()
+            except Exception as err:
+                dlg = wx.MessageDialog(self, str(err), caption="Trace analysis",
+                                       style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+                print("Exception class:", err.__class__.__name__)
+                print("Exception message:", str(err))
+                dlg.ShowModal()
+            if not reader.has_read:
+                print("PY Trace reading cancelled or error occured")
+                progress_dlg.Destroy()
+                del sync
+                del isoline
+                del reader
+                del train
+                return
+            print("PY Closing the dialog")
             progress_dlg.done()
             del sync
             del isoline
 
             print("PY Finish of traces reading")
             print(reader)
+            print(reader.traces)
 
             traces_dlg = TracesDlg(self)
             if traces_dlg.ShowModal() == wx.ID_CANCEL:

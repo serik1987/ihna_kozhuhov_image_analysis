@@ -495,6 +495,19 @@ extern "C"{
         return 0;
     }
 
+    static PyObject* PyImanT_TraceReader_Read(PyImanT_TraceReaderObject* self, PyObject* args, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceReader*)self->trace_reader_handle;
+
+        try{
+            reader->read();
+            return Py_BuildValue("");
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyGetSetDef PyImanT_TraceReaderProperties[] = {
             {(char*)"arrival_time_displacement", (getter)PyImanT_TraceReader_GetArrivalTimeDisplacement, NULL,
              (char*)"arrival time displacement. This property is read-only becase is determined by \n"
@@ -642,6 +655,9 @@ extern "C"{
             {"clear_pixels", (PyCFunction)PyImanT_TraceReader_ClearPixels, METH_NOARGS,
              "Clears the pixel list\n"
              "The function requires no arguments"},
+
+            {"read", (PyCFunction)PyImanT_TraceReader_Read, METH_NOARGS,
+             "Reads all traces from the hard disk"},
 
             {NULL}
     };
