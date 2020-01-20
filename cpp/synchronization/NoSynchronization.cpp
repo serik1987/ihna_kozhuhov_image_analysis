@@ -45,4 +45,9 @@ namespace GLOBAL_NAMESPACE {
             synchronizationPhase[i] = 2 * M_PI * i;
         }
     }
+
+    void NoSynchronization::calculatePhaseIncrement() {
+        initialPhase = 0.0;
+        phaseIncrement = 2 * M_PI / getFrameNumber();
+    }
 }

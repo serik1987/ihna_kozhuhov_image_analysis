@@ -52,6 +52,12 @@ namespace GLOBAL_NAMESPACE {
          */
         virtual void calculateSynchronizationPhase() = 0;
 
+        /**
+         * Calculates the value of the following scalar protected variables:
+         * initialPhase, phaseIncrement
+         */
+        virtual void calculatePhaseIncrement() = 0;
+
     public:
         /**
          * Creating constructor

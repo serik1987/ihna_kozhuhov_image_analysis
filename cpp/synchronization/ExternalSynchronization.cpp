@@ -6,6 +6,7 @@
 #include "../tracereading/TraceReader.h"
 #include "../source_files/IsoiChunk.h"
 #include "../source_files/CostChunk.h"
+#include "../misc/LinearFit.h"
 #include "ExternalSynchronization.h"
 
 namespace GLOBAL_NAMESPACE {
@@ -19,6 +20,15 @@ namespace GLOBAL_NAMESPACE {
         if (train.getExperimentalMode() != FileTrain::Continuous){
             throw FileTrain::experiment_mode_exception(&train);
         }
+
+        aa = 0.0;
+        bb = 0.0;
+        cyclesPerFrame = 0.0;
+        cyclesExact = 0.0;
+        cyclesLower = 0;
+        cyclesUpper = 0;
+        dNFrameSync = 0.0;
+        residue = 0.0;
     }
 
     ExternalSynchronization::ExternalSynchronization(ExternalSynchronization &&other) noexcept:
@@ -30,6 +40,14 @@ namespace GLOBAL_NAMESPACE {
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
 
+        aa = other.aa;
+        bb = other.bb;
+        cyclesPerFrame = other.cyclesPerFrame;
+        cyclesExact = other.cyclesExact;
+        cyclesLower = other.cyclesLower;
+        cyclesUpper = other.cyclesUpper;
+        dNFrameSync = other.dNFrameSync;
+        residue = other.residue;
     }
 
     ExternalSynchronization::~ExternalSynchronization() {
@@ -47,6 +65,14 @@ namespace GLOBAL_NAMESPACE {
         other.synchronizationSignal = nullptr;
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
+
+        aa = other.aa;
+        bb = other.bb;
+        cyclesPerFrame = other.cyclesPerFrame;
+        cyclesExact = other.cyclesExact;
+        cyclesLower = other.cyclesLower;
+        cyclesUpper = other.cyclesUpper;
+        residue = other.residue;
 
         return *this;
     }
@@ -95,6 +121,14 @@ namespace GLOBAL_NAMESPACE {
         out << "Synchronization channel: " << getSynchronizationChannel() << "\n";
         out << "Initial cycle: " << getInitialCycle() << "\n";
         out << "Final cycle: " << getFinalCycle() << "\n";
+        out << "Synchronization slope: " << aa << "\n";
+        out << "Synchronization intersect: " << bb << "\n";
+        out << "Cycles per frame: " << cyclesPerFrame << "\n";
+        out << "Exact cycles: " << cyclesExact << "\n";
+        out << "Cycles lower: " << cyclesLower << "\n";
+        out << "Cycles upper: " << cyclesUpper << "\n";
+        out << "dNFrameSync: " << dNFrameSync << "\n";
+        out << "Residue: " << residue << "\n";
     }
 
     void ExternalSynchronization::calculateSynchronizationPhase() {
@@ -226,5 +260,57 @@ namespace GLOBAL_NAMESPACE {
             }
             synchronizationPhase[timestamp] = 2 * M_PI * (synchronizationSignal[frame] + cycle * synchMax) / synchMax;
         }
+    }
+
+    void ExternalSynchronization::calculatePhaseIncrement() {
+
+        LinearFit fit(1);
+        for (int i = 0; i < getFrameNumber(); ++i){
+            double value = synchronizationPhase[i];
+            fit.add(&value);
+        }
+        fit.ready();
+        double aad = fit.getIntersect(0) / 2 / M_PI;
+        double bbd = fit.getSlope(0) / 2 / M_PI;
+        double residued = (double)getFrameNumber() - (double)getCycleNumber() / bbd;
+
+        double additionalValue =
+                2 * M_PI * (synchronizationSignal[finalFrame + 1] + synchMax * getCycleNumber()) / synchMax;
+        fit.add(&additionalValue);
+        fit.ready();
+        double aau = fit.getIntersect(0) / 2 / M_PI;
+        double bbu = fit.getSlope(0) / 2 / M_PI;
+        double residueu = (double)(getFrameNumber() + 1) - (double)getCycleNumber() / bbu;
+
+        if (fabs(residued) < fabs(residueu)){
+            aa = aad;
+            bb = bbd;
+        } else {
+            aa = aau;
+            bb = bbu;
+            finalFrame++;
+            synchronizationPhase[finalFrame] = additionalValue;
+        }
+
+        cyclesPerFrame = fabs(bb) * getHarmonic();
+        cyclesExact = getFrameNumber() * bb * getHarmonic();
+        cyclesLower = floor(cyclesExact);
+        cyclesUpper = cyclesLower + 1;
+        dNFrameSync = getCycleNumber() / bb;
+        residue = (double)getFrameNumber() - dNFrameSync;
+
+        if (isDoPrecise()){
+            phaseIncrement = 2.0 * M_PI * bb / (double)getCycleNumber();
+            initialPhase = 2.0 * M_PI * aa;
+        } else {
+            phaseIncrement = 2.0 * M_PI / (double)getFrameNumber();
+            initialPhase = 0.0;
+        }
+
+        for (int i=0; i < 10; ++i){
+            std::cout << synchronizationPhase[i] << "\t";
+        }
+        std::cout << "\n";
+
     }
 }

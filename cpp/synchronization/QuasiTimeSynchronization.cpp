@@ -14,6 +14,7 @@ namespace GLOBAL_NAMESPACE {
         initialCycle = -1;
         finalCycle = -1;
         totalCycles = -1;
+        nFramesCycle = 0.0;
     }
 
     QuasiTimeSynchronization::QuasiTimeSynchronization(QuasiTimeSynchronization &&other) noexcept:
@@ -23,6 +24,7 @@ namespace GLOBAL_NAMESPACE {
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
         totalCycles = other.totalCycles;
+        nFramesCycle = other.nFramesCycle;
 
     }
 
@@ -33,6 +35,7 @@ namespace GLOBAL_NAMESPACE {
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
         totalCycles = other.totalCycles;
+        nFramesCycle = other.nFramesCycle;
 
         return *this;
     }
@@ -104,8 +107,8 @@ namespace GLOBAL_NAMESPACE {
             average_ti += interval;
         }
         double average_frame_interval = average_ti / frameIntervals.size();
-        double nframes_cycle = stimulusPeriod / average_frame_interval;
-        totalCycles = (int)floor(train.getTotalFrames() / nframes_cycle);
+        nFramesCycle = stimulusPeriod / average_frame_interval;
+        totalCycles = (int)floor(train.getTotalFrames() / nFramesCycle);
         if (totalCycles < 1){
             clearState();
             throw StimulusPeriodException();
@@ -120,14 +123,23 @@ namespace GLOBAL_NAMESPACE {
             clearState();
             throw FinalCycleException();
         }
-        initialFrame = (int)rint(((initialCycle - 1) * nframes_cycle));
-        finalFrame = (int)rint(finalCycle * nframes_cycle) - 1;
+        initialFrame = (int)rint(((initialCycle - 1) * nFramesCycle));
+        finalFrame = (int)rint(finalCycle * nFramesCycle) - 1;
 
         synchronizationPhase = new double[getFrameNumber()];
-        double increment = 2 * M_PI / nframes_cycle;
+        double increment = 2 * M_PI / nFramesCycle;
         for (int i=0; i < getFrameNumber(); ++i){
             synchronizationPhase[i] = i * increment;
         }
+    }
+
+    void QuasiTimeSynchronization::calculatePhaseIncrement() {
+        if (isDoPrecise()){
+            phaseIncrement = 2 * M_PI / nFramesCycle / getCycleNumber();
+        } else {
+            phaseIncrement = 2 * M_PI / getFrameNumber();
+        };
+        initialPhase = 0.0;
     }
 
 

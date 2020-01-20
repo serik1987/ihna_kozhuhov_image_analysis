@@ -24,6 +24,15 @@ namespace GLOBAL_NAMESPACE {
         double synchMax;
         int syncFrames;
 
+        double aa;
+        double bb;
+        double cyclesPerFrame;
+        double cyclesExact;
+        int cyclesLower;
+        int cyclesUpper;
+        double dNFrameSync;
+        double residue;
+
         void getSynchronizationSignal();
         void checkSynchronizationSignal();
         int getNextCycle(int idx);
@@ -34,6 +43,7 @@ namespace GLOBAL_NAMESPACE {
         void specialPrint(std::ostream& out) const override;
 
         void calculateSynchronizationPhase() override;
+        void calculatePhaseIncrement() override;
 
     public:
         explicit ExternalSynchronization(StreamFileTrain& train);
@@ -69,6 +79,12 @@ namespace GLOBAL_NAMESPACE {
          * to maximize the analysis epoch
          */
         [[nodiscard]] int getFinalCycle() const { return finalCycle; }
+
+        /**
+         *
+         * @return total number of cycles in the record
+         */
+        [[nodiscard]] int getCycleNumber() const { return finalCycle - initialCycle + 1; }
 
         /**
          * Sets the synchronization channel

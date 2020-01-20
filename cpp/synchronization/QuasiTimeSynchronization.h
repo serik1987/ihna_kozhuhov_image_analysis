@@ -26,11 +26,13 @@ namespace GLOBAL_NAMESPACE {
         int initialCycle;
         int finalCycle;
         int totalCycles;
+        double nFramesCycle;
 
     protected:
         void specialPrint(std::ostream& out) const override;
 
         void calculateSynchronizationPhase() override;
+        void calculatePhaseIncrement() override;
 
     public:
         explicit QuasiTimeSynchronization(StreamFileTrain& train);
@@ -65,6 +67,12 @@ namespace GLOBAL_NAMESPACE {
          * a way as to maximize the analysis epoch
          */
         [[nodiscard]] int getFinalCycle() const { return finalCycle; }
+
+        /**
+         *
+         * @return total number of cycles to analyze
+         */
+        [[nodiscard]] int getCycleNumber() const { return finalCycle - initialCycle + 1; }
 
         /**
          * Sets the stimulus period

@@ -129,6 +129,7 @@ namespace GLOBAL_NAMESPACE {
         printf("\n");
         clearState();
         calculateSynchronizationPhase();
+        calculatePhaseIncrement();
 
         printf("C++: Synchronization started\n");
         printf("\n");

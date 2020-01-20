@@ -98,5 +98,10 @@ namespace GLOBAL_NAMESPACE {
         }
     }
 
+    void QuasiStimulusSynchronization::calculatePhaseIncrement() {
+        initialPhase = 0.0;
+        phaseIncrement = 2 * M_PI / getFrameNumber();
+    }
+
 
 }
