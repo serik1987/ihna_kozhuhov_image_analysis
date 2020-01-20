@@ -25,6 +25,7 @@ namespace GLOBAL_NAMESPACE {
         double stimulusPeriod;
         int initialCycle;
         int finalCycle;
+        int totalCycles;
 
     protected:
         void specialPrint(std::ostream& out) const override;

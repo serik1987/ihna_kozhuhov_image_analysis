@@ -2,7 +2,9 @@
 // Created by serik1987 on 12.01.2020.
 //
 
+#include <cmath>
 #include "QuasiTimeSynchronization.h"
+#include "../tracereading/TraceReader.h"
 
 
 namespace GLOBAL_NAMESPACE {
@@ -11,6 +13,7 @@ namespace GLOBAL_NAMESPACE {
         stimulusPeriod = 100.0;
         initialCycle = -1;
         finalCycle = -1;
+        totalCycles = -1;
     }
 
     QuasiTimeSynchronization::QuasiTimeSynchronization(QuasiTimeSynchronization &&other) noexcept:
@@ -19,6 +22,7 @@ namespace GLOBAL_NAMESPACE {
         stimulusPeriod = other.stimulusPeriod;
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
+        totalCycles = other.totalCycles;
 
     }
 
@@ -28,6 +32,7 @@ namespace GLOBAL_NAMESPACE {
         stimulusPeriod = other.stimulusPeriod;
         initialCycle = other.initialCycle;
         finalCycle = other.finalCycle;
+        totalCycles = other.totalCycles;
 
         return *this;
     }
@@ -79,7 +84,47 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void QuasiTimeSynchronization::calculateSynchronizationPhase() {
-        printf("Quasi-time synchronization: calculate the synchronization phase\n");
+        TraceReader reader(train);
+        PixelListItem timeChannel(reader, PixelListItem::ARRIVAL_TIME, 0);
+        reader.addPixel(timeChannel);
+        reader.read();
+        int N = reader.getFrameNumber();
+
+        const double* trace = reader.getTraces();
+        std::vector<double> frameIntervals(N-1);
+        for (int i=0; i < N-1; ++i){
+            frameIntervals[i] = trace[i+1] - trace[i];
+        }
+
+        double average_ti = 0;
+        for (double& interval: frameIntervals){
+            average_ti += interval;
+        }
+        double average_frame_interval = average_ti / frameIntervals.size();
+        double nframes_cycle = stimulusPeriod / average_frame_interval;
+        totalCycles = (int)floor(train.getTotalFrames() / nframes_cycle);
+        if (totalCycles < 1){
+            clearState();
+            throw StimulusPeriodException();
+        }
+        if (initialCycle == -1){
+            initialCycle = 1;
+        }
+        if (finalCycle == -1){
+            finalCycle = totalCycles;
+        }
+        if (finalCycle > totalCycles){
+            clearState();
+            throw FinalCycleException();
+        }
+        initialFrame = (int)rint(((initialCycle - 1) * nframes_cycle));
+        finalFrame = (int)rint(finalCycle * nframes_cycle) - 1;
+
+        synchronizationPhase = new double[getFrameNumber()];
+        double increment = 2 * M_PI / nframes_cycle;
+        for (int i=0; i < getFrameNumber(); ++i){
+            synchronizationPhase[i] = i * increment;
+        }
     }
 
 

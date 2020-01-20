@@ -21,6 +21,9 @@ namespace GLOBAL_NAMESPACE {
         _hasRead = false;
 
         traces = nullptr;
+
+        progressFunction = nullptr;
+        handle = nullptr;
     }
 
     TraceReader::TraceReader(TraceReader &&other) noexcept: train(other.train), pixelList(other.pixelList) {
@@ -36,6 +39,10 @@ namespace GLOBAL_NAMESPACE {
 
         traces = other.traces;
         other.traces = nullptr;
+
+        progressFunction = other.progressFunction;
+        handle = other.handle;
+        progressMessage = std::move(other.progressMessage);
     }
 
     TraceReader::~TraceReader() {
@@ -62,6 +69,10 @@ namespace GLOBAL_NAMESPACE {
 
         traces = other.traces;
         other.traces = nullptr;
+
+        progressFunction = other.progressFunction;
+        progressMessage = std::move(other.progressMessage);
+        handle = other.handle;
 
         return *this;
     }
