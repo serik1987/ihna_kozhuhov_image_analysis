@@ -87,6 +87,9 @@ namespace GLOBAL_NAMESPACE {
         TraceReader reader(train);
         PixelListItem timeChannel(reader, PixelListItem::ARRIVAL_TIME, 0);
         reader.addPixel(timeChannel);
+        if (progressFunction != nullptr){
+            reader.setProgressFunction(progressFunction, "Synchronization", handle);
+        }
         reader.read();
         int N = reader.getFrameNumber();
 

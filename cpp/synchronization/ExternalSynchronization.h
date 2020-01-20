@@ -21,6 +21,15 @@ namespace GLOBAL_NAMESPACE {
         int initialCycle;
         int finalCycle;
 
+        double synchMax;
+        int syncFrames;
+
+        void getSynchronizationSignal();
+        void checkSynchronizationSignal();
+        int getNextCycle(int idx);
+        void setFrameRange();
+        void setSynchronizationPhase();
+
     protected:
         void specialPrint(std::ostream& out) const override;
 
@@ -87,6 +96,17 @@ namespace GLOBAL_NAMESPACE {
         public:
             SynchronizationChannelException():
                 SynchronizationException("Bad number of the synchronization channel") {};
+        };
+
+        class NoSignalException: public SynchronizationException{
+        public:
+            NoSignalException():
+                SynchronizationException("No signal detected") {};
+        };
+
+        class TooFewFramesException: public SynchronizationException {
+        public:
+            TooFewFramesException(): SynchronizationException("The record is too short") {};
         };
 
     };

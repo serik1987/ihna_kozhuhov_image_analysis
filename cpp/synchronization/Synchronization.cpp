@@ -18,6 +18,7 @@ namespace GLOBAL_NAMESPACE {
         phaseIncrement = 0.0;
         initialPhase = 0.0;
         progressFunction = nullptr;
+        handle = nullptr;
 
         if (!train.isOpened()){
             throw FileNotOpenedException();
@@ -47,6 +48,8 @@ namespace GLOBAL_NAMESPACE {
         other.synchronizationPhase = nullptr;
         phaseIncrement = other.phaseIncrement;
         initialPhase = other.initialPhase;
+        progressFunction = other.progressFunction;
+        handle = other.handle;
     }
 
     Synchronization& Synchronization::operator=(Synchronization&& other) noexcept{
@@ -65,6 +68,9 @@ namespace GLOBAL_NAMESPACE {
         other.synchronizationPhase = nullptr;
         phaseIncrement = other.phaseIncrement;
         initialPhase = other.initialPhase;
+
+        progressFunction = other.progressFunction;
+        handle = other.handle;
 
         return *this;
     }

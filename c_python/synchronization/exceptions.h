@@ -15,6 +15,8 @@ extern "C" {
     static PyObject* PyImanY_InitialCycleError = NULL;
     static PyObject* PyImanY_FinalCycleError = NULL;
     static PyObject* PyImanY_SynchronizationChannelError = NULL;
+    static PyObject* PyImanY_NoSignalDetectedError = NULL;
+    static PyObject* PyImanY_TooFewFramesError = NULL;
 
     static int PyImanY_Exception_Init(PyObject* module){
         PyImanY_SynchronizationError = PyErr_NewExceptionWithDoc(
@@ -87,6 +89,24 @@ extern "C" {
             return -1;
         }
 
+        PyImanY_NoSignalDetectedError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.synchronization.NoSignalDetectedError",
+                "This error will be generated when you selected external synchronization and used a synchronization \n"
+                "channel that doesn't contain any signal",
+                PyImanY_SynchronizationError, NULL);
+        if (PyModule_AddObject(module, "_synchronization_NoSignalDetectedError", PyImanY_NoSignalDetectedError) < 0){
+            return -1;
+        }
+
+        PyImanY_TooFewFramesError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.synchronization.TooFewFramesError",
+                "If this error is generated this means that the record is no longer suitable for the external \n"
+                "synchronization",
+                PyImanY_SynchronizationError, NULL);
+        if (PyModule_AddObject(module, "_synchronization_TooFewFramesError", PyImanY_TooFewFramesError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -98,6 +118,8 @@ extern "C" {
         Py_XDECREF(PyImanY_StimulusPeriodError);
         Py_XDECREF(PyImanY_InitialCycleError);
         Py_XDECREF(PyImanY_FinalCycleError);
+        Py_XDECREF(PyImanY_NoSignalDetectedError);
+        Py_XDECREF(PyImanY_TooFewFramesError);
     }
 
     static int PyImanY_Exception_process(const void* handle){
@@ -120,6 +142,10 @@ extern "C" {
                     dynamic_cast<QuasiStimulusSynchronization::FinalCycleException*>(synchronization_handle);
             auto* synchronization_channel_handle =
                     dynamic_cast<ExternalSynchronization::SynchronizationChannelException*>(synchronization_handle);
+            auto* no_signal_detected_handle =
+                    dynamic_cast<ExternalSynchronization::NoSignalException*>(synchronization_handle);
+            auto* too_few_frames_handle =
+                    dynamic_cast<ExternalSynchronization::TooFewFramesException*>(synchronization_handle);
 
             if (file_not_opened_handle != nullptr) {
                 PyErr_SetString(PyImanY_FileNotOpenedError, file_not_opened_handle->what());
@@ -139,8 +165,14 @@ extern "C" {
             } else if (final_cycle_handle != nullptr) {
                 PyErr_SetString(PyImanY_FinalCycleError, final_cycle_handle->what());
                 return -1;
-            } else if (synchronization_channel_handle != nullptr){
+            } else if (synchronization_channel_handle != nullptr) {
                 PyErr_SetString(PyImanY_SynchronizationChannelError, synchronization_channel_handle->what());
+                return -1;
+            } else if (no_signal_detected_handle != nullptr) {
+                PyErr_SetString(PyImanY_NoSignalDetectedError, no_signal_detected_handle->what());
+                return -1;
+            } else if (too_few_frames_handle != nullptr){
+                PyErr_SetString(PyImanY_TooFewFramesError, too_few_frames_handle->what());
                 return -1;
             } else {
                 PyErr_SetString(PyImanY_SynchronizationError, synchronization_handle->what());

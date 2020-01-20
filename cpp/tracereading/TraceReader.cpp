@@ -153,9 +153,9 @@ namespace GLOBAL_NAMESPACE {
             pixelList.erase(last_item, pixelList.end());
         }
         extractDisplacements();
-        _hasRead = true;
 
         readFromFile();
+        _hasRead = true;
 
         printf("\n");
         printf("C++: reading traces\n");
@@ -204,7 +204,7 @@ namespace GLOBAL_NAMESPACE {
     std::ifstream& TraceReader::selectFileAndOffset(int n, int& localFinalFrame, int& localInitialFrame,
             decltype(train.end())& fit, decltype(train.end())& next_fit, bool& veryFirst){
         uint32_t offset;
-        if (n > localFinalFrame) {
+        while (n > localFinalFrame) {
             ++fit, ++next_fit;
             localInitialFrame = (*fit)->offsetFrame;
             if (next_fit == train.end()) {

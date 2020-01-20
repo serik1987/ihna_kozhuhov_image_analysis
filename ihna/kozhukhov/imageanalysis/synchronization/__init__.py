@@ -11,6 +11,9 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Initial
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_FinalCycleError as FinalCycleError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_SynchronizationChannelError as \
     SynchronizationChannelError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_NoSignalDetectedError as \
+    NoSignalDetectedError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_TooFewFramesError as TooFewFramesError
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Synchronization as Synchronization
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_ExternalSynchronization \
