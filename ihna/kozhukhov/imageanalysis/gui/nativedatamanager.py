@@ -364,12 +364,15 @@ class NativeDataManager(wx.Dialog):
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             reader.progress_bar = progress_dlg
+            shown = True
             try:
                 reader.read()
                 print(sync)
                 print(isoline)
                 print(reader)
             except Exception as err:
+                progress_dlg.Destroy()
+                shown = False
                 dlg = wx.MessageDialog(self, str(err), caption="Trace analysis",
                                        style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
                 print("Exception class:", err.__class__.__name__)
@@ -377,7 +380,8 @@ class NativeDataManager(wx.Dialog):
                 dlg.ShowModal()
             if not reader.has_read:
                 print("PY Trace reading cancelled or error occured")
-                progress_dlg.Destroy()
+                if shown:
+                    progress_dlg.Destroy()
                 del sync
                 del isoline
                 del reader

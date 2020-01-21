@@ -23,6 +23,8 @@ namespace GLOBAL_NAMESPACE {
 
         bool cleaned;
 
+        void newBuffers();
+
     public:
         explicit TraceReaderAndCleaner(StreamFileTrain& train);
         TraceReaderAndCleaner(const TraceReaderAndCleaner& other) = delete;

@@ -62,11 +62,15 @@ class TracesDlg(wx.Dialog):
         self.__time_arrival_axes.tick_params(labelsize=10)
 
         self.__traces_before_correction_axes = fig.add_subplot(5, 3, 2)
+        self.__traces_before_correction_axes.plot(processor.get_frame_vector(),
+                                                  processor.get_data_not_removed()[:, 0:7])
+        self.__traces_before_correction_axes.set_xlim(processor.get_frame_lim())
         self.__traces_before_correction_axes.get_xaxis().set_ticks([])
         self.__traces_before_correction_axes.set_title("Traces, before isoline remove", fontdict=caption_font)
         self.__traces_before_correction_axes.tick_params(labelsize=10)
 
         self.__psd_before_correction_axes = fig.add_subplot(5, 3, 3)
+        self.__psd_before_correction_axes.plot(processor.get_psd_not_removed()[:, 0:7])
         self.__psd_before_correction_axes.get_xaxis().set_ticks([])
         self.__psd_before_correction_axes.set_title("Traces PSD, before isoline remove", fontdict=caption_font)
         self.__psd_before_correction_axes.tick_params(labelsize=10)
@@ -79,11 +83,14 @@ class TracesDlg(wx.Dialog):
         self.__reference_signal_axes.tick_params(labelsize=10)
 
         self.__isolines_axes = fig.add_subplot(5, 3, 5)
+        self.__isolines_axes.plot(processor.get_frame_vector(), processor.get_isolines()[:, 0:7])
+        self.__isolines_axes.set_xlim(processor.get_frame_lim())
         self.__isolines_axes.get_xaxis().set_ticks([])
         self.__isolines_axes.set_title("Isolines", fontdict=caption_font)
         self.__isolines_axes.tick_params(labelsize=10)
 
         self.__psd_isolines_axes = fig.add_subplot(5, 3, 6)
+        self.__psd_isolines_axes.plot(processor.get_isoline_psd()[:, 0:7])
         self.__psd_isolines_axes.get_xaxis().set_ticks([])
         self.__psd_isolines_axes.set_title("Isoline PSD", fontdict=caption_font)
         self.__psd_isolines_axes.tick_params(labelsize=10)

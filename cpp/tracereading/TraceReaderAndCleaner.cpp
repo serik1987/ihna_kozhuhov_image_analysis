@@ -84,7 +84,9 @@ namespace GLOBAL_NAMESPACE {
         isolineRemover->sacrifice();
         isolineRemover->synchronizeSignal();
         offsetFrame = isolineRemover->getAnalysisInitialFrame() - isolineRemover->getIsolineInitialFrame();
+        newBuffers();
         std::cout << "Offset frame: " << offsetFrame << std::endl;
+        cleaned = true;
     }
 
     void TraceReaderAndCleaner::clearState() {
@@ -92,5 +94,16 @@ namespace GLOBAL_NAMESPACE {
         delete [] tracesBeforeRemove;
         delete [] isolines;
         cleaned = false;
+    }
+
+    void TraceReaderAndCleaner::newBuffers() {
+        setFrameRange(isolineRemover->sync());
+        int points = isolineRemover->getAnalysisFrameNumber() * getChannelNumber();
+        isolines = new double[points];
+        std::fill(isolines, isolines + points, 0.0);
+        traces = new double[points];
+        std::fill(traces, traces + points, 0.0);
+        std::cout << "Analysis frame number: " << isolineRemover->getAnalysisFrameNumber() << std::endl;
+        std::cout << "points = " << points << std::endl;
     }
 }

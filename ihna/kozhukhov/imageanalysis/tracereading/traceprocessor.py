@@ -30,6 +30,10 @@ class TraceProcessor:
         self.__final_frame = reader.final_frame
         self.__synch_channels = []
         self.__data = []
+        self.__data_not_removed = []
+        self.__isolines = []
+        data_raw = reader.traces_before_remove
+        isolines = reader.isolines
         idx = 0
         for pixel in reader.pixels:
             if pixel[0] == 'TIME':
@@ -37,8 +41,12 @@ class TraceProcessor:
             elif pixel[0] == 'SYNC':
                 self.__synch_channels.append(reader.get_trace(idx))
             else:
+                self.__data_not_removed.append(data_raw[:, idx].reshape((reader.frame_number, 1)))
+                self.__isolines.append(isolines[:, idx].reshape((reader.frame_number, 1)))
                 self.__data.append(reader.get_trace(idx).reshape((reader.frame_number, 1)))
             idx += 1
+        self.__data_not_removed = np.hstack(self.__data_not_removed)
+        self.__isolines = np.hstack(self.__isolines)
         self.__data = np.hstack(self.__data)
         self.__reference_signal = sync.reference_sin
 
@@ -72,8 +80,24 @@ class TraceProcessor:
         """
         return self.__synch_channels[chan]
 
+    def get_data_not_removed(self):
+        return self.__data_not_removed
+
+    def get_isolines(self):
+        return self.__isolines
+
     def get_data(self):
         return self.__data
+
+    def get_psd_not_removed(self):
+        data = self.get_data_not_removed()
+        spectrum = fft(data, n=256, axis=0)
+        return np.abs(spectrum)
+
+    def get_isoline_psd(self):
+        data = self.get_isolines()
+        spectrum = fft(data, n=256, axis=0)
+        return np.abs(spectrum)
 
     def get_psd(self):
         data = self.get_data()

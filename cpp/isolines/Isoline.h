@@ -136,6 +136,18 @@ namespace GLOBAL_NAMESPACE {
          */
         void synchronizeSignal();
 
+        /**
+         *
+         * @return number of frames that shall be used for isoline plotting
+         */
+        [[nodiscard]] int getIsolineFrameNumber() const { return isolineFinalFrame - isolineInitialFrame + 1; }
+
+        /**
+         *
+         * @return numnber of frames for analysis
+         */
+        [[nodiscard]] int getAnalysisFrameNumber() const { return analysisFinalFrame - analysisInitialFrame + 1; }
+
 
         class IsolineException: public iman_exception{
         public:
