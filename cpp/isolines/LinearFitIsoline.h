@@ -30,6 +30,9 @@ namespace GLOBAL_NAMESPACE {
          * Does nothing
          */
         void sacrifice() override {};
+
+        void traceCleaning(TraceReaderAndCleaner& reader, const double* src, const double* srcLeft,
+                const double* srcRight, double* isolines) override;
     };
 
 }

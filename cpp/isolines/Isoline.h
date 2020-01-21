@@ -10,6 +10,8 @@
 
 namespace GLOBAL_NAMESPACE {
 
+    class TraceReaderAndCleaner;
+
     /**
      * This is the base class for all objects that provide the isoline remove. This class is abstract, you can't
      * use it in anyway. However, you may use some of its derived classes each of which corresponds to a certain
@@ -115,6 +117,7 @@ namespace GLOBAL_NAMESPACE {
 
         /**
          * Extends the isoline range. Please, apply this method immediately before the synchronization of isolines
+         * This method shall call sync()->setInitialCycle() and sync()->setFinalCycle in the long run
          */
         virtual void extendRange() = 0;
 
@@ -126,7 +129,8 @@ namespace GLOBAL_NAMESPACE {
 
         /**
          * This method shall be run after the isolines were synchronized in order to adjust the Synchronization from
-         * the isolines range into the analysis range
+         * the isolines range into the analysis range. This method shall call sync()->setInitialCycle() and
+         * sync()->setFinalCycle() in the long run
          */
         virtual void sacrifice() = 0;
 
@@ -135,6 +139,18 @@ namespace GLOBAL_NAMESPACE {
          * before thw isoline cleaning itself
          */
         void synchronizeSignal();
+
+        /**
+         * Computes the isolines from stand-alone traces that have already been read
+         *
+         * @param reader reference to the TraceReaderAndCleaner
+         * @param src pointer to the array that contains traces without isoline remove, src corresponds to timestamp 0
+         * @param srcFirst left border of this array. Don't go beyond this point!
+         * @param srcLast right point of this array. Don't go beyond this point!
+         * @param isolines output array where all isolines shall be written
+         */
+        virtual void traceCleaning(TraceReaderAndCleaner& reader, const double* src, const double* srcFirst,
+                const double* srcLast, double* isolines) = 0;
 
         /**
          *

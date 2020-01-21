@@ -29,6 +29,9 @@ namespace GLOBAL_NAMESPACE {
          */
         void sacrifice() override {};
 
+        void traceCleaning(TraceReaderAndCleaner& reader, const double* src, const double* srcFirst,
+                const double* srcLast, double* isolines) override {};
+
         [[nodiscard]] const char* getName() const noexcept override { return "no isoline"; }
 
     };

@@ -85,7 +85,13 @@ namespace GLOBAL_NAMESPACE {
         isolineRemover->synchronizeSignal();
         offsetFrame = isolineRemover->getAnalysisInitialFrame() - isolineRemover->getIsolineInitialFrame();
         newBuffers();
-        std::cout << "Offset frame: " << offsetFrame << std::endl;
+        const double* srcLeft = tracesBeforeRemove;
+        const double* src = getTracesBeforeRemove();
+        const double* srcRight = srcLeft + isolineRemover->getIsolineFrameNumber() * getChannelNumber();
+        isolineRemover->traceCleaning(*this, src, srcLeft, srcRight, isolines);
+        int points = getFrameNumber() * getChannelNumber();
+        std::transform(tracesBeforeRemove, tracesBeforeRemove + points, isolines, traces,
+                [](double x, double y) { return x-y; });
         cleaned = true;
     }
 
