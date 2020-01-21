@@ -42,6 +42,17 @@ namespace GLOBAL_NAMESPACE {
          */
         void setAverageCycles(int r);
 
+        /**
+         * Extends the synchronization range by r cycles to the left and r cycles to the right
+         * Also, fills some private variables
+         */
+        void extendRange() override;
+
+        /**
+         * Adjusts boundaries from isoline plotting range to the analysis range
+         */
+        void sacrifice() override;
+
         class AverageCyclesException: public IsolineException {
         public:
             AverageCyclesException(): IsolineException("bad value of averaged cycles") {};

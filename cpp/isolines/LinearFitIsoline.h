@@ -20,6 +20,16 @@ namespace GLOBAL_NAMESPACE {
         LinearFitIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {};
 
         [[nodiscard]] const char* getName() const noexcept override { return "linear fit isoline"; }
+
+        /**
+         * Does nothing
+         */
+        void extendRange() override {};
+
+        /**
+         * Does nothing
+         */
+        void sacrifice() override {};
     };
 
 }

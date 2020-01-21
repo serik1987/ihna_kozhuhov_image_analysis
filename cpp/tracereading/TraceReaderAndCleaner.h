@@ -19,6 +19,7 @@ namespace GLOBAL_NAMESPACE {
         double* tracesBeforeRemove;
         double* isolines;
         Isoline* isolineRemover;
+        int offsetFrame;
 
         bool cleaned;
 
@@ -50,6 +51,16 @@ namespace GLOBAL_NAMESPACE {
          * for data pixels
          */
         [[nodiscard]] const double* getIsolines() const;
+
+        /**
+         * Reads the traces and cleans them from the trash;
+         */
+        void read() override;
+
+        /**
+         * Clears the state from the previous reading
+         */
+        void clearState() override;
 
         /**
          *

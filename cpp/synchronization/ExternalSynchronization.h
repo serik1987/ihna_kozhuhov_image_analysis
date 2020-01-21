@@ -69,7 +69,7 @@ namespace GLOBAL_NAMESPACE {
          * This means that the initial cycle will be set automatically during the synchronization in such a way
          * as to maximize the analysis epoch
          */
-        [[nodiscard]] int getInitialCycle() const { return initialCycle; }
+        [[nodiscard]] int getInitialCycle() const override { return initialCycle; }
 
         /**
          *
@@ -78,13 +78,13 @@ namespace GLOBAL_NAMESPACE {
          * This means that the final cycle will be set automatically during the synchronization in such a way as
          * to maximize the analysis epoch
          */
-        [[nodiscard]] int getFinalCycle() const { return finalCycle; }
+        [[nodiscard]] int getFinalCycle() const override { return finalCycle; }
 
         /**
          *
          * @return total number of cycles in the record
          */
-        [[nodiscard]] int getCycleNumber() const { return finalCycle - initialCycle + 1; }
+        [[nodiscard]] int getCycleNumber() const override { return finalCycle - initialCycle + 1; }
 
         /**
          * Sets the synchronization channel
@@ -98,7 +98,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @param n the initial cycle
          */
-        void setInitialCycle(int n);
+        void setInitialCycle(int n) override;
 
         /**
          * Sets the final cycle

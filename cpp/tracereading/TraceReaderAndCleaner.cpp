@@ -46,7 +46,7 @@ namespace GLOBAL_NAMESPACE {
 
     const double *TraceReaderAndCleaner::getTracesBeforeRemove() const {
         if (hasRead() && tracesBeforeRemove != nullptr){
-            return tracesBeforeRemove;
+            return tracesBeforeRemove + offsetFrame * getChannelNumber();
         } else {
             throw TracesNotReadException();
         }
@@ -71,5 +71,26 @@ namespace GLOBAL_NAMESPACE {
         }
 
         return out;
+    }
+
+    void TraceReaderAndCleaner::read() {
+        isolineRemover->clearState();
+        isolineRemover->extendRange();
+        isolineRemover->synchronizeIsolines();
+        setFrameRange(isolineRemover->sync());
+        TraceReader::read();
+        tracesBeforeRemove = traces;
+        traces = nullptr;
+        isolineRemover->sacrifice();
+        isolineRemover->synchronizeSignal();
+        offsetFrame = isolineRemover->getAnalysisInitialFrame() - isolineRemover->getIsolineInitialFrame();
+        std::cout << "Offset frame: " << offsetFrame << std::endl;
+    }
+
+    void TraceReaderAndCleaner::clearState() {
+        TraceReader::clearState();
+        delete [] tracesBeforeRemove;
+        delete [] isolines;
+        cleaned = false;
     }
 }

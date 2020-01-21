@@ -15,6 +15,8 @@ class TraceProcessor:
     __final_frame = None
     __time_arrivals = None
     __synch_channels = None
+    __data_not_removed = None
+    __isolines = None
     __data = None
     __reference_signal = None
 

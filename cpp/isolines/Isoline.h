@@ -35,9 +35,6 @@ namespace GLOBAL_NAMESPACE {
         int isolineInitialFrame;
         int isolineFinalFrame;
 
-        Synchronization& sync() { return *psync; }
-        StreamFileTrain& train() { return *ptrain; }
-
         ProgressFunction progressFunction;
 
         virtual void printSpecial(std::ostream& out) const = 0;
@@ -50,6 +47,9 @@ namespace GLOBAL_NAMESPACE {
         Isoline& operator=(const Isoline& other) noexcept;
 
         [[nodiscard]] virtual const char* getName() const noexcept = 0;
+
+        Synchronization& sync() { return *psync; }
+        StreamFileTrain& train() { return *ptrain; }
 
         /**
          *
@@ -107,6 +107,34 @@ namespace GLOBAL_NAMESPACE {
         [[nodiscard]] int getIsolineFinalFrame() const { return isolineFinalFrame; }
 
         friend std::ostream& operator<<(std::ostream& out, const Isoline& isoline);
+
+        /**
+         * Clears the state
+         */
+        virtual void clearState();
+
+        /**
+         * Extends the isoline range. Please, apply this method immediately before the synchronization of isolines
+         */
+        virtual void extendRange() = 0;
+
+        /**
+         * Synchronizes the isolines. Please, apply this method before reading the dirty data if reading the dirty
+         * data is necessary
+         */
+        void synchronizeIsolines();
+
+        /**
+         * This method shall be run after the isolines were synchronized in order to adjust the Synchronization from
+         * the isolines range into the analysis range
+         */
+        virtual void sacrifice() = 0;
+
+        /**
+         * Synchronizes the analysis epoch. This method shall be called immediately after sacrifice() method and
+         * before thw isoline cleaning itself
+         */
+        void synchronizeSignal();
 
 
         class IsolineException: public iman_exception{

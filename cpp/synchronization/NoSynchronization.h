@@ -43,6 +43,38 @@ namespace GLOBAL_NAMESPACE {
          */
         void setFinalFrame(int frame);
 
+        /**
+         *
+         * @return the initial frame that is treated as an initial cycle
+         */
+        [[nodiscard]] int getInitialCycle() const override { return initialFrame+1; }
+
+        /**
+         * Sets the virtual final cycle
+         *
+         * @param n number of the virtual final cycle
+         */
+        void setInitialCycle(int n) override {
+            setInitialFrame(n-1);
+        }
+
+        /**
+         *
+         * @return value of the virtual final cycle
+         */
+        [[nodiscard]] int getFinalCycle() const override { return finalFrame+1; }
+
+        /**
+         * Sets the virtual final cycle
+         *
+         * @param n value of the virtual final cycle
+         */
+        void setFinalCycle(int n) override { return setFinalFrame(n-1); }
+
+        /**
+         *
+         * @return total number of virtual cycles
+         */
         [[nodiscard]] int getCycleNumber() const override { return getFrameNumber(); }
 
         [[nodiscard]] const char* getName() const noexcept override { return "no synchronization"; }

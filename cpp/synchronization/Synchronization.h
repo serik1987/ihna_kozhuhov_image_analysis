@@ -194,6 +194,31 @@ namespace GLOBAL_NAMESPACE {
 
         friend std::ostream& operator<<(std::ostream& out, const Synchronization& sync);
 
+        /**
+         * Returns the initial cycle or its analogue
+         */
+        [[nodiscard]] virtual int getInitialCycle() const = 0;
+
+        /**
+         * Sets the virtual initial cycle
+         *
+         * @param n number of the initial cycle
+         */
+        virtual void setInitialCycle(int n) = 0;
+
+        /**
+         *
+         * @return the virtual final cycle
+         */
+        [[nodiscard]] virtual int getFinalCycle() const = 0;
+
+        /**
+         * Sets the value of the virtual final cycle
+         *
+         * @param n number of the virtual final cycle
+         */
+        virtual void setFinalCycle(int n) = 0;
+
 
 
         class SynchronizationException: public iman_exception{

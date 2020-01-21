@@ -50,14 +50,14 @@ namespace GLOBAL_NAMESPACE {
          * @return initial cycle or -1 if the initial cycle has not been set. In this case the intitial cycle
          * will be set during the synchronization automatically in such a way as to maximize the analysis epoch
          */
-        [[nodiscard]] int getInitialCycle() const { return initialCycle; }
+        [[nodiscard]] int getInitialCycle() const override { return initialCycle; }
 
         /**
          *
          * @return the final cycle or -1 if the final cycle has not been set. In this case the final cycle will
          * be set automatically in such a way as to maximize the analysis epoch
          */
-        [[nodiscard]] int getFinalCycle() const { return finalCycle; }
+        [[nodiscard]] int getFinalCycle() const override { return finalCycle; }
 
         /**
          *
@@ -77,7 +77,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @param n number of cycle from which the analysis starts
          */
-        void setInitialCycle(int n);
+        void setInitialCycle(int n) override;
 
         /**
          * Sets the cycle at which the analysis finishes

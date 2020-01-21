@@ -307,10 +307,5 @@ namespace GLOBAL_NAMESPACE {
             initialPhase = 0.0;
         }
 
-        for (int i=0; i < 10; ++i){
-            std::cout << synchronizationPhase[i] << "\t";
-        }
-        std::cout << "\n";
-
     }
 }

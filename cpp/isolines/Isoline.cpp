@@ -50,4 +50,31 @@ namespace GLOBAL_NAMESPACE {
 
         return out;
     }
+
+    void Isoline::clearState() {
+        analysisInitialCycle = -1;
+        analysisFinalCycle = -1;
+        analysisInitialFrame = -1;
+        analysisFinalFrame = -1;
+        isolineInitialCycle = -1;
+        isolineFinalCycle = -1;
+        isolineInitialFrame = -1;
+        isolineFinalFrame = -1;
+    }
+
+    void Isoline::synchronizeIsolines() {
+        sync().synchronize();
+        isolineInitialCycle = sync().getInitialCycle();
+        isolineFinalCycle = sync().getFinalCycle();
+        isolineInitialFrame = sync().getInitialFrame();
+        isolineFinalFrame = sync().getFinalFrame();
+    }
+
+    void Isoline::synchronizeSignal() {
+        sync().synchronize();
+        analysisInitialCycle = sync().getInitialCycle();
+        analysisInitialFrame = sync().getInitialFrame();
+        analysisFinalCycle = sync().getFinalCycle();
+        analysisFinalFrame = sync().getFinalFrame();
+    }
 }

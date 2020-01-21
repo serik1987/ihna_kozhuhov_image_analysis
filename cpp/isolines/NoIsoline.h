@@ -19,6 +19,16 @@ namespace GLOBAL_NAMESPACE {
     public:
         NoIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {};
 
+        /**
+         * Does nothing
+         */
+        void extendRange() override {};
+
+        /**
+         * Does nothing
+         */
+        void sacrifice() override {};
+
         [[nodiscard]] const char* getName() const noexcept override { return "no isoline"; }
 
     };

@@ -3,6 +3,7 @@
 //
 
 #include "TimeAverageIsoline.h"
+#include "../synchronization/ExternalSynchronization.h"
 
 namespace GLOBAL_NAMESPACE {
 
@@ -31,5 +32,27 @@ namespace GLOBAL_NAMESPACE {
 
     void TimeAverageIsoline::printSpecial(std::ostream &out) const {
         out << "Average radius, cycles: " << getAverageCycles() << "\n";
+    }
+
+    void TimeAverageIsoline::extendRange() {
+        isolineInitialCycle = sync().getInitialCycle();
+        if (isolineInitialCycle != -1){
+            isolineInitialCycle -= averageCycles;
+            sync().setInitialCycle(isolineInitialCycle);
+        }
+        isolineFinalCycle = sync().getFinalCycle();
+        if (isolineFinalCycle != -1){
+            isolineFinalCycle += averageCycles;
+            sync().setFinalCycle(isolineFinalCycle);
+        }
+    }
+
+    void TimeAverageIsoline::sacrifice() {
+        if (sync().getCycleNumber() <= 2 * averageCycles){
+            throw ExternalSynchronization::TooFewFramesException();
+        }
+        std::cout << isolineInitialCycle + averageCycles << std::endl;
+        sync().setInitialCycle(isolineInitialCycle + averageCycles);
+        sync().setFinalCycle(isolineFinalCycle - averageCycles);
     }
 }
