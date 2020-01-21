@@ -91,17 +91,17 @@ class TraceProcessor:
 
     def get_psd_not_removed(self):
         data = self.get_data_not_removed()
-        spectrum = fft(data, n=256, axis=0)
+        spectrum = fft(data, axis=0)[:64]
         return np.abs(spectrum)
 
     def get_isoline_psd(self):
         data = self.get_isolines()
-        spectrum = fft(data, n=256, axis=0)
+        spectrum = fft(data, axis=0)[:64]
         return np.abs(spectrum)
 
     def get_psd(self):
         data = self.get_data()
-        spectrum = fft(data, n=256, axis=0)
+        spectrum = fft(data, axis=0)[:64]
         return np.abs(spectrum)
 
     def get_reference_signal(self):
