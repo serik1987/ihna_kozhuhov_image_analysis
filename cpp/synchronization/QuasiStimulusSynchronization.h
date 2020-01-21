@@ -63,7 +63,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return total number of cycles within the record
          */
-        [[nodiscard]] int getCycleNumber() const { return cycleNumber; }
+        [[nodiscard]] int getCycleNumber() const override { return cycleNumber; }
 
         /**
          * Sets the stimulus period

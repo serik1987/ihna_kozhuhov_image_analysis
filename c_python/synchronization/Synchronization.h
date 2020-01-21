@@ -161,7 +161,13 @@ extern "C" {
 
         try{
             const double* ref = sync->getReferenceSignalCos();
-            return Py_BuildValue("");
+            npy_intp dims[] = {sync->getFrameNumber()};
+            PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+            if (result == NULL) return NULL;
+            for (int i=0; i < sync->getFrameNumber(); ++i){
+                *(double*)PyArray_GETPTR1((PyArrayObject*)result, i) = ref[i];
+            }
+            return result;
         } catch(std::exception& e){
             PyIman_Exception_process(&e);
             return NULL;
@@ -174,7 +180,13 @@ extern "C" {
 
         try{
             const double* ref = sync->getReferenceSignalSin();
-            return Py_BuildValue("");
+            npy_intp dims[] = {sync->getFrameNumber()};
+            PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+            if (result == NULL) return NULL;
+            for (int i=0; i < sync->getFrameNumber(); ++i){
+                *(double*)PyArray_GETPTR1((PyArrayObject*)result, i) = ref[i];
+            }
+            return result;
         } catch(std::exception& e){
             PyIman_Exception_process(&e);
             return NULL;

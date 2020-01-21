@@ -43,6 +43,8 @@ namespace GLOBAL_NAMESPACE {
          */
         void setFinalFrame(int frame);
 
+        [[nodiscard]] int getCycleNumber() const override { return getFrameNumber(); }
+
         [[nodiscard]] const char* getName() const noexcept override { return "no synchronization"; }
 
         class FrameRangeException: public SynchronizationException{

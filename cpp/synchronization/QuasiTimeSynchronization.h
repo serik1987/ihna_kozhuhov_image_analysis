@@ -72,7 +72,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return total number of cycles to analyze
          */
-        [[nodiscard]] int getCycleNumber() const { return finalCycle - initialCycle + 1; }
+        [[nodiscard]] int getCycleNumber() const override { return finalCycle - initialCycle + 1; }
 
         /**
          * Sets the stimulus period

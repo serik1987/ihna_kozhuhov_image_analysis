@@ -14,6 +14,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Synchro
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_NoSignalDetectedError as \
     NoSignalDetectedError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_TooFewFramesError as TooFewFramesError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_BadHarmonicError as BadHarmonicError
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_Synchronization as Synchronization
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_ExternalSynchronization \

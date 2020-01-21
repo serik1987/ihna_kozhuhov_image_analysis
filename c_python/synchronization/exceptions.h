@@ -17,6 +17,7 @@ extern "C" {
     static PyObject* PyImanY_SynchronizationChannelError = NULL;
     static PyObject* PyImanY_NoSignalDetectedError = NULL;
     static PyObject* PyImanY_TooFewFramesError = NULL;
+    static PyObject* PyImanY_BadHarmonicError = NULL;
 
     static int PyImanY_Exception_Init(PyObject* module){
         PyImanY_SynchronizationError = PyErr_NewExceptionWithDoc(
@@ -107,6 +108,15 @@ extern "C" {
             return -1;
         }
 
+        PyImanY_BadHarmonicError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sychronization.BadHarmonicErrpr",
+                "This error is generated when you selected a harmonic value that is not suitable for the precise \n"
+                "analysis",
+                PyImanY_SynchronizationError, NULL);
+        if (PyModule_AddObject(module, "_synchronization_BadHarmonicError", PyImanY_BadHarmonicError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -120,6 +130,7 @@ extern "C" {
         Py_XDECREF(PyImanY_FinalCycleError);
         Py_XDECREF(PyImanY_NoSignalDetectedError);
         Py_XDECREF(PyImanY_TooFewFramesError);
+        Py_XDECREF(PyImanY_BadHarmonicError);
     }
 
     static int PyImanY_Exception_process(const void* handle){
@@ -146,6 +157,8 @@ extern "C" {
                     dynamic_cast<ExternalSynchronization::NoSignalException*>(synchronization_handle);
             auto* too_few_frames_handle =
                     dynamic_cast<ExternalSynchronization::TooFewFramesException*>(synchronization_handle);
+            auto* bad_harmonic_handle =
+                    dynamic_cast<Synchronization::BadHarmonicException*>(synchronization_handle);
 
             if (file_not_opened_handle != nullptr) {
                 PyErr_SetString(PyImanY_FileNotOpenedError, file_not_opened_handle->what());
@@ -171,8 +184,11 @@ extern "C" {
             } else if (no_signal_detected_handle != nullptr) {
                 PyErr_SetString(PyImanY_NoSignalDetectedError, no_signal_detected_handle->what());
                 return -1;
-            } else if (too_few_frames_handle != nullptr){
+            } else if (too_few_frames_handle != nullptr) {
                 PyErr_SetString(PyImanY_TooFewFramesError, too_few_frames_handle->what());
+                return -1;
+            } else if (bad_harmonic_handle != nullptr) {
+                PyErr_SetString(PyImanY_BadHarmonicError, bad_harmonic_handle->what());
                 return -1;
             } else {
                 PyErr_SetString(PyImanY_SynchronizationError, synchronization_handle->what());

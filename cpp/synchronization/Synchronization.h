@@ -31,6 +31,12 @@ namespace GLOBAL_NAMESPACE {
         double* referenceSignalSin;
         double harmonic;
 
+        void inverse();
+        void inversePrecise(double h);
+
+        static constexpr float ITERATIONM = 0.5;
+        static constexpr double EPSILON = 1e-18;
+
     protected:
         int initialFrame;
         int finalFrame;
@@ -95,6 +101,12 @@ namespace GLOBAL_NAMESPACE {
          * @return total number of frames available for the analysis
          */
         [[nodiscard]] int getFrameNumber() const { return finalFrame - initialFrame + 1; }
+
+        /**
+         *
+         * @return total number of cycles
+         */
+        [[nodiscard]] virtual int getCycleNumber() const = 0;
 
         /**
          *
@@ -218,6 +230,11 @@ namespace GLOBAL_NAMESPACE {
         public:
             explicit FinalCycleException():
                 SynchronizationException("Bad value of the final cycle") {};
+        };
+
+        class BadHarmonicException: public SynchronizationException{
+        public:
+            BadHarmonicException(): SynchronizationException("Bad value of harmonic") {};
         };
 
     };
