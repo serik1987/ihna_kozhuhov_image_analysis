@@ -121,16 +121,24 @@ class TracesDlg(wx.Dialog):
         self.__psd_after_correction_axes.tick_params(labelsize=10)
 
         self.__traces_averaged_axes = fig.add_subplot(5, 3, 11)
+        self.__traces_averaged_axes.plot(processor.get_frame_vector(), processor.get_average_signal(), 'b-')
+        self.__traces_averaged_axes.plot(processor.get_frame_vector(), processor.get_median_signal(), 'r--')
+        self.__traces_averaged_axes.set_xlim(processor.get_frame_lim())
         self.__traces_averaged_axes.set_xlabel("# frame", fontdict=caption_font)
         self.__traces_averaged_axes.set_title("Traces, averaged", fontdict=caption_font)
         self.__traces_averaged_axes.tick_params(labelsize=10)
 
         self.__psd_averaged_axes = fig.add_subplot(5, 3, 12)
+        self.__psd_averaged_axes.plot(processor.get_average_signal_spectrum(), 'b-')
+        self.__psd_averaged_axes.plot(processor.get_median_signal_spectrum(), 'b--')
+        self.__psd_averaged_axes.plot(processor.get_average_spectrum(), 'g-')
+        self.__psd_averaged_axes.plot(processor.get_median_spectrum(), 'g--')
         self.__psd_averaged_axes.get_xaxis().set_ticks([])
         self.__psd_averaged_axes.set_title("Traces PSD, averaged", fontdict=caption_font)
         self.__psd_averaged_axes.tick_params(labelsize=10)
 
         self.__psd_reference_axes = fig.add_subplot(5, 3, 15)
+        self.__psd_reference_axes.plot(processor.get_reference_spectrum())
         self.__psd_reference_axes.set_xlabel("Frequency, d.u.", fontdict=caption_font)
         self.__psd_reference_axes.set_title("PSD of the reference signal", fontdict=caption_font)
         self.__psd_reference_axes.tick_params(labelsize=10)
@@ -153,20 +161,21 @@ class TracesDlg(wx.Dialog):
         options_panel.Add(isoline_remove_box, 0, wx.RIGHT | wx.EXPAND, 5)
         average_strategy_box = wx.BoxSizer(wx.VERTICAL)
 
-        self.__average_signal_box = wx.RadioButton(main_panel, label="Plot PSD of a averaged",
+        self.__average_signal_box = wx.RadioButton(main_panel, label="Plot PSD of averaged (blue lines)",
                                                    style=wx.RB_GROUP)
         average_strategy_box.Add(self.__average_signal_box, 0, wx.BOTTOM, 5)
 
-        self.__average_psd_box = wx.RadioButton(main_panel, label="Plot Average PSDs")
+        self.__average_psd_box = wx.RadioButton(main_panel, label="Plot Average PSDs (green lines)")
         average_strategy_box.Add(self.__average_psd_box, 0, wx.BOTTOM, 5)
 
         options_panel.Add(average_strategy_box, 0, wx.RIGHT | wx.EXPAND, 5)
         average_method_box = wx.BoxSizer(wx.VERTICAL)
 
-        self.__average_option_box = wx.RadioButton(main_panel, label="Plot mean and STD", style=wx.RB_GROUP)
+        self.__average_option_box = wx.RadioButton(main_panel, label="Plot mean and STD (solid lines)",
+                                                   style=wx.RB_GROUP)
         average_method_box.Add(self.__average_option_box, 0, wx.BOTTOM, 5)
 
-        self.__median_option_box = wx.RadioButton(main_panel, label="Plot median and interquantile")
+        self.__median_option_box = wx.RadioButton(main_panel, label="Plot median and interquantile (dashed lines)")
         average_method_box.Add(self.__median_option_box)
 
         options_panel.Add(average_method_box)

@@ -19,11 +19,13 @@ class TraceProcessor:
     __isolines = None
     __data = None
     __reference_signal = None
+    __accepted_points = 96
 
-    def __init__(self, reader, sync):
+    def __init__(self, reader, isoline, sync):
         """
         Arguments:
              reader - instance of the TraceReaderAndCleaner. Note, that at least 'TIME' channel shall be read
+             isoline - instance of the Isoline that you used for the isoline remove during the trace read
              sync - instance of Synchronization that you used for trace reading and cleaning
         """
         self.__init_frame = reader.initial_frame
@@ -49,6 +51,8 @@ class TraceProcessor:
         self.__isolines = np.hstack(self.__isolines)
         self.__data = np.hstack(self.__data)
         self.__reference_signal = sync.reference_sin
+        cycles = isoline.analysis_final_cycle - isoline.analysis_initial_cycle + 1
+        self.__accepted_points = cycles * 10
 
     def get_frame_lim(self):
         """
@@ -91,18 +95,67 @@ class TraceProcessor:
 
     def get_psd_not_removed(self):
         data = self.get_data_not_removed() - self.get_data_not_removed().mean()
-        spectrum = fft(data, axis=0)[:64]
+        spectrum = fft(data, axis=0)[:self.__accepted_points]
         return np.abs(spectrum)
 
     def get_isoline_psd(self):
         data = self.get_isolines() - self.get_isolines().mean()
-        spectrum = fft(data, axis=0)[:64]
+        spectrum = fft(data, axis=0)[:self.__accepted_points]
         return np.abs(spectrum)
 
     def get_psd(self):
         data = self.get_data() - self.get_data().mean()
-        spectrum = fft(data, axis=0)[:64]
+        spectrum = fft(data, axis=0)[:self.__accepted_points]
         return np.abs(spectrum)
 
     def get_reference_signal(self):
         return self.__reference_signal
+
+    def get_average_signal(self):
+        return self.get_data().mean(axis=1)
+
+    def get_median_signal(self):
+        return np.median(self.get_data(), axis=1)
+
+    def get_average_signal_spectrum(self):
+        """
+        First, averages the signal.
+        Next, plots the spectrum of the averaged signal
+        """
+        data = self.get_average_signal()
+        data -= data.mean()
+        spectrum = fft(data, axis=0)[:self.__accepted_points]
+        return np.abs(spectrum)
+
+    def get_median_signal_spectrum(self):
+        """
+        First, computes the median of the signal
+        Next, plots the spectrum of the result
+        """
+        data = self.get_median_signal()
+        data -= data.mean()
+        spectrum = fft(data, axis=0)[:self.__accepted_points]
+        return np.abs(spectrum)
+
+    def get_average_spectrum(self):
+        """
+        First, plots the spectrum of the signal
+        Next, calculates its mean
+        """
+        return self.get_psd().mean(axis=1)
+
+    def get_median_spectrum(self):
+        """
+        First, plots the spectrum of the signal
+        Next, calculates its median
+        """
+        return np.median(self.get_psd(), axis=1)
+
+    def get_reference_spectrum(self):
+        """
+        Plots the spectrum of the reference signal
+        """
+        data = self.get_reference_signal()
+        data -= data.mean()
+        spectrum = fft(data)[:self.__accepted_points]
+        return np.abs(spectrum)

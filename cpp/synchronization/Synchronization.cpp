@@ -244,6 +244,9 @@ namespace GLOBAL_NAMESPACE {
 
     void Synchronization::inversePrecise(double h) {
         using std::vector;
+        if (progressFunction != nullptr){
+            progressFunction(0, 1, "Precise analysis", handle);
+        }
 
         int k=2*(int)h-1;
         int n = getFrameNumber();

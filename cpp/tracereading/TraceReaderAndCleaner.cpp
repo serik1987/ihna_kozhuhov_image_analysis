@@ -77,6 +77,7 @@ namespace GLOBAL_NAMESPACE {
         isolineRemover->clearState();
         isolineRemover->extendRange();
         progressFunction(0, 1, "Synchronization", handle);
+        isolineRemover->sync().setProgressFunction(progressFunction, handle);
         isolineRemover->synchronizeIsolines();
         setFrameRange(isolineRemover->sync());
         TraceReader::read();

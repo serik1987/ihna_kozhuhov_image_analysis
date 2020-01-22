@@ -367,10 +367,10 @@ class NativeDataManager(wx.Dialog):
             shown = True
             try:
                 reader.read()
+                print(train)
                 print(sync)
                 print(isoline)
                 print(reader)
-                print(reader.traces)
             except Exception as err:
                 progress_dlg.Destroy()
                 shown = False
@@ -390,9 +390,8 @@ class NativeDataManager(wx.Dialog):
                 return
             print("PY Finish of traces reading")
             progress_dlg.done()
-            del isoline
 
-            trace_processor = TraceProcessor(reader, sync)
+            trace_processor = TraceProcessor(reader, isoline, sync)
             traces_dlg = TracesDlg(self, trace_processor)
             if traces_dlg.ShowModal() == wx.ID_CANCEL:
                 traces_dlg.close()
@@ -401,6 +400,7 @@ class NativeDataManager(wx.Dialog):
                 del train
                 return
             traces_dlg.close()
+            del isoline
             del sync
 
             print("PY Traces postprocessing")
