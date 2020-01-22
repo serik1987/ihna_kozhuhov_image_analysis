@@ -76,18 +76,21 @@ namespace GLOBAL_NAMESPACE {
     void TraceReaderAndCleaner::read() {
         isolineRemover->clearState();
         isolineRemover->extendRange();
+        progressFunction(0, 1, "Synchronization", handle);
         isolineRemover->synchronizeIsolines();
         setFrameRange(isolineRemover->sync());
         TraceReader::read();
         tracesBeforeRemove = traces;
         traces = nullptr;
         isolineRemover->sacrifice();
+        progressFunction(0, 1, "Synchronization", handle);
         isolineRemover->synchronizeSignal();
         offsetFrame = isolineRemover->getAnalysisInitialFrame() - isolineRemover->getIsolineInitialFrame();
         newBuffers();
         const double* srcLeft = tracesBeforeRemove;
         const double* src = getTracesBeforeRemove();
         const double* srcRight = srcLeft + isolineRemover->getIsolineFrameNumber() * getChannelNumber();
+        progressFunction(0, 1, "Trace cleaning", handle);
         isolineRemover->traceCleaning(*this, src, srcLeft, srcRight, isolines);
         int points = getFrameNumber() * getChannelNumber();
         std::transform(tracesBeforeRemove, tracesBeforeRemove + points, isolines, traces,
@@ -109,7 +112,5 @@ namespace GLOBAL_NAMESPACE {
         std::fill(isolines, isolines + points, 0.0);
         traces = new double[points];
         std::fill(traces, traces + points, 0.0);
-        std::cout << "Analysis frame number: " << isolineRemover->getAnalysisFrameNumber() << std::endl;
-        std::cout << "points = " << points << std::endl;
     }
 }

@@ -2,8 +2,10 @@
 // Created by serik1987 on 12.01.2020.
 //
 
-#include "TimeAverageIsoline.h"
+#include <cmath>
 #include "../synchronization/ExternalSynchronization.h"
+#include "../tracereading/TraceReaderAndCleaner.h"
+#include "TimeAverageIsoline.h"
 
 namespace GLOBAL_NAMESPACE {
 
@@ -58,10 +60,35 @@ namespace GLOBAL_NAMESPACE {
 
     void TimeAverageIsoline::traceCleaning(TraceReaderAndCleaner &reader, const double *src, const double *srcLeft,
                                            const double *srcRight, double *isolines) {
-        std::cout << "Time average: trace cleaning\n";
-        std::cout << "src = " << src << std::endl;
-        std::cout << "srcLeft = " << srcLeft << std::endl;
-        std::cout << "srcRight = " << srcRight << std::endl;
-        std::cout << "isolines = " << isolines << std::endl;
+
+        int chans = reader.getChannelNumber();
+        int frames = reader.getFrameNumber();
+        int cycles = sync().getCycleNumber();
+        int radius = averageCycles * (int)rint((double)(frames + 1) / cycles); // to be expressed in frames
+
+        const double* srcIt = src;
+        double* isolineIt = isolines;
+
+        for (int frame = 0; frame < frames; ++frame){
+            const double* first = srcIt - chans * (radius - 1);
+            if (first < srcLeft) first = srcLeft;
+            const double* last = srcIt + chans * radius;
+            if (last > srcRight) last = srcRight;
+            int timeinterval_local = (int)(last - first) / chans;
+            for (int chan=0; chan < chans; ++chan){
+                if (reader.getPixelItem(chan).getPointType() == PixelListItem::PixelValue) {
+                    int counter = 0;
+                    for (const double *avgIt = first; avgIt < last; avgIt += chans) {
+                        isolineIt[chan] += avgIt[chan];
+                        counter++;
+                    }
+                    isolineIt[chan] /= timeinterval_local;
+                }
+            }
+
+            srcIt += chans;
+            isolineIt += chans;
+        }
+
     }
 }

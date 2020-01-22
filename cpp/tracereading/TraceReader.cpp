@@ -156,9 +156,6 @@ namespace GLOBAL_NAMESPACE {
 
         readFromFile();
         _hasRead = true;
-
-        printf("\n");
-        printf("C++: reading traces\n");
     }
 
     void TraceReader::extractDisplacements() {

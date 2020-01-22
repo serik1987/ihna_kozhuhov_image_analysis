@@ -29,6 +29,8 @@ namespace GLOBAL_NAMESPACE {
         cyclesUpper = 0;
         dNFrameSync = 0.0;
         residue = 0.0;
+        synchMax = 0.0;
+        syncFrames = 0;
     }
 
     ExternalSynchronization::ExternalSynchronization(ExternalSynchronization &&other) noexcept:
@@ -48,6 +50,8 @@ namespace GLOBAL_NAMESPACE {
         cyclesUpper = other.cyclesUpper;
         dNFrameSync = other.dNFrameSync;
         residue = other.residue;
+        synchMax = other.synchMax;
+        syncFrames = other.syncFrames;
     }
 
     ExternalSynchronization::~ExternalSynchronization() {
@@ -73,6 +77,9 @@ namespace GLOBAL_NAMESPACE {
         cyclesLower = other.cyclesLower;
         cyclesUpper = other.cyclesUpper;
         residue = other.residue;
+
+        synchMax = other.synchMax;
+        syncFrames = other.syncFrames;
 
         return *this;
     }

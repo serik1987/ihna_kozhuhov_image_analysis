@@ -90,17 +90,17 @@ class TraceProcessor:
         return self.__data
 
     def get_psd_not_removed(self):
-        data = self.get_data_not_removed()
+        data = self.get_data_not_removed() - self.get_data_not_removed().mean()
         spectrum = fft(data, axis=0)[:64]
         return np.abs(spectrum)
 
     def get_isoline_psd(self):
-        data = self.get_isolines()
+        data = self.get_isolines() - self.get_isolines().mean()
         spectrum = fft(data, axis=0)[:64]
         return np.abs(spectrum)
 
     def get_psd(self):
-        data = self.get_data()
+        data = self.get_data() - self.get_data().mean()
         spectrum = fft(data, axis=0)[:64]
         return np.abs(spectrum)
 

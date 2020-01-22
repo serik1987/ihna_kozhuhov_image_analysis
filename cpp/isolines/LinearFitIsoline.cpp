@@ -12,7 +12,6 @@ namespace GLOBAL_NAMESPACE {
                                          const double *srcRight, double *isolines) {
         int chans = reader.getChannelNumber();
         int frames = reader.getFrameNumber();
-        int points = chans * frames;
         LinearFit fit(chans);
         const double* it = src;
         for (int i = 0; i < frames; ++i){

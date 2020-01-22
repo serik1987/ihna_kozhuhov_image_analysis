@@ -370,6 +370,7 @@ class NativeDataManager(wx.Dialog):
                 print(sync)
                 print(isoline)
                 print(reader)
+                print(reader.traces)
             except Exception as err:
                 progress_dlg.Destroy()
                 shown = False
