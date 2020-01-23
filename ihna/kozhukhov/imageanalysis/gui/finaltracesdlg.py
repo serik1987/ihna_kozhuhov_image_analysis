@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import numpy as np
 import wx
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -9,6 +10,8 @@ class FinalTracesDlg(wx.Dialog):
     """
     This dialog is used for the results that are finally processed
     """
+
+    __traces = None
 
     __save_npz_box = None
     __add_to_manifest_box = None
@@ -37,20 +40,32 @@ class FinalTracesDlg(wx.Dialog):
         draw_sizer = wx.BoxSizer(wx.VERTICAL)
         self.__fig = Figure(tight_layout=True)
         caption_font = {"fontsize": 10}
+        times = traces.get_times()
+        freqs = traces.get_frequencies()
+        fidx = freqs < 10
+        freqs = freqs[fidx]
 
         self.__ref_ax = self.__fig.add_subplot(2, 2, 1)
+        self.__ref_ax.plot(times, traces.get_reference())
+        self.__ref_ax.set_xlim((times[0], times[-1]))
         self.__ref_ax.get_xaxis().set_ticks([])
         self.__ref_ax.set_ylabel("Reference signal", fontdict=caption_font)
 
         self.__ref_psd_ax = self.__fig.add_subplot(2, 2, 2)
+        self.__ref_psd_ax.plot(freqs, traces.get_reference_psd()[fidx])
+        self.__ref_psd_ax.set_xscale("log")
         self.__ref_psd_ax.get_xaxis().set_ticks([])
         self.__ref_psd_ax.get_yaxis().set_ticks([])
 
         self.__pix_ax = self.__fig.add_subplot(2, 2, 3)
+        self.__pix_ax.plot(times, traces.get_avg_trace())
+        self.__pix_ax.set_xlim((times[0], times[-1]))
         self.__pix_ax.set_xlabel("Time, ms", fontdict=caption_font)
         self.__pix_ax.set_ylabel("Intrinsic signal")
 
         self.__pix_psd_ax = self.__fig.add_subplot(2, 2, 4)
+        self.__pix_psd_ax.plot(freqs, traces.get_avg_psd()[fidx])
+        self.__pix_psd_ax.set_xscale("log")
         self.__pix_psd_ax.get_yaxis().set_ticks([])
         self.__pix_psd_ax.set_xlabel("Frequency, Hz", fontdict=caption_font)
 
@@ -112,6 +127,8 @@ class FinalTracesDlg(wx.Dialog):
         main_panel.SetSizerAndFit(general_layout)
         self.Centre()
         self.Fit()
+
+        self.__traces = traces
 
     def close(self):
         pass
