@@ -392,6 +392,8 @@ class NativeDataManager(wx.Dialog):
                 final_traces_dlg.close()
                 return
             final_traces_dlg.close()
+            npz_file = final_traces_dlg.save_files(self.__case['pathname'])
+            print(npz_file)
 
             print("PY Traces saving")
 

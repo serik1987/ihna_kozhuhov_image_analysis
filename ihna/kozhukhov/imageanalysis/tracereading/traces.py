@@ -1,6 +1,9 @@
 # -*- coding: utf-8
 
+import os
 import numpy as np
+import scipy.io
+
 
 class Traces:
     """
@@ -354,3 +357,52 @@ Reference PSD: {7} {15}
             return s0 + s1 + s2 + s3 + s4
         except Exception as err:
             return str(err)
+
+    def save_npz(self, folder):
+        """
+        Saves the traces to the NPZ file
+        """
+        filename = self.get_fullname() + "_new.npz"
+        full_file = os.path.join(folder, filename)
+        np.savez_compressed(full_file,
+                            times=self.get_times(),
+                            frequencies=self.get_frequencies(),
+                            traces=self.get_traces(),
+                            spectrums=self.get_spectrums(),
+                            avg_trace=self.get_avg_trace(),
+                            avg_psd=self.get_avg_psd(),
+                            reference=self.get_reference(),
+                            reference_psd=self.get_reference_psd()
+        )
+        return full_file
+
+    def save_mat(self, folder):
+        """
+        Saves the traces to the MAT file
+        """
+        filename = self.get_fullname() + "_new.mat"
+        full_file = os.path.join(folder, filename)
+        mdict = {
+            "animal_name": self.get_animal_name(),
+            "prefix": self.get_prefix_name(),
+            "postfix": self.get_postfix_name(),
+            "case_name": self.get_case_name(),
+            "roi_name": self.get_roi_name(),
+            "fullname": self.get_fullname(),
+            "times": self.get_times(),
+            "frequencies": self.get_frequencies(),
+            "traces": self.get_traces(),
+            "spectrums": self.get_spectrums(),
+            "avg_trace": self.get_avg_trace(),
+            "avg_psd": self.get_avg_psd(),
+            "reference": self.get_reference(),
+            "reference_psd": self.get_reference_psd()
+        }
+        for key, value in self.__train_properties.items():
+            mdict["TRA_" + key] = value
+        for key, value in self.__synchronization_properties.items():
+            mdict["SYN_" + key] = value
+        for key, value in self.__isoline_properties.items():
+            mdict["ISO_" + key] = value
+        scipy.io.savemat(full_file, mdict)
+        return full_file

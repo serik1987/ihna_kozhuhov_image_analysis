@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import os
 import numpy as np
 import wx
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
@@ -131,7 +132,39 @@ class FinalTracesDlg(wx.Dialog):
         self.__traces = traces
 
     def close(self):
+        """
+        Cleans memory from the data associated with a window
+        """
         pass
 
     def define_manifest_enability(self):
         self.__add_to_manifest_box.Enable(self.__save_npz_box.IsChecked())
+
+    def save_files(self, folder):
+        """
+        Saves the data to all files selected by the user. The method shall be called after closing the modal dialog.
+        Does not add to the manifest.
+
+        Arguments:
+            folder - a folder where all files shall be places
+        Return:
+            If user want these traces to be added to the manifest, the function returns name of the NPZ-file that
+            shall be included into the manifest
+
+            If user doesn't want traces to be added to the manifest, the function returns None
+        """
+        npz_file = None
+        self.__traces.set_prefix_name(self.__prefix_box.GetValue())
+        self.__traces.set_postfix_name(self.__postfix_box.GetValue())
+        if self.__save_npz_box.IsChecked():
+            npz_file = self.__traces.save_npz(folder)
+            if not self.__add_to_manifest_box.IsChecked():
+                npz_file = None
+        if self.__save_mat_box.IsChecked():
+            self.__traces.save_mat(folder)
+        if self.__save_png_box.IsChecked():
+            png_file = self.__traces.get_fullname() + "_new.png"
+            png_fullfile = os.path.join(folder, png_file)
+            self.__fig.savefig(png_fullfile)
+
+        return npz_file
