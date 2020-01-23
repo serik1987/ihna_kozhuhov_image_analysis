@@ -94,7 +94,7 @@ namespace GLOBAL_NAMESPACE {
         progressFunction(0, 1, "Trace cleaning", handle);
         isolineRemover->traceCleaning(*this, src, srcLeft, srcRight, isolines);
         int points = getFrameNumber() * getChannelNumber();
-        std::transform(tracesBeforeRemove, tracesBeforeRemove + points, isolines, traces,
+        std::transform(getTracesBeforeRemove(), getTracesBeforeRemove() + points, isolines, traces,
                 [](double x, double y) { return x-y; });
         cleaned = true;
     }

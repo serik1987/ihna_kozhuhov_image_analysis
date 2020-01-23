@@ -3,9 +3,11 @@
 import numpy as np
 from scipy import diff
 from scipy.fftpack import fft
+from scipy.stats import linregress
 from ihna.kozhukhov.imageanalysis.synchronization import NoSynchronization, QuasiStimulusSynchronization, \
     QuasiTimeSynchronization, ExternalSynchronization
 from ihna.kozhukhov.imageanalysis.isolines import NoIsoline, LinearFitIsoline, TimeAverageIsoline
+from .traces import Traces
 
 
 class TraceProcessor:
@@ -328,3 +330,59 @@ Isoline plotting epoch: {4} - {5} cycles ({6} - {7} frames)""".format(
         S = "Average strategy: " + self.__average_strategy + "\n"
         S += "Average method: " + self.__average_method + "\n"
         return S
+
+    def create_traces(self, case, case_name):
+        """
+        Creates new traces
+
+        Arguments:
+            case - a particular case
+            case_name - full name of the case: a string that includes animal name,
+                a '_' sign that separates animal name from the case name and the case name
+        """
+        n = case_name.find('_')
+        traces = Traces()
+        traces.set_animal_name(case_name[:n])
+        traces.set_case_name(case_name[n+1:])
+        traces.set_train_properties(self.__train_properties)
+        traces.set_synchronization_properties(self.__synchronization_properties)
+        traces.set_isoline_properties(self.__isoline_properties)
+        regress = linregress(self.get_frame_vector(), self.get_time_arrivals())
+        slope, intersept = regress.slope, regress.intercept
+        times = intersept + slope * self.get_frame_vector()
+        traces.set_times(times)
+        iso = self.__isolines.mean()
+        data = self.__data * 100 / iso
+        traces.set_traces(data)
+        sample_step = times[1] - times[0]
+        duration = times[-1] - times[0]
+        sample_rate = 1000.0 / sample_step
+        step_rate = 1000.0 / duration
+        frequencies = np.arange(0, sample_rate, step_rate)
+        spectrums = np.abs(fft(data, axis=0))
+        idx = frequencies < sample_rate / 2
+        frequencies = frequencies[idx]
+        spectrums = spectrums[idx]
+        traces.set_frequencies(frequencies)
+        traces.set_spectrums(spectrums)
+        avg = None
+        if self.__average_method == "mean":
+            avg = np.mean
+        if self.__average_method == "median":
+            avg = np.median
+        avg_trace = avg(data, axis=1)
+        traces.set_avg_trace(avg_trace)
+        avg_psd = None
+        if self.__average_strategy == "average_than_psd":
+            avg_psd = np.abs(fft(avg_trace))
+            avg_psd = avg_psd[idx]
+        if self.__average_strategy == "psd_than_average":
+            avg_psd = avg(spectrums, axis=1)
+        traces.set_avg_psd(avg_psd)
+        ref = self.get_reference_signal()
+        traces.set_reference_signal(ref)
+        ref_psd = np.abs(fft(ref))
+        ref_psd = ref_psd[idx]
+        traces.set_reference_psd(ref_psd)
+
+        return traces

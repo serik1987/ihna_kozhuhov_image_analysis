@@ -26,7 +26,7 @@ class FinalTracesDlg(wx.Dialog):
     __prefix_box = None
     __postfix_box = None
 
-    def __init__(self, parent):
+    def __init__(self, parent, traces):
         super().__init__(parent, title="Trace analysis result", size=(800, 600))
         main_panel = wx.Panel(self)
         general_layout = wx.BoxSizer(wx.VERTICAL)

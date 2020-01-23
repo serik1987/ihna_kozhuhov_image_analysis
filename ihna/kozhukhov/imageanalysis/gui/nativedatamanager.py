@@ -354,6 +354,7 @@ class NativeDataManager(wx.Dialog):
                 del train
                 return
             reader, isoline, sync = properties_dlg.create_reader()
+            roi_name = properties_dlg.get_roi_name()
             properties_dlg.close()
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
@@ -383,15 +384,19 @@ class NativeDataManager(wx.Dialog):
                 return
             traces_dlg.set_average_method_and_strategy(trace_processor)
             traces_dlg.close()
-            print(trace_processor)
 
-            final_traces_dlg = FinalTracesDlg(self)
+            traces = trace_processor.create_traces(self.__case, self.__case_name)
+            traces.set_roi_name(roi_name)
+            print(traces)
+            '''
+            final_traces_dlg = FinalTracesDlg(self, traces)
             if final_traces_dlg.ShowModal() == wx.ID_CANCEL:
                 final_traces_dlg.close()
                 return
             final_traces_dlg.close()
 
             print("PY Traces saving")
+            '''
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             print("Exception class:", err.__class__.__name__)

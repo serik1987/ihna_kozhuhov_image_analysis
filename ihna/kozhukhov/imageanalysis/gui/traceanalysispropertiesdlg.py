@@ -172,3 +172,8 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         reader.isoline_remover = isoline
         reader.add_pixels(self.get_pixel_list())
         return reader, isoline, sync
+
+    def get_roi_name(self):
+        roi_number = self.__roi_box.GetSelection()
+        roi_name = self.__roi_box.GetItems()[roi_number]
+        return roi_name

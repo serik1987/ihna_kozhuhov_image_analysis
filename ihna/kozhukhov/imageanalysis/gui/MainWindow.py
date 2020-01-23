@@ -383,6 +383,11 @@ class MainWindow(wx.Frame):
     def save_animal_info(self):
         try:
             old_specimen = self.__animal['specimen']
+            if self.__specimen_box.GetValue().find('_') != -1:
+                dlg = wx.MessageDialog(self, "Please, don't use '_' in animal's name", "Save animal info",
+                                       wx.OK | wx.CENTRE | wx.ICON_ERROR)
+                dlg.ShowModal()
+                return
             self.__animal['specimen'] = self.__specimen_box.GetValue()
             self.__animal['conditions'] = self.__conditions_box.GetValue()
             self.__animal['recording_site'] = self.__recording_site_box.GetValue()
@@ -428,6 +433,11 @@ class MainWindow(wx.Frame):
             short_name = self.__case['filename']
         else:
             short_name = self.__case_short_name_box.GetValue()
+        if short_name.find('_') != -1:
+            dlg = wx.MessageDialog(self, "Please, don't use '_' in case name", "Save case info",
+                                   wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+            return
         self.__case.set_properties(
             short_name=short_name,
             long_name=self.__case_long_name_box.GetValue(),

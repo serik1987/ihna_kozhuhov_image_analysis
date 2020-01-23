@@ -152,13 +152,6 @@ class TracesDlg(wx.Dialog):
         self.__fig_canvas = canvas
 
         options_panel = wx.BoxSizer(wx.HORIZONTAL)
-        isoline_remove_box = wx.BoxSizer(wx.VERTICAL)
-
-        self.__isoline_remove_checkbox = wx.CheckBox(main_panel, label="Still remove isoline")
-        self.__isoline_remove_checkbox.SetValue(True)
-        isoline_remove_box.Add(self.__isoline_remove_checkbox)
-
-        options_panel.Add(isoline_remove_box, 0, wx.RIGHT | wx.EXPAND, 5)
         average_strategy_box = wx.BoxSizer(wx.VERTICAL)
 
         self.__average_signal_box = wx.RadioButton(main_panel, label="Plot PSD of averaged (blue lines)",
