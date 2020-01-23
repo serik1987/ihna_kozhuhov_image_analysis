@@ -6,7 +6,6 @@ import wx
 import scipy
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression
-from ihna.kozhukhov.imageanalysis.tracereading import TraceReaderAndCleaner as TraceReader
 from ihna.kozhukhov.imageanalysis.tracereading import TraceProcessor
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
@@ -354,69 +353,43 @@ class NativeDataManager(wx.Dialog):
                 properties_dlg.close()
                 del train
                 return
-
-            print("PY Traces reading")
-            reader = TraceReader(train)
-            sync = properties_dlg.create_synchronization()
-            isoline = properties_dlg.create_isoline(sync)
-            reader.isoline_remover = isoline
-            reader.add_pixels(properties_dlg.get_pixel_list())
+            reader, isoline, sync = properties_dlg.create_reader()
+            properties_dlg.close()
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
             reader.progress_bar = progress_dlg
-            shown = True
             try:
                 reader.read()
-                print(train)
-                print(sync)
-                print(isoline)
-                print(reader)
             except Exception as err:
                 progress_dlg.Destroy()
-                shown = False
-                dlg = wx.MessageDialog(self, str(err), caption="Trace analysis",
-                                       style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
-                print("Exception class:", err.__class__.__name__)
-                print("Exception message:", str(err))
-                dlg.ShowModal()
+                del train
+                raise err
             if not reader.has_read:
                 print("PY Trace reading cancelled or error occured")
-                if shown:
-                    progress_dlg.Destroy()
-                del sync
-                del isoline
-                del reader
                 del train
+                progress_dlg.Destroy()
                 return
             print("PY Finish of traces reading")
             progress_dlg.done()
 
-            trace_processor = TraceProcessor(reader, isoline, sync)
+            trace_processor = TraceProcessor(reader, isoline, sync, train)
+            del reader
+            del isoline
+            del sync
+            del train
             traces_dlg = TracesDlg(self, trace_processor)
             if traces_dlg.ShowModal() == wx.ID_CANCEL:
                 traces_dlg.close()
-                del reader
-                del sync
-                del train
                 return
             traces_dlg.close()
-            del isoline
-            del sync
-
-            print("PY Traces postprocessing")
 
             final_traces_dlg = FinalTracesDlg(self)
             if final_traces_dlg.ShowModal() == wx.ID_CANCEL:
                 final_traces_dlg.close()
-                del reader
-                del train
                 return
             final_traces_dlg.close()
 
             print("PY Traces saving")
-
-            del reader
-            del train
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             print("Exception class:", err.__class__.__name__)

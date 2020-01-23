@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis.tracereading import TraceReaderAndCleaner as TraceReader
 from .synchronization.selector import SynchronizationSelector
 from .isolines.selector import IsolineSelector
 
@@ -160,3 +161,14 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
     def create_isoline(self, sync):
         return self.__isoline_selector.create_isoline(sync)
+
+    def create_reader(self):
+        """
+        Returns a three-item tuple containing the reader, the isoline and the synchronization
+        """
+        reader = TraceReader(self.__train)
+        sync = self.create_synchronization()
+        isoline = self.create_isoline(sync)
+        reader.isoline_remover = isoline
+        reader.add_pixels(self.get_pixel_list())
+        return reader, isoline, sync

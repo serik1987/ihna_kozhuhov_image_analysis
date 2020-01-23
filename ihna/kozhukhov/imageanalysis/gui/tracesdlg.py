@@ -178,7 +178,10 @@ class TracesDlg(wx.Dialog):
         self.__median_option_box = wx.RadioButton(main_panel, label="Plot median and interquantile (dashed lines)")
         average_method_box.Add(self.__median_option_box)
 
-        options_panel.Add(average_method_box)
+        options_panel.Add(average_method_box, 0, wx.RIGHT, 5)
+
+        wx.StaticText(main_panel, label=processor.get_annotation_text(), pos=(10, 550))
+
         main_layout.Add(options_panel, 0, wx.BOTTOM, 10)
 
         buttons_panel = wx.BoxSizer(wx.HORIZONTAL)
