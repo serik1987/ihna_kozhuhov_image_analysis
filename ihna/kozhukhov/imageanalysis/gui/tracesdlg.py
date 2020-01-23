@@ -171,11 +171,11 @@ class TracesDlg(wx.Dialog):
         options_panel.Add(average_strategy_box, 0, wx.RIGHT | wx.EXPAND, 5)
         average_method_box = wx.BoxSizer(wx.VERTICAL)
 
-        self.__average_option_box = wx.RadioButton(main_panel, label="Plot mean and STD (solid lines)",
+        self.__average_option_box = wx.RadioButton(main_panel, label="Plot mean (solid lines)",
                                                    style=wx.RB_GROUP)
         average_method_box.Add(self.__average_option_box, 0, wx.BOTTOM, 5)
 
-        self.__median_option_box = wx.RadioButton(main_panel, label="Plot median and interquantile (dashed lines)")
+        self.__median_option_box = wx.RadioButton(main_panel, label="Plot median (dashed lines)")
         average_method_box.Add(self.__median_option_box)
 
         options_panel.Add(average_method_box, 0, wx.RIGHT, 5)
@@ -200,6 +200,16 @@ class TracesDlg(wx.Dialog):
         main_panel.SetSizerAndFit(general_layout)
         self.Centre()
         self.Fit()
+
+    def set_average_method_and_strategy(self, processor):
+        if self.__average_signal_box.GetValue():
+            processor.set_average_strategy('average_than_psd')
+        if self.__average_psd_box.GetValue():
+            processor.set_average_strategy('psd_than_average')
+        if self.__average_option_box.GetValue():
+            processor.set_average_method('mean')
+        if self.__median_option_box.GetValue():
+            processor.set_average_method('median')
 
     def close(self):
         self.__fig_canvas = None

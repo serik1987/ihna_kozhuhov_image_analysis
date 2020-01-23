@@ -381,7 +381,9 @@ class NativeDataManager(wx.Dialog):
             if traces_dlg.ShowModal() == wx.ID_CANCEL:
                 traces_dlg.close()
                 return
+            traces_dlg.set_average_method_and_strategy(trace_processor)
             traces_dlg.close()
+            print(trace_processor)
 
             final_traces_dlg = FinalTracesDlg(self)
             if final_traces_dlg.ShowModal() == wx.ID_CANCEL:

@@ -305,7 +305,26 @@ Isoline plotting epoch: {4} - {5} cycles ({6} - {7} frames)""".format(
                 'average_that_psd' - first, average the signal, next, calculate the Power Spectrum Density
                 'psd_than_average' - first, calculate the Power Spectrum Density, next, average the signal
         """
-        if value in ['average_that_psd', 'psd_than_average']:
+        if value in ['average_than_psd', 'psd_than_average']:
             self.__average_strategy = value
         else:
             raise ValueError("Unknown or unsupported average strategy")
+
+    def set_average_method(self, value):
+        """
+        Sets the average method:
+
+        Arguments:
+             value - one of the possible strings:
+                'mean' - through calculation of mean
+                'median' - through calculation of median
+        """
+        if value in ['mean', 'median']:
+            self.__average_method = value
+        else:
+            raise ValueError("Unknown or unsupported average method")
+
+    def __str__(self):
+        S = "Average strategy: " + self.__average_strategy + "\n"
+        S += "Average method: " + self.__average_method + "\n"
+        return S

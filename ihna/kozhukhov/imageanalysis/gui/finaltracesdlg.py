@@ -23,6 +23,9 @@ class FinalTracesDlg(wx.Dialog):
     __ref_psd_ax = None
     __pix_psd_ax = None
 
+    __prefix_box = None
+    __postfix_box = None
+
     def __init__(self, parent):
         super().__init__(parent, title="Trace analysis result", size=(800, 600))
         main_panel = wx.Panel(self)
@@ -59,6 +62,7 @@ class FinalTracesDlg(wx.Dialog):
         draw_panel.SetSizer(draw_sizer)
         main_layout.Add(draw_panel, 0, wx.BOTTOM, 10)
 
+        middle_panel = wx.BoxSizer(wx.HORIZONTAL)
         save_panel = wx.BoxSizer(wx.VERTICAL)
 
         self.__save_npz_box = wx.CheckBox(main_panel, label="Save to NPZ")
@@ -78,7 +82,23 @@ class FinalTracesDlg(wx.Dialog):
         self.__save_png_box = wx.CheckBox(main_panel, label="Save to PNG")
         save_panel.Add(self.__save_png_box)
 
-        main_layout.Add(save_panel, 0, wx.BOTTOM, 10)
+        middle_panel.Add(save_panel, 0, wx.RIGHT, 5)
+        names_panel = wx.FlexGridSizer(2, 5, 5)
+
+        prefix_caption = wx.StaticText(main_panel, label="Name prefix")
+        names_panel.Add(prefix_caption, 0, wx.ALIGN_CENTER)
+
+        self.__prefix_box = wx.TextCtrl(main_panel)
+        names_panel.Add(self.__prefix_box)
+
+        postfix_caption = wx.StaticText(main_panel, label="Name postfix")
+        names_panel.Add(postfix_caption, 0, wx.ALIGN_CENTER)
+
+        self.__postfix_box = wx.TextCtrl(main_panel)
+        names_panel.Add(self.__postfix_box)
+
+        middle_panel.Add(names_panel)
+        main_layout.Add(middle_panel, 0, wx.BOTTOM, 10)
 
         buttons_panel = wx.BoxSizer(wx.HORIZONTAL)
 
