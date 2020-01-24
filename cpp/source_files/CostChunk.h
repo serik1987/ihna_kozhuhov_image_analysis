@@ -15,7 +15,7 @@ namespace GLOBAL_NAMESPACE {
 
     class CostChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct COST_CHUNK{
             char		    Tag[4] = "\x00\x00\x00";			//01 01
             uint32_t		NSynchChannels = 0;		//02 02 Up to 4 channels. Add new values bellow if needed or use SYNC_CHUNK
@@ -24,7 +24,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		StimulusPeriod[4] = {0, 0, 0, 0};	//08 11 milliseconds
             char		    Comments[20] = "\x00";		//12 16
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         COST_CHUNK info;

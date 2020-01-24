@@ -188,8 +188,8 @@ static PyObject* PyImanS_Frame_GetBody(PyImanS_FrameObject* self, void*){
     }
 
     int idx = 0;
-    for (int i = 0; i < train->getYSize(); ++i){
-        for (int j = 0; j < train->getXSize(); ++j){
+    for (unsigned int i = 0; i < train->getYSize(); ++i){
+        for (unsigned int j = 0; j < train->getXSize(); ++j){
             auto* pval = (uint16_t*)PyArray_GETPTR2(array, i, j);
             *pval = frame->getBody()[idx];
             ++idx;

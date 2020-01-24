@@ -16,7 +16,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class EpstChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct EPST_CHUNK{
             char		Tag[4] = "\x00\x00\x00";			    //01 01
             uint32_t	NConditions = 0;		//02 02 Number of conditions (for episodic stimuli)
@@ -28,7 +28,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t    NFramesBlankPost = 0;   //08 08 Post-stimulus frames (for episodic stimuli)
             char        Comments[32] = "";       //09 16
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         EPST_CHUNK info;

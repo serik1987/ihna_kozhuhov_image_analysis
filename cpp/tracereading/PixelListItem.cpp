@@ -49,7 +49,7 @@ namespace GLOBAL_NAMESPACE{
     }
 
     std::ostream& operator<<(std::ostream& out, const PixelListItem& other){
-        using std::endl, std::hex, std::dec;
+        using namespace std;
 
         if (other.pointType == PixelListItem::ArrivalTime){
             out << "Channel type: arrival time\n";

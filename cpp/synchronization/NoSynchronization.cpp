@@ -27,7 +27,7 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void NoSynchronization::setFinalFrame(int frame) {
-        if (frame > initialFrame && frame < train.getTotalFrames()){
+        if (frame > initialFrame && (unsigned int)frame < train.getTotalFrames()){
             finalFrame = frame;
         } else {
             throw FrameRangeException();

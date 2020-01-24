@@ -77,7 +77,7 @@ namespace GLOBAL_NAMESPACE {
         return *this;
     }
 
-    const PixelListItem& TraceReader::getPixelItem(int index) const {
+    const PixelListItem& TraceReader::getPixelItem(unsigned int index) const {
         if (index < pixelList.size() && index >= 0){
             return pixelList[index];
         } else {
@@ -267,10 +267,10 @@ namespace GLOBAL_NAMESPACE {
         if (!sync.isSynchronized()){
             throw Synchronization::NotSynchronizedException();
         }
-        if (sync.getInitialFrame() < 0 || sync.getInitialFrame() >= train.getTotalFrames()){
+        if (sync.getInitialFrame() < 0 || (unsigned int)sync.getInitialFrame() >= train.getTotalFrames()){
             throw NoSynchronization::FrameRangeException();
         }
-        if (sync.getFinalFrame() < 0 || sync.getFinalFrame() >= train.getTotalFrames()){
+        if (sync.getFinalFrame() < 0 || (unsigned int)sync.getFinalFrame() >= train.getTotalFrames()){
             throw NoSynchronization::FrameRangeException();
         }
         if (sync.getFinalFrame() < sync.getInitialFrame()){

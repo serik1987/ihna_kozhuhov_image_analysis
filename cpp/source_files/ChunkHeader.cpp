@@ -38,7 +38,7 @@ namespace GLOBAL_NAMESPACE{
     };
 
     bool ChunkHeader::isKnown() const {
-        int chunk_code = operator uint32_t();
+        uint32_t chunk_code = operator uint32_t();
 
         for (int i=0; i < CHUNK_CODE_NUMBER; ++i){
             if (CHUNK_CODE_LIST[i] == chunk_code){
@@ -55,7 +55,7 @@ namespace GLOBAL_NAMESPACE{
     }
 
     bool ChunkHeader::isKnown(const char *id) {
-        int chunk_code = *(const int*)id;
+        uint32_t chunk_code = *(const uint32_t*)id;
 
         for (int i=0; i < CHUNK_CODE_NUMBER; ++i){
             if (CHUNK_CODE_LIST[i] == chunk_code){

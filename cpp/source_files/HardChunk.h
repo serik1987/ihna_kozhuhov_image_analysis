@@ -14,7 +14,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class HardChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct HARD_CHUNK{
             char		    Tag[4]              ="\x00\x00\x00";//01 01
             char		    CameraName[16]      ="\x00";        //02 05
@@ -40,7 +40,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t        HardwareBits        =0;             //21 24 Hardware digitization, bits
             char            Comments[160]       ="";            //22 64
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         HARD_CHUNK info;

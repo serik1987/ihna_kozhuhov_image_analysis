@@ -23,7 +23,7 @@ namespace GLOBAL_NAMESPACE{
     }
 
     TrainSourceFile& StreamFileTrain::seek(int n) {
-        if (n < 0 || n >= getTotalFrames()){
+        if (n < 0 || (unsigned int)n >= getTotalFrames()){
             throw Frame::frame_is_out_of_range(this, n);
         }
         if (!isOpened()){

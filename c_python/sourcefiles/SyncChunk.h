@@ -43,7 +43,7 @@ extern "C" {
             return NULL;
         }
         const char* name = PyUnicode_AsUTF8(key);
-        auto* chunk = (SyncChunk*)self->super.handle;
+        // auto* chunk = (SyncChunk*)self->super.handle;
         PyObject* result = PyImanS_Chunk_GetProperty((PyImanS_ChunkObject*)self, name);
 
         if (result != NULL){

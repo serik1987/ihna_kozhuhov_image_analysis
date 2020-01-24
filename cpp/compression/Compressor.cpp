@@ -59,7 +59,7 @@ namespace GLOBAL_NAMESPACE{
             throw SourceFile::file_read_exception(full_input_file);
         }
 
-        for (int i=0; i < elements_in_frame; ++i) {
+        for (unsigned int i=0; i < elements_in_frame; ++i) {
             int diff = (int) current_frame[i] - (int) previous_frame[i];
             if (diff > 127 || diff < -128) {
                 int idx = extra_pixels_number++;

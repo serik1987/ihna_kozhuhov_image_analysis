@@ -21,7 +21,7 @@ namespace GLOBAL_NAMESPACE {
 
         static constexpr double BIG_LONG = 4294967296.0;
 
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct FRAM_CHUNK{		// Experiment independent chunk sizeof(FRAM_CHUNK)=64
             char		Tag[4] = "\x00\x00\x00";			//01 01
             uint32_t		FrameSeqNumber = 0;	        //02 02 Frame sequential number as reported by frame grabber
@@ -35,7 +35,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		CallbackResult = 0;		//10 10 Return value of the experiment callback
             uint32_t		Free[4] = {0, 0, 0, 0};		//11 14
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         FRAM_CHUNK info = {};

@@ -2,6 +2,7 @@
 // Created by serik1987 on 12.01.2020.
 //
 
+#include <algorithm>
 #include "TraceReaderAndCleaner.h"
 
 namespace GLOBAL_NAMESPACE {

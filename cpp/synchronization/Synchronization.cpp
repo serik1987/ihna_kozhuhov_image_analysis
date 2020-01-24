@@ -257,7 +257,7 @@ namespace GLOBAL_NAMESPACE {
         }
 
         int it=(int)(ITERATIONM*(float)n);
-        int o=n;
+        // int o=n;
         int print_p = 10;
         if(n>10000) print_p=2;
 

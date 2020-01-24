@@ -21,7 +21,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class FramEpstChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct FRAM_EPST_CHUNK{
             char		Tag[4];			//01 01
             uint32_t		HeaderSize;		//02 02 size of the frameheader to follow(sizeof(FRAM_EPST_CHUNK)-16)
@@ -34,7 +34,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		FrameType;		//09 09 frame type, iti and stim for now
             uint32_t		Free[5];		//10 14
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         FRAM_EPST_CHUNK info;

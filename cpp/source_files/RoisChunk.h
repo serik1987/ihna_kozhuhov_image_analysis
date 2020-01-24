@@ -14,13 +14,13 @@ namespace GLOBAL_NAMESPACE {
      */
     class RoisChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct ROIS_CHUNK{
             char		Tag[4] = "\x00\x00\x00";		//
             uint32_t		RecordSize = 0;	//
             uint32_t		RecordCount = 0;	//
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         ROIS_CHUNK info;

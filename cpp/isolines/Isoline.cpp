@@ -7,7 +7,7 @@
 
 namespace GLOBAL_NAMESPACE {
 
-    Isoline::Isoline(StreamFileTrain &train, Synchronization &sync): ptrain(&train), psync(&sync) {
+    Isoline::Isoline(StreamFileTrain &train, Synchronization &sync): psync(&sync), ptrain(&train) {
         offset = 0;
         analysisInitialCycle = -1;
         analysisFinalCycle = -1;
@@ -17,16 +17,35 @@ namespace GLOBAL_NAMESPACE {
         analysisFinalFrame = -1;
         isolineInitialFrame = -1;
         isolineFinalFrame = -1;
+        progressFunction = nullptr;
     }
 
-    Isoline::Isoline(const Isoline &other): ptrain(other.ptrain), psync(other.psync) {
+    Isoline::Isoline(const Isoline &other): psync(other.psync), ptrain(other.ptrain) {
+        analysisInitialCycle = other.analysisInitialCycle;
+        analysisInitialFrame = other.analysisInitialFrame;
+        analysisFinalCycle = other.analysisFinalCycle;
+        analysisFinalFrame = other.analysisFinalFrame;
+        isolineInitialCycle = other.isolineInitialCycle;
+        isolineInitialFrame = other.isolineInitialFrame;
+        isolineFinalCycle = other.isolineFinalCycle;
+        isolineFinalFrame = other.isolineFinalFrame;
         offset = other.offset;
+        progressFunction = other.progressFunction;
     }
 
     Isoline &Isoline::operator=(const Isoline &other) noexcept {
         ptrain = other.ptrain;
         psync = other.psync;
         offset = other.offset;
+
+        analysisInitialCycle = other.analysisInitialCycle;
+        analysisInitialFrame = other.analysisInitialFrame;
+        analysisFinalCycle = other.analysisFinalCycle;
+        analysisFinalFrame = other.analysisFinalFrame;
+        isolineInitialCycle = other.isolineInitialCycle;
+        isolineInitialFrame = other.isolineInitialFrame;
+        isolineFinalCycle = other.isolineFinalCycle;
+        isolineFinalFrame = other.isolineFinalFrame;
 
         return *this;
     }

@@ -68,7 +68,7 @@ namespace GLOBAL_NAMESPACE{
             writeHeader(*file, output);
 
             writeFirstFrame(file->getFileStream(), output);
-            for (int n = 1; n < file->getSoftChunk().getFramesThisFile(); n++){
+            for (unsigned int n = 1; n < file->getSoftChunk().getFramesThisFile(); n++){
                 writeConsequtiveFrame(file->getFileStream(), output);
             }
 

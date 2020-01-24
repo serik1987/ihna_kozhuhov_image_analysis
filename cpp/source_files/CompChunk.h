@@ -24,7 +24,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class CompChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct COMP_CHUNK{
             char		    Tag[4] = "\x00\x00\x00";			//01 01
             uint32_t		CompressedRecordSize = 4;	//02 02
@@ -32,7 +32,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		CompressedFrameNumber = 0;	//04 04
             uint32_t	    Free[3] = {0, 0, 0};		//05 07
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         COMP_CHUNK info;

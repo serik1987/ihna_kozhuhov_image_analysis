@@ -18,7 +18,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class FramCostChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct FRAM_COST_CHUNK{
             char		    Tag[4] = "\x00\x00\x00";			//01 01
             uint32_t		HeaderSize = 0;		//02 02 size of the frameheader to follow(sizeof(FRAM_COST_CHUNK)-16)
@@ -26,7 +26,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		SynchChannelDelay[4] = {0, 0, 0, 0};	//06 10 Relative to arrival time (microseconds)
             uint32_t		Free[4] = {0, 0, 0, 0};		//10 14
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         FRAM_COST_CHUNK info;

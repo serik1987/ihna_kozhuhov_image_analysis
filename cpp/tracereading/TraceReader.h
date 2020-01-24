@@ -102,7 +102,7 @@ namespace GLOBAL_NAMESPACE {
          * @param index The channel index
          * @return reference to the channel information
          */
-        [[nodiscard]] const PixelListItem& getPixelItem(int index) const;
+        [[nodiscard]] const PixelListItem& getPixelItem(unsigned int index) const;
 
         /**
          * Returns channels for all indices

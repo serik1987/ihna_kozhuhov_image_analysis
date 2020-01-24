@@ -28,12 +28,12 @@ namespace GLOBAL_NAMESPACE {
         static constexpr int CHUNK_ID_SIZE = 4;
         static constexpr int CHUNK_TAG_SIZE = 4;
 
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct DATA_CHUNK{
             char ID[CHUNK_ID_SIZE];
             uint32_t size;
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
         static constexpr int CHUNK_CODE_NUMBER = 14;
 
@@ -156,7 +156,7 @@ namespace GLOBAL_NAMESPACE {
          * @param chunk_code The chunk code to compare
          * @return true if the chunk code is the same as a given argument
          */
-        bool operator==(int chunk_code) const{
+        bool operator==(uint32_t chunk_code) const{
             return operator uint32_t() == chunk_code;
         }
 
@@ -198,7 +198,7 @@ namespace GLOBAL_NAMESPACE {
          * @param chunk_code The chunk code to compare
          * @return true if the chunk code is not the same as a given argument
          */
-        bool operator!=(int chunk_code) const{
+        bool operator!=(unsigned int chunk_code) const{
             return operator uint32_t() != chunk_code;
         }
 
@@ -207,7 +207,7 @@ namespace GLOBAL_NAMESPACE {
          * @return the so called "chunk code" Chunk code is a chunk header transformed to integer
          */
         explicit operator uint32_t() const{
-            return *((int*)header.ID);
+            return *((uint32_t*)header.ID);
         }
 
         /**

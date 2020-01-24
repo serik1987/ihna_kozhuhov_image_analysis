@@ -6,7 +6,7 @@
 
 namespace GLOBAL_NAMESPACE {
 
-    LinearFit::LinearFit(int dim): N(0), dim(dim), Sy(dim), Sxy(dim), slopes(dim), intersects(dim){
+    LinearFit::LinearFit(int dim): dim(dim), N(0), Sy(dim), Sxy(dim), slopes(dim), intersects(dim){
         std::fill(Sy.begin(), Sy.end(), 0.0);
         std::fill(Sxy.begin(), Sxy.end(), 0.0);
         S = Sx = Sxx = DD = 0.0;

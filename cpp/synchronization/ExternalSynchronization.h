@@ -91,7 +91,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @param chan index of the synchronization channel
          */
-        void setSynchronizationChannel(int chan);
+        void setSynchronizationChannel(unsigned int chan);
 
         /**
          * Sets the initial cycle

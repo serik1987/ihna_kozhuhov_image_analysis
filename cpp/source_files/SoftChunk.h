@@ -16,7 +16,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class SoftChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct SOFT_CHUNK{
             char		Tag[4] = "\x00\x00\x00";			//01 01
             char		DateTimeRecorded[24] = "";	//02 07 ASCII UNIX time
@@ -47,7 +47,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		FilterWidth = 0;		//27 47 Filter width, nanometers
             char		Comments[68] = "";		//28 64
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         SOFT_CHUNK info;

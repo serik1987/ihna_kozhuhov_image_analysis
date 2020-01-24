@@ -14,7 +14,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class SyncChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct SYNC_CHUNK {
             char		    Tag[4] = "\x00\x00\x00";		//01 01
             uint32_t		RecordSize = 0;	//02 02
@@ -25,7 +25,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		StimulusPeriod = 0; //07 07 milliseconds
             uint32_t		Free[3] = {0, 0, 0};        //08 10
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         SYNC_CHUNK info;

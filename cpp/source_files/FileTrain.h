@@ -31,11 +31,11 @@ namespace GLOBAL_NAMESPACE {
         uint32_t fileHeaderSize = -1;
         uint32_t frameHeaderSize = -1;
         ExperimentalMode experimentalMode = Unknown;
-        int xSize = -1, ySize = -1;
+        uint32_t xSize = -1, ySize = -1;
         size_t xySize = -1, frameImageSize = -1, frameSize = -1;
         std::vector<int> synchChannelMax;
-        int dataType = -1;
-        int totalFrames = -1;
+        uint32_t dataType = -1;
+        uint32_t totalFrames = -1;
 
         std::list<Frame*> frameCache;
         Frame** frameCacheStatus = nullptr;
@@ -98,7 +98,7 @@ namespace GLOBAL_NAMESPACE {
         /**
          * Defines number of frames that can be stored to the hard disk drive
          */
-        int capacity = 200;
+        unsigned int capacity = 200;
 
         class train_exception: public io_exception{
         public:
@@ -307,13 +307,13 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return map size on X, in pixels
          */
-        [[nodiscard]] int getXSize() const { return xSize; }
+        [[nodiscard]] uint32_t getXSize() const { return xSize; }
 
         /**
          *
          * @return map size in Y, in pixels
          */
-        [[nodiscard]] int getYSize() const { return ySize; }
+        [[nodiscard]] uint32_t getYSize() const { return ySize; }
 
         /**
          *
@@ -337,7 +337,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return data type
          */
-        [[nodiscard]] int getDataType() const { return dataType; }
+        [[nodiscard]] uint32_t getDataType() const { return dataType; }
 
         /**
          *
@@ -357,7 +357,7 @@ namespace GLOBAL_NAMESPACE {
          * @param chan number of the synchronization channel
          * @return
          */
-        [[nodiscard]] int getSynchronizationChannelMax(int chan) const{
+        [[nodiscard]] int getSynchronizationChannelMax(unsigned int chan) const{
             if (experimentalMode == Continuous){
                 if (chan >= 0 && chan < synchChannelMax.size()){
                     return synchChannelMax[chan];
@@ -373,7 +373,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return total number of frames within the record
          */
-        [[nodiscard]] int getTotalFrames() const {
+        [[nodiscard]] uint32_t getTotalFrames() const {
             return totalFrames;
         }
 

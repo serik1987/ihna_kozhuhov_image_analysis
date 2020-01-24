@@ -84,7 +84,7 @@ namespace GLOBAL_NAMESPACE {
          *
          * @param n number of cycle at which analysis finishes
          */
-        void setFinalCycle(int n);
+        void setFinalCycle(int n) override;
     };
 
 }

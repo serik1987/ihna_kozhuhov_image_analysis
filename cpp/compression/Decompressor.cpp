@@ -68,14 +68,14 @@ namespace GLOBAL_NAMESPACE{
             throw SourceFile::file_read_exception(full_input_file);
         }
 
-        for (int i=0; i < elements_in_frame; ++i){
+        for (unsigned int i=0; i < elements_in_frame; ++i){
             current_frame[i] = (uint16_t)((int)previous_frame[i] + (int8_t)compressed_frame[i]);
         }
 
         in.read((char*)&extra_pixels_number, sizeof(extra_pixels_number));
         in.read((char*)extra_pixels, extra_pixels_number * sizeof(EXTRA_PIXEL_RECORD));
 
-        for (int i=0; i < extra_pixels_number; ++i){
+        for (unsigned int i=0; i < extra_pixels_number; ++i){
             COMPRESSOR_RECORD rec;
 
             rec.S[1] = extra_pixels[i].S[3];

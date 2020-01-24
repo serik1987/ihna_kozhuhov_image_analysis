@@ -14,7 +14,7 @@ namespace GLOBAL_NAMESPACE {
      */
     class GreenChunk: public Chunk {
     public:
-#pragma PACK(push, 1)
+#pragma pack(push, 1)
         struct GREE_CHUNK{
             char		Tag[4] = "\x00\x00\x00";			//01 01
             float 	LoClip = 0;			//02 02
@@ -23,7 +23,7 @@ namespace GLOBAL_NAMESPACE {
             uint32_t		HiPass = 0;   		//05 05
             char		Comments[12] = "";		//06 08
         };
-#pragma PACK(pop)
+#pragma pack(pop)
 
     private:
         GREE_CHUNK info;

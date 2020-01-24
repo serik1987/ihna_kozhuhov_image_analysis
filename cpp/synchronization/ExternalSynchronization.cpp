@@ -84,7 +84,7 @@ namespace GLOBAL_NAMESPACE {
         return *this;
     }
 
-    void ExternalSynchronization::setSynchronizationChannel(int chan) {
+    void ExternalSynchronization::setSynchronizationChannel(unsigned int chan) {
         if (chan >= 0 && chan < train.getSynchronizationChannelNumber()){
             synchronizationChannel = chan;
         } else {

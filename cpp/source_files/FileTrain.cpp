@@ -64,7 +64,7 @@ namespace GLOBAL_NAMESPACE{
     Frame& FileTrain::addFrame(int n){
         if (frameCacheStatus == nullptr){
             frameCacheStatus = new Frame*[getTotalFrames()];
-            for (int i=0; i < getTotalFrames(); ++i){
+            for (unsigned int i=0; i < getTotalFrames(); ++i){
                 frameCacheStatus[i] = nullptr;
             }
         }
@@ -94,7 +94,7 @@ namespace GLOBAL_NAMESPACE{
     Frame& FileTrain::replaceFrame(int n) {
         if (frameCacheStatus == nullptr){
             frameCacheStatus = new Frame*[getTotalFrames()];
-            for (int i=0; i < getTotalFrames(); ++i){
+            for (unsigned int i=0; i < getTotalFrames(); ++i){
                 frameCacheStatus[i] = nullptr;
             }
         }
@@ -153,7 +153,7 @@ namespace GLOBAL_NAMESPACE{
         if (train.getExperimentalMode() == FileTrain::Continuous){
             out << "Experimental mode: continuous\n";
             out << "Total number of synchronization channels: " << train.getSynchronizationChannelNumber() << endl;
-            for (int chan = 0; chan < train.getSynchronizationChannelNumber(); ++chan){
+            for (unsigned int chan = 0; chan < train.getSynchronizationChannelNumber(); ++chan){
                 out << "Maximum signal value for synchronization channel " << chan << ": " <<
                     train.getSynchronizationChannelMax(chan) << " \n";
             }
@@ -245,7 +245,7 @@ namespace GLOBAL_NAMESPACE{
     }
 
     void FileTrain::sanityCheck() {
-        using std::cout, std::endl;
+        using namespace std;
 
         for (auto& file: *this){
             if (file->getSoftChunk().getTotalFrames() != getTotalFrames()){

@@ -8,7 +8,6 @@
 extern "C" {
 
     static PyImanI_IsolineObject* PyImanI_Isoline_New(PyTypeObject* type, PyObject* args, PyObject* kwds){
-        printf("SO New Isoline\n");
         auto* self = (PyImanI_IsolineObject*)type->tp_alloc(type, 0);
         if (self != NULL){
             self->parent_train = NULL;
@@ -19,7 +18,6 @@ extern "C" {
     }
 
     static void PyImanI_Isoline_Destroy(PyImanI_IsolineObject* self){
-        printf("SO Isoline destruction\n");
         using namespace GLOBAL_NAMESPACE;
         Py_XDECREF(self->parent_train);
         Py_XDECREF(self->parent_synchronization);

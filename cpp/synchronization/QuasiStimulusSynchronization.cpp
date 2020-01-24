@@ -37,7 +37,7 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void QuasiStimulusSynchronization::setStimulusPeriod(int period){
-        if (period > 0 && period <= train.getTotalFrames()){
+        if (period > 0 && (unsigned int)period <= train.getTotalFrames()){
             stimulusPeriod = period;
         } else {
             throw StimulusPeriodException();
@@ -45,9 +45,9 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void QuasiStimulusSynchronization::setInitialCycle(int n) {
-        bool assert = false;
+        bool assert;
         if (finalCycle == -1){
-            assert = n > 0 && n <= train.getTotalFrames() / stimulusPeriod;
+            assert = n > 0 && (unsigned int)n <= train.getTotalFrames() / stimulusPeriod;
         } else {
             assert = n > 0 && n <= finalCycle;
         }
@@ -60,11 +60,11 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void QuasiStimulusSynchronization::setFinalCycle(int n){
-        bool assert = false;
+        bool assert;
         if (initialCycle == -1){
-            assert = n > 0 && n <= train.getTotalFrames() / stimulusPeriod;
+            assert = n > 0 && (unsigned int)n <= train.getTotalFrames() / stimulusPeriod;
         } else {
-            assert = n >= initialCycle && n <= train.getTotalFrames() / stimulusPeriod;
+            assert = n >= initialCycle && (unsigned int)n <= train.getTotalFrames() / stimulusPeriod;
         }
 
         if (assert){
