@@ -32,6 +32,8 @@ class Traces:
     __reference = None
     __reference_psd = None
 
+    __output_file = None
+
     def __init__(self):
         pass
 
@@ -181,7 +183,7 @@ class Traces:
         Sets the times vector
         """
         if self.__times is None:
-            raise AttributeError("Returns times")
+            raise AttributeError("Please, set_times()")
         else:
             return self.__times
 
@@ -293,6 +295,12 @@ class Traces:
     def set_reference_psd(self, value):
         self.__reference_psd = value
 
+    def get_output_file(self):
+        return self.__output_file
+
+    def set_output_file(self, value):
+        self.__output_file = value
+
     def __str__(self):
         try:
             s0 = """
@@ -374,6 +382,7 @@ Reference PSD: {7} {15}
                             reference=self.get_reference(),
                             reference_psd=self.get_reference_psd()
         )
+        self.set_output_file(full_file)
         return full_file
 
     def save_mat(self, folder):
@@ -406,3 +415,18 @@ Reference PSD: {7} {15}
             mdict["ISO_" + key] = value
         scipy.io.savemat(full_file, mdict)
         return full_file
+
+    def load(self):
+        """
+        Loads from the file taken from the 'output_file' property
+        """
+        filename = self.get_output_file()
+        src = np.load(filename)
+        self.set_times(src['times'])
+        self.set_traces(src['traces'])
+        self.set_frequencies(src['frequencies'])
+        self.set_spectrums(src['spectrums'])
+        self.set_avg_trace(src['avg_trace'])
+        self.set_avg_psd(src['avg_psd'])
+        self.set_reference_signal(src['reference'])
+        self.set_reference_psd(src['reference_psd'])

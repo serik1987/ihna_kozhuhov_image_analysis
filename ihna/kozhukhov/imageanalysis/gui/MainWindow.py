@@ -474,6 +474,8 @@ class MainWindow(wx.Frame):
 
     def open_trace_analysis_manager(self):
         print("Open trace analysis manager")
+        for trace in self.__case['traces']:
+            print(trace)
 
     def open_averaged_maps_manager(self):
         print("Averaged maps manager")
@@ -673,7 +675,7 @@ class MainWindow(wx.Frame):
                 self.set_roi_not_found()
             else:
                 self.set_roi_ready()
-            if self.__case['trace_files'] is None:
+            if not self.__case.traces_exist():
                 self.set_traces_not_found()
             else:
                 self.set_traces_ready()

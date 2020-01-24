@@ -4,6 +4,7 @@ import copy
 import os.path
 import xml.etree.ElementTree as ET
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
+from ihna.kozhukhov.imageanalysis.tracereading import Traces
 from .roilist import RoiList
 
 
@@ -47,18 +48,20 @@ class Case:
 
     __properties = None
     __roi_list = None
+    __traces_list = None
 
-    def __init__(self, input_object):
+    def __init__(self, input_object, pathname=None):
         self.__properties = {}
         for property_name in self.property_names:
             self.__properties[property_name] = None
         self.__properties['auto'] = False
         self.__properties['imported'] = False
         self.__roi_list = RoiList()
+        self.__traces_list = []
         if isinstance(input_object, dict):
             self.import_case(input_object)
         elif isinstance(input_object, ET.Element):
-            self.load_case(input_object)
+            self.load_case(input_object, pathname)
         else:
             raise ValueError("Unrecognized argument type for the case")
 
@@ -78,7 +81,9 @@ class Case:
         else:
             self.set_properties(pathname=pathname, filename=filename, imported=True)
 
-    def load_case(self, xml):
+    def load_case(self, xml, pathname=None):
+        if pathname is not None:
+            self.set_properties(pathname=pathname)
         if xml.attrib['autoprocess'] == "Y":
             autoprocess = True
         else:
@@ -105,6 +110,10 @@ class Case:
             self.__load_roi(xml.find('roi-list'))
         else:
             self.__roi_list = RoiList()
+        if xml.find('traces') is not None:
+            self.__load_traces(xml.find('traces'))
+        else:
+            self.__traces_list = []
 
     def __read_file_list(self, xml, element_name):
         filelist = []
@@ -114,6 +123,23 @@ class Case:
 
     def __load_roi(self, xml):
         self.__roi_list.load(xml)
+
+    def __load_traces(self, traces_list):
+        self.__traces_list = []
+        for trace_info in traces_list.findall("trace"):
+            trace = Traces()
+            trace.set_animal_name(trace_info.attrib['animal_name'])
+            trace.set_case_name(self['short_name'])
+            trace.set_roi_name(trace_info.attrib['roi_name'])
+            trace.set_prefix_name(trace_info.attrib['prefix_name'])
+            trace.set_postfix_name(trace_info.attrib['postfix_name'])
+            trace.set_train_properties(trace_info.find('train-properties').attrib)
+            trace.set_synchronization_properties(trace_info.find('synchronization-properties').attrib)
+            trace.set_isoline_properties(trace_info.find('isoline-properties').attrib)
+            output_file = os.path.join(self['pathname'], trace_info.attrib['src'])
+            trace.set_output_file(output_file)
+            trace.load()
+            self.__traces_list.append(trace)
 
     def save_case(self, parent_xml):
         if self['imported']:
@@ -145,6 +171,35 @@ class Case:
         roi_xml = self.__roi_list.save()
         roi_xml.tail = "\n"
         root.append(roi_xml)
+        self.__save_trace_list(root)
+
+    def __save_trace_list(self, root):
+        if self.traces_exist():
+            traces = ET.SubElement(root, "traces")
+            traces.text = "\n"
+            traces.tail = "\n"
+            for trace in self['traces']:
+                trace_element = ET.SubElement(traces, "trace",
+                                              animal_name=trace.get_animal_name(),
+                                              fullname=trace.get_fullname(),
+                                              prefix_name=trace.get_prefix_name(),
+                                              postfix_name=trace.get_postfix_name(),
+                                              roi_name=trace.get_roi_name(),
+                                              src=os.path.split(trace.get_output_file())[1])
+                trace_element.text = "\n"
+                trace_element.tail = "\n"
+                properties = trace.get_train_properties()
+                for key, value in properties.items():
+                    properties[key] = str(value)
+                ET.SubElement(trace_element, "train-properties", properties).tail = "\n"
+                properties = trace.get_synchronization_properties()
+                for key, value in properties.items():
+                    properties[key] = str(value)
+                ET.SubElement(trace_element, "synchronization-properties", properties).tail = "\n"
+                properties = trace.get_isoline_properties()
+                for key, value in properties.items():
+                    properties[key] = str(value)
+                ET.SubElement(trace_element, "isoline-properties", properties).tail = "\n"
 
     def __add_file_list(self, root, list_name, list_element_name, filelist):
         list_element = ET.SubElement(root, list_name)
@@ -167,6 +222,8 @@ class Case:
     def __getitem__(self, key):
         if key == "roi":
             return self.__roi_list
+        if key == "traces":
+            return self.__traces_list
         if key in self.property_names:
             return self.__properties[key]
         else:
@@ -201,7 +258,14 @@ class Case:
             s += "Case info is not presented"
         else:
             s += "Case info is presented"
+        s += "Traces: {0} traces".format(len(self.__traces_list))
         return s
+
+    def get_traces_list(self):
+        return self.__traces_list
+
+    def get_traces_number(self):
+        return len(self.__traces_list)
 
     def get_discarded_list(self):
         discarded_list = []
@@ -245,3 +309,6 @@ class Case:
 
     def roi_exist(self):
         return len(self.__roi_list) > 0
+
+    def traces_exist(self):
+        return self.get_traces_number() > 0

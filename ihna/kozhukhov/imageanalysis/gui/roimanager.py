@@ -41,7 +41,6 @@ class RoiManager(wx.Dialog):
 
         self.__create_table(main_panel)
         main_layout.Add(self.__table, 1, wx.BOTTOM | wx.EXPAND, 25)
-
         buttons = self.__create_buttons(main_panel)
         main_layout.Add(buttons, 0, wx.BOTTOM | wx.ALIGN_CENTER, 25)
 

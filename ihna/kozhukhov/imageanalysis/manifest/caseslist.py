@@ -49,8 +49,7 @@ class CasesList:
         pathname = self.__corresponding_animal['folder_full_name']
         root = ET.parse(self.get_manifest_file()).getroot()
         for case_element in root.findall("case"):
-            case = Case(case_element)
-            case['pathname'] = pathname
+            case = Case(case_element, pathname=pathname)
             self.__discarded_list.extend(case.get_discarded_list())
             self.__all_cases.append(case)
 

@@ -393,9 +393,8 @@ class NativeDataManager(wx.Dialog):
                 return
             final_traces_dlg.close()
             npz_file = final_traces_dlg.save_files(self.__case['pathname'])
-            print(npz_file)
-
-            print("PY Traces saving")
+            if npz_file is not None:
+                self.__case['traces'].append(traces)
 
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
