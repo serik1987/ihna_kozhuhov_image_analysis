@@ -1,0 +1,242 @@
+Documentation on ihna.kozhukhov.imageanalysis
+=============================================
+
+1. OVERVIEW
+
+In 2003 Dr. Valery Kalatsky suggested a novel paradigm for brain investigation by the method of
+intrinsic-signal optical imaging technique. The essence of this technique is the following.
+The primary visual cortex is stimulated by a drifting grating which orientation changes continuously
+and periodically with a period equal to 1 minute. This means that the neural activity from a
+partucular column will also make oscillations with this particular period. So does the intrinsic
+signal. Hence, if we record the intrinsic signal and extract 1min-oscillations from it we will deal
+with only that part of the signal that includes the response to the stimulus. The other more
+powerful components of the intrinsic signal, especially those connected with breath rate and heart rate
+will be excluded from an analysis.
+
+For more detailed description of this method see the following paper:
+Kalatsky V.A., Stryker P.S. New Paradigm for Optical Imaging: Temporally Encoded Maps of Intrinsic Signal.
+Neuron. 2003. V. 38. N. 4. P. 529-545
+This is your responsibility to cite this paper when you have done the research and used this package
+for this purpose.
+
+Dr. Valery Kalatsky supplied a program (called 'iman') that processes the data generated under continuous
+stimulation paradigm. This program was extremely useful for making a scientific progress over 17 years.
+However, at this moment important disadvantages in this program were found and this is clear that the
+program shall be reconstructed.
+
+In 2020 Dr. Sergei A. Kozhukhov reconstructed the IMAN and represented it in a way of C++
+written Python module. The reconstructed version of the program have the following advantages comparing with
+the original IMAN:
+
+    (a) The program has been built under Linux v. 5.3 operating system while the original version of the
+        program was built under older versions of Linux and failed to run in newer Linux'es.
+
+    (b) A convenient feature of the program is existence of this its build for 64-bit Windows operating
+        system.
+
+    (c) When we treat about the IMAN program this was possible to make its builds under newer versions of
+        any POSIX-compliant operating system (including Linux and Mac OS X) but such builds are not able
+        to read the data recorded under the original data acquisition program developed by V. Kalatsky.
+        This is not truth for the ihna.kozhukhov.imageanalysis package. This package may be build under any
+        type of POSIX-compliant and Windows operating system and such build will read the original
+        experiment records.
+
+    (d) A convenient GUI interface is provided by the program. However, possibility to run the processing
+        modules from the Python or iPython command line also exist. If you want to use this package from the
+        Jupyter notebook, just do it.
+
+    (e) While IMAN allowed to provide trace analysis for up to four pixels, the ihna.kozhukhov.imageanalysis
+        provides trace analysis for a certain set of pixels define by the map ROI.
+
+    (f) ihna.kozhukhov.imageanalysis provides an interactive tool to define a rectangular ROI and create
+        complex ROI containing several simple rectangular ROIs. The program averages all traces recorded from
+        all pixels belonging to the ROI.
+
+    (g) The original IMAN saves traces as temporal dependencies of the signal on the frame number. It doesn't
+        use frame arrival times. The ihna.kozhukhov.imageanalysis creates a temporal axis based on frame
+        arrival times and such axis will be saved together with intinsic signal values at certain times.
+
+However, the updated program has lost some of features that were treated to be deprecated. Especially,
+
+    (a) The program doesn't work with episodic stimulation since such stimulation protocol has not been used
+        for over 10 years.
+
+    (b) The program doesn't open the data in so called 'old format', that is, the data recorded before 2003.
+
+    (c) Green map analysis is also inavailable from the new version
+
+
+1.2 WAYS TO USE THIS APPLICATION
+
+USE IT AS AN ORDINARY USER if you want to get a convenient graphical user interface that allows you to interactively
+manipulate with your experimental data. The GUI contains only limited functionality that will allow to to complete
+current project successfully. However, for further advances in science you need to either record new imaging data
+during the experiment or find new ways to use this tool (i.e., to use it as an expert). If taking new interesting
+experiments is not a problem for you, just go to Section 3 and use the program as an ordinary user.
+
+USE IT AS AN EXPERT if you have a good knowledge of Python, NUMPY, Matplotlib, iPython, the Jupyter Notebook,
+Scipy and Pandas. We also advice you to additionally install Anaconda - a Matlab-like interface that allows you to
+work on Python-written code. After you studied the usage of this program as an expert, you can find new ways of
+using this program, establish its interactions with another packages developed in another laboratories (BluePyOpt is
+among them) and thus achieve more advances in science. The expert usage of this package will free you from studying
+Matlab, R and SPSS, Just learn the packages mentioned above and of course this Documentation and Use it as an expert
+and go to Section 4.
+
+USE IT AS A GOD if are have strong background in Applied Mathematics and Computer Science and you know C++ very well.
+When using as a god you don't need Python to be pre-installed. Anything what you need is to find C++ classes in the
+cpp folder. Include all .cpp files within this folder to your project and use cpp as an include directory. Create your
+own C++ application based on the classes provided. All necessary information can be found in docstrings to these
+classes (In JetBrain CLion press Ctrl-Q for opening the documentation).
+
+
+1.3. GENERAL CONCEPTS
+
+A 32-BIT OPERATING SYSTEM
+A type of operating system that uses 32 bits (4 bytes) to store memory addresses. This requires less
+operating memory than the 64-bit operating system but it doesn't support the operating memory higher than 4 GB.
+Both Windows and Linux can be 32-bit
+Right-click on 'My Computer' and select 'Properties' to check whether your operating system is 32-bit.
+
+A 64-BIT OPERATING SYSTEM
+A type of operating system that uses 64 bits (8 bytes) to store memory adresses. This type supports operating memories
+higher than 4 GB but requires more operating memory to be installed.Both Windows and Linux can be 64-bit.
+Right-click on 'My Computer' and select 'Properties' to check whether your operating system is 64-bit.
+
+AMPLITUDE MAP
+A map that tells you how the population located at a particular point on the map is selective to the presented visual
+stimulus
+
+AVERAGED MAP
+The result of processing all FRAMES within the record that contains information about how each neural population
+recorded is responsible for a certain stimulus. The AMPLITUDE MAP and the PHASE MAP are particular cases of the
+AVERAGED MAPS
+
+A BUILD
+A version of this package that can be used only for a certain platform. For example, builds for 64-bit Windows
+can be launched under 64-bit Windows only and will failed to be run under Linux or 32-bit Windows. Also, you can't run
+build for 64-bit Linux on 32-bit Linux and any type of Windows. Mac OS X operating system will run only builds for
+Mac OS X.
+Use a build suitable for your platform. If you don't have such a build, download the SOURCES and BUILD them to generate
+a new build suitable for you.
+
+TO BUILD
+To geenerate a new build for a platform you are currently working on from the SOURCES. The building process requires
+the COMPILER to be preinstalled.
+
+COMPILER
+A special application that builds the package from its sources. If no compiler is installed you can still use one of
+existent builds of the program but you can't create your own builds. Since the compiler has been installed successfully,
+you are not requires to run this. Just run the setup.py script that in turn will run an appropriate compiler.
+If you are working under Windows you need to install and to use Microsoft Visual Studio. However, if you are working
+under Linux or Mac OS X you need to install and use g++.
+
+COMPLEX MAP
+A 2D matrix containing complex number which modulus will give an amplitude maps and which argument will give the
+phase map.
+
+COMPLEX ROI
+A ROI that can be consists of several simple or comples ROIs and contains all pixels that are contained by at least one
+of these ROIs.
+
+TO COMPRESS
+To transform the data into their compressed state.
+
+COMPRESSED STATE
+State of the data when they contain all information recorded during the experiment occupying little volume on the
+hard drive. You can't process the data stored in the compressed state and you need to DECOMPRESS it first.
+
+TO DECOMPRESS
+To transform the data into their decompressed state.
+
+DECOMPRESSED STATE
+State of the data when they they are ready for any kind of processing (including frame view, trace analysis and
+building averaged amplitude and phase maps). The data in the decompressed state stores too long volume and you
+probably need to
+
+ELECTRONIC LAB JOURNAL
+A special space where you can make notes about stimulation pecularities, animal state, substances induced etc.
+
+FILE TRAIN
+A sequence of files that can store a single record. During the experiment the whole record is splitted into several
+parts and each of the part is stored in a separate file. All files within the train are required for the data to be
+opened. All of them shall exist in a stand alone folder and their names shall be the same as given at the record.
+
+A FRAME
+An image of the cortex made during a particular time. The FILE TRAIN contains temporal sequence of the frames recorded
+an consequtive times.
+
+G++
+A C++ compiler working on Linux. This is the only compiler you can use to create a build for Linux or Mac OS X.
+
+GUI SHELL
+A stand-alone Python application that allows to interactive use of some of the functions available in the program
+
+ISOLINE
+An low-frequency aperiodic changes in the intrinsic signal that declines the accuracy of your research. These changes
+shall be removed from the source intrinsic signal during the map averaging the traces extraction.
+
+MANIFEST
+The file that stores the ELECTRONIC LAB JOURNAL and all files associated with a particular record.
+
+MICROSOFT VISUAL STUDIO
+A C++ compiler working on MS Windows. This is the only compiler you can use to create a build for Windows.
+
+MODULES
+A more complicated interface of this package that provides an access to the functions that are inaccessible from the
+GUI tool.
+
+PLATFORM
+A combination of the operating system and a Python 3 interpreter run under this particular operating system.
+
+PHASE MAP
+A map that tells you a feature that a particular neural population is tuned for depending on its location.
+
+PYTHON
+A programming language that is very useful for writing a scientific software.
+
+PYTHON 3
+The newest version of the Python programming language. This version has not forward and backward compatibility with
+the odler version called Python 2, so, all packages written in Python 2 will not run under Python 3 and vice versa.
+
+PYTHON INTERPRETER
+A special program that is required to run the software written in the Python programming language. You can't use
+this package without Python interpreter, however, since the interpreter is installed successfully, you are not
+required to run this alone. Just click on the GUI application, this will start the Python interpeter and loads
+the package into it.
+
+PYTHON 3 INTERPRETER
+A special program that is required to the software written in the Python 3 programming language. Especially,
+this package is required Python to be installed on your PC.
+
+REGION OF INTEREST (ROI)
+A part of the maps which data you will use for the following analysis and calculating statistics. Because the instinsic
+signal is spatially noisy, you can't read the signal recorded from a particular point directly but you shall select
+an arbitrary piece of the maps and average the data across all pixels belonging to this piece.
+
+SIMPLE ROI
+A ROI that has a rectangular form.
+
+SOURCE FILES
+A version of this package that can be used to generate a particular build for a platform you are currently working on.
+If you have source files, you can't run and use them directly, you need first, to make a particular build and then
+to use a build you are currently made.
+
+SYNCHRONIZATION
+Establishing the relationship between a frame and a particular stimulus value. The synchronization process includes:
+    (1) Reading the signal from the synchronization channel
+    (2) Defining the analysis initial and final frame
+    (3) Construction of the reference signal scalar-prodict of the frame sequence to the reference signal will get
+    AVERAGED MAPS
+
+SYNCHRONIZATION CHANNEL
+A channel that accepts a signal from the stimulation computer. Such a signal is extremely useful for the synchronization
+process!
+
+A TRACE
+A temporal-dependent intrinsic signal recorded from a particular pixel of the cortex
+
+VESSEL MAP
+An unprocessed photograph of the visual cortex that you can use to see where are vessels, dura, neural tissue etc.
+
+WORKING FOLDER
+The folder containing all the data related to a particular animal.

@@ -1,3 +1,7 @@
 # Project exclude paths
 /cmake-build-debug/
 /T_1BI.0000/
+/build/
+/dist/
+/MANIFEST
+/ihna/kozhukhov/imageanalysis/_imageanalysis.so

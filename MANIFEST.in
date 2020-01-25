@@ -1,0 +1,3 @@
+recursive-include cpp *.h
+recursive-include c_python *.h
+include README_RUS

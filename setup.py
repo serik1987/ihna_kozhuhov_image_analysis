@@ -99,6 +99,14 @@ setup(
         "scipy(>=1.4)",
         "wxpython(>=4.0)"
     ],
-    provides="ihna_kozhukhov_iman",
+    provides=["ihna_kozhukhov_iman"],
     scripts=["iman"]
 )
+
+print("")
+print("Please, carefully read the README file in order to install this program")
+print("Written above are messages that notifies you after successful or insuccessful")
+print("installation process")
+print("Please, read these messages carefully and press Enter to close this window")
+print("and exit from the setup program")
+input("")
