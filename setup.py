@@ -72,6 +72,7 @@ imageanalysis = Extension("ihna.kozhukhov.imageanalysis._imageanalysis",
                               "cpp/tracereading/TraceReaderAndCleaner.cpp",
                               "cpp/misc/LinearFit.cpp"
                           ],
+                          include_dirs=[numpy.get_include()],
                           extra_compile_args=extra_compile_args
                           )
 
