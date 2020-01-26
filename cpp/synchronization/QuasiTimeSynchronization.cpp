@@ -2,6 +2,7 @@
 // Created by serik1987 on 12.01.2020.
 //
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include "QuasiTimeSynchronization.h"
 #include "../tracereading/TraceReader.h"

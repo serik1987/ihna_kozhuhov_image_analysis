@@ -2,6 +2,7 @@
 // Created by serik1987 on 12.01.2020.
 //
 
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include "../tracereading/TraceReader.h"
 #include "../source_files/IsoiChunk.h"
