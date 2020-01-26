@@ -2,6 +2,7 @@
 // Created by serik1987 on 15.12.2019.
 //
 
+#include <cctype>
 #include <iostream>
 #include <algorithm>
 #include "SourceFile.h"

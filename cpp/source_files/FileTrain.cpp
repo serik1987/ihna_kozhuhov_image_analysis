@@ -272,7 +272,7 @@ namespace GLOBAL_NAMESPACE{
                     throw experimental_chunk_not_found(file);
                 }
             }
-            if (file->getFileHeaderSize() != getFileHeaderSize()){
+            if ((uint32_t)file->getFileHeaderSize() != getFileHeaderSize()){
                 throw file_header_mismatch(file);
             }
             if (file->getFrameHeaderSize() != getFrameHeaderSize()){
