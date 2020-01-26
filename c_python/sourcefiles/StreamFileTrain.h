@@ -18,9 +18,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_SourceFileTrainIteratorType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.StreamFileTrainIterator",
-            .tp_basicsize = sizeof(PyImanS_StreamFileTrainIteratorObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles.StreamFileTrainIterator",
+            sizeof(PyImanS_StreamFileTrainIteratorObject),
+            0,
     };
 
     static PyImanS_StreamFileTrainObject* PyImanS_StreamFileTrain_New(PyTypeObject* cls, PyObject* args, PyObject* kwds){
@@ -96,9 +96,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_StreamFileTrainType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._StreamFileTrain",
-            .tp_basicsize = sizeof(PyImanS_StreamFileTrainObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._StreamFileTrain",
+            /* tp_basicsize */ sizeof(PyImanS_StreamFileTrainObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_StreamFileTrain_Create(PyObject* module){
@@ -125,7 +125,7 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_STREAMFILETRAIN_H

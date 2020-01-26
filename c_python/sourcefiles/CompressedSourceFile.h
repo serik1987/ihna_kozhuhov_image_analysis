@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_CompressedSourceFileType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._CompressedSourceFile",
-            .tp_basicsize = sizeof(PyImanS_CompressedSourceFileObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._CompressedSourceFile",
+            /* tp_basicsize */ sizeof(PyImanS_CompressedSourceFileObject),
+            /* tp_itemsize */ 0,
     };
 
     static PyImanS_CompressedSourceFileObject* PyImanS_CompressedSourceFile_New
@@ -84,6 +84,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_COMPRESSEDSOURCEFILE_H

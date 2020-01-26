@@ -15,9 +15,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_HardChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._HardChunk",
-            .tp_basicsize = sizeof(PyImanS_HardChunkObject),
-            .tp_itemsize = 0,
+            /* tp_name  */ "ihna.kozhukhov.imageanalysis.sourcefiles._HardChunk",
+            /* tp_basicsize */ sizeof(PyImanS_HardChunkObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_HardChunk_Init(PyImanS_HardChunkObject* self, PyObject* args, PyObject*){
@@ -96,9 +96,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_HardChunkMapping = {
-            .mp_length = NULL,
-            .mp_subscript = (binaryfunc)PyImanS_HardChunk_GetProperty,
-            .mp_ass_subscript = NULL,
+            /* mp_length */ NULL,
+            /* mp_subscript */ (binaryfunc)PyImanS_HardChunk_GetProperty,
+            /* mp_ass_subscript */ NULL,
     };
 
     static int PyImanS_HardChunk_Create(PyObject* module){
@@ -123,6 +123,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_HARDCHUNK_H

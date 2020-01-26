@@ -110,9 +110,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_SoftChunk_mapping = {
-        .mp_length = NULL,
-        .mp_subscript = (binaryfunc)PyImanS_SoftChunk_GetProperty,
-        .mp_ass_subscript = NULL,
+        NULL,
+        (binaryfunc)PyImanS_SoftChunk_GetProperty,
+        NULL,
     };
 
     static int PyImanS_SoftChunk_Create(PyObject* module){
@@ -139,6 +139,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_SOFTCHUNK_H

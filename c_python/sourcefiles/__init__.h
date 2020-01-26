@@ -20,7 +20,7 @@ extern "C" {
     static const int PyImanS_TotalChunksExisted = 12;
     static PyObject* PyImanS_ChunkTypes[PyImanS_TotalChunksExisted];
     static PyObject* PyImanS_FrameType_Handle = NULL;
-};
+}
 
 #include "exceptions.h"
 #include "FileTrain.h"
@@ -278,6 +278,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS___INIT___H

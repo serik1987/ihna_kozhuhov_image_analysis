@@ -15,9 +15,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_EpstChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._EpstChunk",
-            .tp_basicsize = sizeof(PyImanS_EpstChunkObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._EpstChunk",
+            /* tp_basicsize */ sizeof(PyImanS_EpstChunkObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_EpstChunk_Init(PyImanS_EpstChunkObject* self, PyObject* args, PyObject*){
@@ -69,9 +69,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_EpstChunk_mapping = {
-            .mp_length = NULL,
-            .mp_subscript = (binaryfunc)PyImanS_EpstChunk_GetProperty,
-            .mp_ass_subscript = NULL,
+            /* mp_length */ NULL,
+            /* mp_subscript */ (binaryfunc)PyImanS_EpstChunk_GetProperty,
+            /* mp_ass_subscript */ NULL,
     };
 
     static int PyImanS_EpstChunk_Create(PyObject* module){
@@ -96,6 +96,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_EPSTCHUNK_H

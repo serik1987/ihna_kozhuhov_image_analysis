@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanI_NoIsolineType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.isolines.NoIsoline",
-            .tp_basicsize = sizeof(PyImanI_NoIsolineObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.isolines.NoIsoline",
+            /* tp_basicsize */ sizeof(PyImanI_NoIsolineObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanI_NoIsoline_Init(PyImanI_NoIsolineObject* self, PyObject* args, PyObject* kwds){
@@ -60,6 +60,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_NOISOLINE_H

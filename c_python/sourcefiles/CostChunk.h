@@ -14,9 +14,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_CostChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._CostChunk",
-            .tp_basicsize = sizeof(PyImanS_CostChunkObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._CostChunk",
+            /* tp_basicsize */ sizeof(PyImanS_CostChunkObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_CostChunk_Init(PyImanS_CostChunkObject* self, PyObject* args, PyObject*){
@@ -81,9 +81,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_CostChunk_subscripts = {
-        .mp_length = NULL,
-        .mp_subscript = (binaryfunc)PyImanS_CostChunk_GetProperty,
-        .mp_ass_subscript = NULL,
+        /* mp_length */ NULL,
+        /* mp_subscript */ (binaryfunc)PyImanS_CostChunk_GetProperty,
+        /* mp_ass_subscript */ NULL,
     };
 
     static int PyImanS_CostChunk_Create(PyObject* module){
@@ -110,6 +110,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_COSTCHUNK_H

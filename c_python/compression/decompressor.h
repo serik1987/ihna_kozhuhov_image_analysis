@@ -17,9 +17,9 @@ extern "C" {
 
     static PyTypeObject PyImanC_DecompressorType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ihna.kozhukhov.imageanalysis.compression._Decompressor",
-        .tp_basicsize = sizeof(PyImanC_DecompressorObject),
-        .tp_itemsize = 0,
+        /* tp_name */ "ihna.kozhukhov.imageanalysis.compression._Decompressor",
+        /* tp_basicsize */ sizeof(PyImanC_DecompressorObject),
+        /* tp_itemsize */ 0,
     };
 
     static PyImanC_DecompressorObject* PyImanC_Decompressor_New(PyTypeObject* type, PyObject*, PyObject*){

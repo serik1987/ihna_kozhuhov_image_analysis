@@ -16,9 +16,9 @@ extern "C" {
 
     static PyTypeObject PyImanT_TraceReaderType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.tracereader.TraceReader",
-            .tp_basicsize = sizeof(PyImanT_TraceReaderObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.tracereader.TraceReader",
+            /* tp_basicsize */ sizeof(PyImanT_TraceReaderObject),
+            /* tp_itemsize */ 0,
     };
 
     typedef struct {
@@ -737,6 +737,6 @@ extern "C"{
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_TRACEREADER_H

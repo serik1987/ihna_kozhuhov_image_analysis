@@ -42,9 +42,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_FileTrainIteratorType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.FileTrainIterator",
-            .tp_basicsize = sizeof(PyImanS_FileTrainIteratorObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles.FileTrainIterator",
+            /* tp_basicsize */ sizeof(PyImanS_FileTrainIteratorObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_FileTrainIterator_Create(PyObject* module){
@@ -71,6 +71,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_FILETRAINITERATOR_H

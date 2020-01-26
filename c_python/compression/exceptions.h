@@ -28,7 +28,7 @@ static int PyImanC_Init_exceptions(PyObject *module) {
 
 static void PyImanC_Destroy_exceptions() {
     Py_XDECREF(PyImanC_DecompressionError);
-} ;
+}
 
 static int PyImanC_Exception_process(const void *exception_handle) {
     using namespace GLOBAL_NAMESPACE;

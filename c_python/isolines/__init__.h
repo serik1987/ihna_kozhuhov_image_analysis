@@ -15,7 +15,7 @@ extern "C" {
     PyTypeObject* PyImanI_NoIsoline_Handle = NULL;
     PyTypeObject* PyImanI_LinearFitIsoline_Handle = NULL;
     PyTypeObject* PyImanI_TimeAverageIsoline_Handle = NULL;
-};
+}
 
 #include "exceptions.h"
 #include "isoline.h"
@@ -63,6 +63,6 @@ extern "C"{
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS___INIT___H

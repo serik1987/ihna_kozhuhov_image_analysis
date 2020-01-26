@@ -15,9 +15,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_RoisChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._RoisChunk",
-            .tp_basicsize = sizeof(PyImanS_RoisChunkObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles._RoisChunk",
+            sizeof(PyImanS_RoisChunkObject),
+            0,
     };
 
     static int PyImanS_RoisChunk_Init(PyImanS_RoisChunkObject* self, PyObject* args, PyObject*){
@@ -54,9 +54,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_RoisChunkMapping = {
-            .mp_length = NULL,
-            .mp_subscript = (binaryfunc)PyImanS_RoisChunk_GetProperty,
-            .mp_ass_subscript = NULL,
+            NULL,
+            (binaryfunc)PyImanS_RoisChunk_GetProperty,
+            NULL,
     };
 
     static int PyImanS_RoiChunk_Create(PyObject* module){
@@ -81,6 +81,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_ROISCHUNK_H

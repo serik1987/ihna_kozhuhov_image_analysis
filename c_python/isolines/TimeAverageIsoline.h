@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanI_TimeAverageIsolineType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.isolines.TimeAverageIsoline",
-            .tp_basicsize = sizeof(PyImanI_TimeAverageIsolineObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.isolines.TimeAverageIsoline",
+            /* tp_basicsize */ sizeof(PyImanI_TimeAverageIsolineObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanI_TimeAverageIsoline_Init(PyImanI_TimeAverageIsolineObject* self,
@@ -107,6 +107,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_TIMEAVERAGEISOLINE_H

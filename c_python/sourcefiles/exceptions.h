@@ -614,6 +614,6 @@ extern "C" {
         return status;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_EXCEPTIONS_H

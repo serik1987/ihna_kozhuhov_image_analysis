@@ -9,8 +9,8 @@ extern "C" {
 
     static PyTypeObject PyImanY_SynchronizationType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.synchronization.Synchronization",
-            .tp_basicsize = sizeof(PyImanY_SynchronizationObject),
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.synchronization.Synchronization",
+            /* tp_basicsize */ sizeof(PyImanY_SynchronizationObject),
     };
 
     static PyImanY_SynchronizationObject* PyImanY_Synchronization_New(PyTypeObject* type,
@@ -385,6 +385,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_SYNCHRONIZATION_H

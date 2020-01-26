@@ -34,10 +34,10 @@ extern "C" {
 
     static PyModuleDef PyIman_Description = {
             PyModuleDef_HEAD_INIT,
-            .m_name = "ihna.kozhukhov._imageanalysis",
-            .m_doc = "",
-            .m_size = -1,
-            .m_methods = PyIman_Methods
+            /* m_name */ "ihna.kozhukhov._imageanalysis",
+            /* m_doc */ "",
+            /* m_size */ -1,
+            /* m_methods */ PyIman_Methods
     };
 
     PyMODINIT_FUNC PyInit__imageanalysis(void) {

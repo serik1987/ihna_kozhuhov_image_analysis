@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanY_ExternalSynchronizationType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.synchronization.ExternalSynchronization",
-            .tp_basicsize = sizeof(PyImanY_ExternalSynchronizationObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.synchronization.ExternalSynchronization",
+            /* tp_basicsize */ sizeof(PyImanY_ExternalSynchronizationObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanT_ExternalSynchronization_Init(PyImanY_ExternalSynchronizationObject* self,
@@ -196,6 +196,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_EXTERNALSYNCHRONIZATION_H

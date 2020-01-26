@@ -19,9 +19,9 @@ extern "C"{
 
     static PyTypeObject PyImanS_IsoiChunkIteratorType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.IsoiChunkIterator",
-            .tp_basicsize = sizeof(PyImanS_IsoiChunkIteratorObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles.IsoiChunkIterator",
+            /* tp_basicsize */ sizeof(PyImanS_IsoiChunkIteratorObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_IsoiChunk_Init(PyImanS_IsoiChunkObject* self, PyObject* args, PyObject*){
@@ -85,9 +85,9 @@ extern "C"{
     }
 
     static PyMappingMethods PyImanS_IsoiChunk_mapping = {
-            .mp_length = NULL,
-            .mp_subscript = (binaryfunc)PyImanS_IsoiChunk_GetProperty,
-            .mp_ass_subscript = NULL,
+            /* mp_length */ NULL,
+            /* mp_subscript */ (binaryfunc)PyImanS_IsoiChunk_GetProperty,
+            /* mp_ass_subscript */ NULL,
     };
 
     static PyImanS_IsoiChunkIteratorObject* PyImanS_IsoiChunk_Iter(PyImanS_IsoiChunkObject* self){
@@ -120,7 +120,7 @@ extern "C"{
         return 0;
     }
 
-};
+}
 
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_ISOICHUNK_H

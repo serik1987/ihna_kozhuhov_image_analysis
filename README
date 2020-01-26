@@ -308,7 +308,8 @@ Python 2.7.17
 This means that your operating system uses the old version of the Python and you need to tell it to use new version.
 In Linux you can use it by running the following command:
 
-ln -s /usr/bin/python3 /usr/bin/python
+sudo ln -s /usr/bin/python3 /usr/bin/python
+sudo ln -s /usr/bin/pip3 /usr/bin/pip
 
 In Windows you shall check the following instructions on how to fix this problem:
 
@@ -349,6 +350,36 @@ This program will generate new build for your platform and put it into the 'buil
 Type the following instruction to do this:
 
 python setup.py install
+
+In Linux you shall use another command:
+
+sudo python setup.py install
+
+3.2.6. TROUBLE SOLUTION
+
+    (a) The installer says 'please, use the python3'
+        In all commands above you shall replace 'python' by 'python3 and 'pip' by 'pip3'. An alternative way in Linux
+        is to use the following command to fix:
+
+sudo ln -s /usr/bin/python3 /usr/bin/python
+sudo ln -s /usr/bin/pip3 /usr/bin/pip
+
+        In Windows, you shall change the environmental variables or (if you don't know how to do this) remove all
+        versions of Python and install the latest one given that this is Python 3.
+
+    (b) The installer says that 'Permission denied' or 'Отказано в доступе':
+        You try to perform operation in non-priviledged mode. The solution is to enter to the priviledged mode. If you
+        are working under windows, close the CMD, read section 3.2.1 carefully and do it again. Note, that you shall
+        run CMD as a System administrator (or: "Запустить от имени системного администратора"), otherwise the
+        installation will not work.
+        If you are working under Linux, put 'sudo' before the command you are currently trying to run. Don't forget to
+        put space to separate your command from the 'sudo' word.
+
+    (c) If the installer writes you that the NUMPY package has not been found or the compiler if failed to find
+        numpy/ndarray.h, the problem is the same: you don't install the additional Python package. The following
+        command will fix this problem:
+
+pip install numpy
 
 3.3. INSTALLATION THE PACKAGE THAT HAS ALREADY BEEN BUILD BY YOUR COLLEAGUE
 

@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanY_NoSynchronizationType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.synchronization.NoSynchronization",
-            .tp_basicsize = sizeof(PyImanY_NoSynchronizationObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.synchronization.NoSynchronization",
+            /* tp_basicsize */ sizeof(PyImanY_NoSynchronizationObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanY_NoSynchronization_Init(PyImanY_NoSynchronizationObject* self, PyObject* args, PyObject*){
@@ -116,6 +116,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_NOSYNCHRONIZATION_H

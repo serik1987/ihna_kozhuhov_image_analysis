@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanY_QuasiStimulusSynchronizationType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.synchronization.QuasiStimulusSynchronization",
-            .tp_basicsize = sizeof(PyImanY_QuasiStimulusSynchronizationObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.synchronization.QuasiStimulusSynchronization",
+            /* tp_basicsize */ sizeof(PyImanY_QuasiStimulusSynchronizationObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanY_QuasiStimulusSynchronization_Init
@@ -193,6 +193,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_QUASISTIMULUSSYNCHRONIZATION_H

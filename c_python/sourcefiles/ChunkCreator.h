@@ -53,6 +53,6 @@ extern "C"{
         return object;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_CHUNKCREATOR_H

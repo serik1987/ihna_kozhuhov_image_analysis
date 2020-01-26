@@ -26,9 +26,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_FrameType {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._Frame",
-            .tp_basicsize = sizeof(PyImanS_FrameObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles._Frame",
+            sizeof(PyImanS_FrameObject),
+            0,
     };
 
     static PyObject* PyImanS_FileTrain_New(PyTypeObject* type, PyObject*, PyObject*){
@@ -303,9 +303,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_FileTrainType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.FileTrain",
-            .tp_basicsize = sizeof(PyImanS_FileTrainObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles.FileTrain",
+            sizeof(PyImanS_FileTrainObject),
+            0,
     };
 
     static Py_ssize_t PyImanS_FileTrain_Length(PyImanS_FileTrainObject* self){
@@ -344,9 +344,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_FileTrain_mapping = {
-            .mp_length = (lenfunc)PyImanS_FileTrain_Length,
-            .mp_subscript = (binaryfunc)PyImanS_FileTrain_GetFrame,
-            .mp_ass_subscript = NULL,
+            (lenfunc)PyImanS_FileTrain_Length,
+            (binaryfunc)PyImanS_FileTrain_GetFrame,
+            NULL,
     };
 
     static int PyImanS_FileTrain_Create(PyObject* module){
@@ -392,6 +392,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_FILETRAIN_H

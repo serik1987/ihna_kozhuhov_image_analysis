@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_GreenChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._GreenChunk",
-            .tp_basicsize = sizeof(PyImanS_GreenChunkObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._GreenChunk",
+            /* tp_basicsize */ sizeof(PyImanS_GreenChunkObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_GreenChunk_Init(PyImanS_GreenChunkObject* self, PyObject* args, PyObject* kwds){
@@ -49,9 +49,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_GreenChunk_mapping = {
-            .mp_length = NULL,
-            .mp_subscript = (binaryfunc)PyImanS_GreenChunk_GetProperty,
-            .mp_ass_subscript = NULL,
+            /* mp_length */ NULL,
+            /* mp_subscript */ (binaryfunc)PyImanS_GreenChunk_GetProperty,
+            /* mp_ass_subscript */ NULL,
     };
 
     static int PyImanS_GreenChunk_Create(PyObject* module){
@@ -76,6 +76,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_GREENCHUNK_H

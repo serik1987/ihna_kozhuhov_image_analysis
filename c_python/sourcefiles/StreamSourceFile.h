@@ -53,9 +53,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_StreamSourceFileType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._StreamSourceFile",
-            .tp_basicsize = sizeof(PyImanS_StreamSourceFileObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles._StreamSourceFile",
+            sizeof(PyImanS_StreamSourceFileObject),
+            0,
     };
 
     static int PyImanS_StreamSourceFile_Create(PyObject* module){
@@ -79,6 +79,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_STREAMSOURCEFILE_H

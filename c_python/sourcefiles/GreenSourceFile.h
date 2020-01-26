@@ -32,9 +32,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_GreenSourceFileType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._GreenSourceFile",
-            .tp_basicsize = sizeof(PyImanS_GreenSourceFileObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._GreenSourceFile",
+            /* tp_basicsize */ sizeof(PyImanS_GreenSourceFileObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_GreenSourceFile_Create(PyObject* module){
@@ -59,6 +59,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_GREENSOURCEFILE_H

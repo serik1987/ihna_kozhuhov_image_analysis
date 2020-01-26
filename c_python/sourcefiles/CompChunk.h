@@ -13,9 +13,9 @@ extern "C"{
 
     static PyTypeObject PyImanS_CompChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._CompChunk",
-            .tp_basicsize = sizeof(PyImanS_CompChunkObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._CompChunk",
+            /* tp_basicsize */ sizeof(PyImanS_CompChunkObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_CompChunk_Init(PyImanS_CompChunkObject* self, PyObject* args, PyObject*){
@@ -58,9 +58,9 @@ extern "C"{
     }
 
     static PyMappingMethods PyImanS_CompChunk_mapping = {
-            .mp_length = NULL,
-            .mp_subscript = (binaryfunc)PyImanS_CompChunk_GetProperty,
-            .mp_ass_subscript = NULL,
+            /* mp_length */ NULL,
+            /* mp_subscript */ (binaryfunc)PyImanS_CompChunk_GetProperty,
+            /* mp_ass_subscript */ NULL,
     };
 
     static int PyImanS_CompChunk_Create(PyObject* module){

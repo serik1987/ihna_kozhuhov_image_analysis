@@ -16,9 +16,9 @@ extern "C" {
 
     static PyTypeObject PyImanI_IsolineType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.isolines.Isoline",
-            .tp_basicsize = sizeof(PyImanI_IsolineObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.isolines.Isoline",
+            /* tp_basicsize */ sizeof(PyImanI_IsolineObject),
+            /* tp_itemsize */ 0,
     };
 
     typedef struct {
@@ -28,9 +28,9 @@ extern "C" {
 
     static PyTypeObject PyImanT_TraceReaderAndCleanerType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.tracereading.TraceReaderAndCleaner",
-            .tp_basicsize = sizeof(PyImanT_TraceReaderAndCleanerObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.tracereading.TraceReaderAndCleaner",
+            /* tp_basicsize */ sizeof(PyImanT_TraceReaderAndCleanerObject),
+            /* tp_itemsize */ 0,
     };
 
     static PyImanT_TraceReaderAndCleanerObject* PyImanT_TraceReaderAndCleaner_New
@@ -213,6 +213,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_TRACEREADERANDCLEANER_H

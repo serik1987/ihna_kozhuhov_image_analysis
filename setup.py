@@ -8,8 +8,20 @@ Copyright (C) 2020 the Institute of Higher Nervous Activity, Russian Academy of 
 
 import os
 import sys
+import platform
 from distutils.core import setup, Extension
-os.environ['CC'] = "g++"
+try:
+    import numpy
+except ImportError:
+    print("The NUMPY package has not been found. The following command will fix your problem:")
+    print("")
+    print("pip install numpy")
+    print("")
+if platform.system().lower() == "windows":
+    extra_compile_args = ["/std:c++17"]
+else:
+    os.environ['CC'] = "g++"
+    extra_compile_args = ["-std=c++17", "-pedantic"]
 
 if sys.version[0] != '3':
     print("Please, run this setup program under python3")
@@ -60,9 +72,8 @@ imageanalysis = Extension("ihna.kozhukhov.imageanalysis._imageanalysis",
                               "cpp/tracereading/TraceReaderAndCleaner.cpp",
                               "cpp/misc/LinearFit.cpp"
                           ],
-                          extra_compile_args=[
-                              "-std=c++17"
-                          ])
+                          extra_compile_args=extra_compile_args
+                          )
 
 setup(
     name="ihna.kozhukhov.imageanalysis",
@@ -103,10 +114,4 @@ setup(
     scripts=["iman"]
 )
 
-print("")
-print("Please, carefully read the README file in order to install this program")
-print("Written above are messages that notifies you after successful or insuccessful")
-print("installation process")
-print("Please, read these messages carefully and press Enter to close this window")
-print("and exit from the setup program")
-input("")
+print("This action has been accomplished successfully!")

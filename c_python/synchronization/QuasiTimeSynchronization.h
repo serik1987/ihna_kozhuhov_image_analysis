@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanY_QuasiTimeSynchronizationType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.synchronization.QuasiTimeSynchronization",
-            .tp_basicsize = sizeof(PyImanY_QuasiTimeSynchronizationObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.synchronization.QuasiTimeSynchronization",
+            /* tp_basicsize */ sizeof(PyImanY_QuasiTimeSynchronizationObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanY_QuasiTimeSynchronization_Init(PyImanY_QuasiTimeSynchronizationObject* self,
@@ -196,6 +196,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_QUASITIMESYNCHRONIZATION_H

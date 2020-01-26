@@ -13,9 +13,9 @@ extern "C" {
 
     static PyTypeObject PyImanI_LinearFitIsolineType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.isolines.LinearFitIsoline",
-            .tp_basicsize = sizeof(PyImanI_LinearFitIsolineObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imageanalysis.isolines.LinearFitIsoline",
+            /* tp_basicsize */ sizeof(PyImanI_LinearFitIsolineObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanI_LinearFitIsoline_Init(PyImanI_LinearFitIsolineObject* self, PyObject* args, PyObject* kwds){
@@ -61,6 +61,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_LINEARFITISOLINE_H

@@ -15,9 +15,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_SyncChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._SyncChunk",
-            .tp_basicsize = sizeof(PyImanS_SyncChunkObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles._SyncChunk",
+            sizeof(PyImanS_SyncChunkObject),
+            0,
     };
 
     static int PyImanS_SyncChunk_Init(PyImanS_SyncChunkObject* self, PyObject* args, PyObject*){
@@ -55,9 +55,9 @@ extern "C" {
     }
 
     static PyMappingMethods PyImanS_SynChunkMethods = {
-            .mp_length = NULL,
-            .mp_subscript = (binaryfunc)PyImanS_SyncChunk_GetProperty,
-            .mp_ass_subscript = NULL,
+            /* mp_length */ NULL,
+            /* mp_subscript */ (binaryfunc)PyImanS_SyncChunk_GetProperty,
+            /* mp_ass_subscript */ NULL,
     };
 
     static int PyImanS_SyncChunk_Create(PyObject *module) {

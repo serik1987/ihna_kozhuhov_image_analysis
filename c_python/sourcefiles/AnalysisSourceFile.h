@@ -32,9 +32,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_AnalysisSourceFileType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imaging.sourcefiles._AnalysisSourceFile",
-            .tp_basicsize = sizeof(PyImanS_AnalysisSourceFileObject),
-            .tp_itemsize = 0,
+            /* tp_name */ "ihna.kozhukhov.imaging.sourcefiles._AnalysisSourceFile",
+            /* tp_basicsize */ sizeof(PyImanS_AnalysisSourceFileObject),
+            /* tp_itemsize */ 0,
     };
 
     static int PyImanS_AnalysisSourceFile_Create(PyObject* module){
@@ -60,6 +60,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_ANALYSISSOURCEFILE_H

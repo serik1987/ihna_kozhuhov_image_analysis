@@ -66,9 +66,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_TrainSourceFileType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.TrainSourceFile",
-            .tp_basicsize = sizeof(PyImanS_TrainSourceFileObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles.TrainSourceFile",
+            sizeof(PyImanS_TrainSourceFileObject),
+            0,
     };
 
     static void PyImanS_TrainSourceFile_Destroy(PyImanS_TrainSourceFileObject* self){
@@ -102,6 +102,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_TRAINSOURCEFILE_H

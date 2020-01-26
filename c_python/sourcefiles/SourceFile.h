@@ -20,9 +20,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_ChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.Chunk",
-            .tp_basicsize = sizeof(PyImanS_ChunkObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles.Chunk",
+            sizeof(PyImanS_ChunkObject),
+            0,
     };
 
     typedef struct{
@@ -31,9 +31,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_SoftChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._SoftChunk",
-            .tp_basicsize = sizeof(PyImanS_SoftChunkObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles._SoftChunk",
+            sizeof(PyImanS_SoftChunkObject),
+            0,
     };
 
     typedef struct {
@@ -42,9 +42,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_IsoiChunkType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._IsoiChunk",
-            .tp_basicsize = sizeof(PyImanS_IsoiChunkObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles._IsoiChunk",
+            sizeof(PyImanS_IsoiChunkObject),
+            0,
     };
 
     static PyImanS_SourceFileObject* PyImanS_SourceFile_New(PyTypeObject* cls, PyObject* args, PyObject* kwds){
@@ -269,9 +269,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_SourceFileType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._SourceFile",
-        .tp_basicsize = sizeof(PyImanS_SourceFileObject),
-        .tp_itemsize = 0,
+        /* tp_name */ "ihna.kozhukhov.imageanalysis.sourcefiles._SourceFile",
+        /* tp_basicsize */ sizeof(PyImanS_SourceFileObject),
+        /* tp_itemsize */ 0,
     };
 
     static int PyImanS_SourceFile_Create(PyObject* module){
@@ -299,6 +299,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_SOURCEFILE_H

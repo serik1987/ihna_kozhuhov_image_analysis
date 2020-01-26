@@ -17,9 +17,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_CompressedFileTrainIteratorType = {
             PyVarObject_HEAD_INIT(NULL, 0)
-            .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles.CompressedFileTrainIterator",
-            .tp_basicsize = sizeof(PyImanS_CompressedFileTrainIteratorObject),
-            .tp_itemsize = 0,
+            "ihna.kozhukhov.imageanalysis.sourcefiles.CompressedFileTrainIterator",
+            sizeof(PyImanS_CompressedFileTrainIteratorObject),
+            0,
     };
 
     static PyImanS_CompressedFileTrainObject* PyImanS_CompressedFileTrain_New(PyTypeObject* cls,
@@ -61,9 +61,9 @@ extern "C" {
 
     static PyTypeObject PyImanS_CompressedFileTrainType = {
         PyVarObject_HEAD_INIT(NULL, 0)
-        .tp_name = "ihna.kozhukhov.imageanalysis.sourcefiles._CompressedFileTrain",
-        .tp_basicsize = sizeof(PyImanS_CompressedFileTrainObject),
-        .tp_itemsize = 0,
+        "ihna.kozhukhov.imageanalysis.sourcefiles._CompressedFileTrain",
+        sizeof(PyImanS_CompressedFileTrainObject),
+        0,
     };
 
     static PyImanS_CompressedFileTrainIteratorObject*
@@ -98,6 +98,6 @@ extern "C" {
         return 0;
     }
 
-};
+}
 
 #endif //IHNA_KOZHUKHOV_IMAGE_ANALYSIS_COMPRESSEDFILETRAIN_H
