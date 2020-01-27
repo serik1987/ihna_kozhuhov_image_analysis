@@ -381,7 +381,7 @@ sudo ln -s /usr/bin/pip3 /usr/bin/pip
 
 pip install numpy
 
-3.3. INSTALLATION THE PACKAGE THAT HAS ALREADY BEEN BUILD BY YOUR COLLEAGUE
+3.3. INSTALLATION THE PACKAGE THAT HAS ALREADY BEEN BUILT BY YOUR COLLEAGUE
 
 If your colleague is successful in building this package and you have the same platform as him (i.e., the same
 version of Python and the same operating system) You can download the installation folder from him.
@@ -394,3 +394,313 @@ the installation script will check whether the provided build is suitable for yo
 the compiler to be installed on your PC. If this check is OK this command will be completed successful. However
 if the existent build is not suitable for your PC, this command will try to create a new build and this process will
 of course requires the compiler to be installed.
+
+3.4. INSTALLATION FOR 64-BIT LINUX UBUNTU
+
+If you have 64-bit linux operating system, you can download the package from another location:
+
+https://drive.google.com/open?id=1akwNx2NYx62yXB7Xk6fDk8JWDAZ9KEVw
+
+This package already contains the build for this operating system, so, you can follow instructions mentioned in
+Section 3.2 and skip Sections 3.2.3 and 3.2.4.
+
+4. USING GUI
+
+Unfortunately the GUI v. 1.0 doesn't work stable in Windows. Hence, to use GUI you shall switch into Linux or wait for
+later versions.
+
+4.1. RUNNING GUI
+
+Create a folder where you will put your experimental data. We will refer to this folder as the 'working folder'.
+Next, right-click on the folder and select "Open in Terminal". In the terminal write "iman" and press enter.
+
+If you are not happy with the Terminal, make the following steps before the first run of the GUI.
+
+    (1) Go to the properties of your file browser.
+    (2) Find the section "Executable text files" (or Исполняемые текстовые файлы), select the option "Ask what to do"
+        or, if this is absent, select the option "Always execute".
+    (3) Create your working directory.
+    (4) Open the folder containing your distributive (folder build, then, folder scripts), then copy iman into your
+        working folder.
+
+In this case, run of the GUI will be easy: just double-click to the iman file and select 'Run' if this is necessary.
+
+4.2. WORKING THE ELECTRONIC LAB JOURNAL
+
+After the program is run successfully, you will see the main window. This window allows you to put all necessary data
+to the electronic lab journal as well as to select an appropriate action to do. The window contains three columns.
+The first column contains all widgets related to particular animal. The second column contains the data related to
+a particular record or 'case'. The last column contains all operations that may be performed with a particular case.
+Please, note that not all operations are available in v. 1.0.
+
+Now you shall add animal to the lab journal by pressing the button 'Add animal'. To delete an animal, please, press
+the button 'Delete animal'. The animal filter will be available in future versions.
+
+Next, fill the boxes below using records from your offline journal. After all information about particular animal will
+be filled, press 'Save animal info' to write this information into your hard disk drive. These operations shall be made
+for each cat.
+
+The next stage of your job is to import cases. Importing cases can be organized in two ways. In first way, you make a
+local copy of a particular case on your local hard disk and put information about this copy into the electronic lab
+journal. This way requires too long time and volume of your local storage  may not be enough to store all data. The
+second way is to make a symbolic link to your data and add information about this link to the electronic lab journal.
+Symbolic links doesn't require time to create and you don't need to wait for a long time. However, they can't work
+without the external storage plugged in. If the storage is not plugged in, such a symbolic link is treated to be broken
+and you can't use it until you plug your external storage again.
+
+To import list of the cases you shall press the button 'Import cases' located at the middle panel of the main window.
+Next, choose a particular way to import the data and press OK. In the following window you shall select the data
+related to a particular animal. The following remarks are related to such a file selection.
+
+    (1) The experimental setup doesn't store all record in a stand-alone file but rather uses a set of separate files
+        called "the file train". An example of the train: T_1CK.0A00, T_1CK.0A01, ... You are not required to select
+        all files related to a particular train. Just select any of them and the tool will find all other files and
+        will import all files related to a particular train.
+
+    (2) Multiple file selecting is available. You don't have to import each record separately. A good way is to enter
+        the folder containing all records related to a particular animal, press Ctrl-A to select all records and then
+        press OK.
+
+    (3) If your multiple selection contains files that don't relate to any record, its OK. The import routine will
+        notify you about them and will not import them.
+
+    (4) You can't import the same record twice.
+
+The next window will show you all file trains found by the tool. Status of the trains is at the right of their name.
+Orange status means that the import is still in progress. Red status means that the import is not possible. And green
+status implies that the train has already been imported. Press OK to import all found data.
+
+All imported cases are mentioned in the 'Cases' list box. If you specify the case short name, such a name will be shown
+in the box. However, if you don't specify this name, the list box will show you the train head file. If you don't see
+the other files in the train, it doesn't mean that the tool forgot about them. The tool remembers all files related to
+a particular train.
+
+If some case is imported by error, you can delete it by pressing the button 'Delete case'. The 'Case filter' options
+will be available in future versions.
+
+Enter the information about each case from your paper lab journal and press 'Save the 'Save case info' button to save
+this information. After you do these function, the data processing operations will be available at the right of the
+case information.
+
+4.3. READING THE FILE HEADER
+
+To read the general information about the record written in the file header, please, click the button
+'Open data manager' at the right of the 'Native data' string. Native data manager will be opened and the information
+from the file header is available on the left column. The information is splitted into several pages.
+
+General properties      general features of the record such as total number of frames, the file size etc.
+Compression properties  represents features related to the file compression. This section is absent when you deal with
+                        the native data.
+Experimental setup      All properties of the data acquisition process
+Stimulation             General properties of the visual stimulus.
+Data                    Write you the total data size.
+
+Next, use the button at the right of the window in order to do necessary operations with native data.
+
+4.4. FRAME VIEW
+
+In order to see a single frame unprocessed, press the 'Frame view' button. You will see a frame viewer. The frame image
+is represented at the left of the window and the frame-related information is at the right of the window. If the data
+are not compressed (see section 4.5 for more information), you can navigate across frames using the navigation panel:
+
+    '<<'            will move you to the first frame
+    '<'             will move you to the previous frame
+    'Frame # ...'   will move you to an arbitrary frame which number you shall enter.
+    '>'             will move you to the next frame
+    '>>'            will move you to the last frame
+
+This is also possible to save the frame image to one of the following formats:
+
+'npy'   the NUMPY format that is suitable for frame insertion into the Jupyter Notebook
+'mat'   if you wan't to use MATLAB to process the data
+'png'   if you want to insert the frame into Power Point.
+
+4.5. COMPRESSION AND DECOMPRESSION
+
+The data is presented in two states: compressed and decompressed. The compressed data require little volume to store
+but they are useless for the following processing. In order to make the data available for the further usage you need
+to decompress them.
+
+Again, if you have already processed the data and you storage is not enough to write more data, the can compress the
+useless data.
+
+There is not data loss during the compression. This means that is you compress the data and then decompress them
+two resultant files will be absolutely identical.
+
+You can check whether the data are compressed or decompressed. If the data are compressed you will see an orange word
+'Compressed' at the right of the 'Native data' caption. If the data are decompressed you will see the 'Decompressed'
+word. To compress or decompress the data press 'Open manager' button immediately below this record. Next, press
+'Compress' or 'Decompress' depending on whet you are going to do. You can select the following option:
+
+Don't decompress is native data exist   If both native and compressed data are presented in your working folder the
+Don't compress if native data exist     tool will not waste your to to compress the data that have already been
+                                        compressed or to decompress the data that have already been decompressed
+
+Delete compressed files after decompression     After your files have been compressed or decompressed, the input file
+Delete decompressed files after compression     will be deleted. If you created symbolic links during the compression
+                                                or decompression, the symbolic link will be deleted, not file at the
+                                                storage.
+
+Next, press OK and wait until the process will be completed.
+
+The compression / decompression result will always store on your local storage. Bear it in mind. If the
+
+Both compressed and decompressed files can be deleted manually without any affect of the program work.
+
+4.6. MANAGING ROI
+
+The original data contains the data on the light reflected from set of objects: neural tissue, vessels, dura, bones etc.
+If you want to specify what object you are interested in you shall specify a region on the map which data shall be
+averaged. Such region is called 'the Region of Interest' or ROI. To specify a certain ROI press the button
+'Open Manager' on the ROI section.
+
+4.6.1. IMPORT ROI
+
+If you have already defined ROI and save it in XML files created using ihna.kozhukhov.imaging package you can import
+such files by pressing the button 'Import ROI'. Select the file where your ROI has been saved, press OK, enter the ROI's
+name and press OK again.
+
+4.6.2. DELETE ROI
+
+Just press the button 'Delete ROI'.
+
+4.6.3. DEFINE SIMPLE ROI
+
+Press the button 'Define simple ROI'. Then, enter the ROI name. Now you shall draw the ROI borders. Select what border
+you want to define using radio button on the right of the window. Next, click on that pixel of the map where you can
+add your new ROI.  After this task will be completed for all ROIs press OK to save your new ROI.
+
+4.6.3. DEFINE COMPLEX ROI
+
+Simple ROI contains all pixels that lies within the rectangle which left, right, top and bottom border shall be given
+by you. Complex ROI consists of several simple ROIs and contains all pixels that belong to at least one simple ROI.
+To define complex ROI you shall click the button 'Define complex ROI', select all simple ROIs that belong to the complex
+ROI and press OK.
+
+4.6.4. MANUAL ROI DEFINITION
+
+This option is suitable for you when you have exact coordinates of left, right, top and bottom borders of the ROI.
+Press the button 'Define ROI manually', fill the form that you will see and press OK.
+
+4.6.5. EXPORTING ROI TO TXT
+
+All ROIs were saved to the manifest (xml) files, all their coordinates are accessible through the program API
+(see section 5). However, you can additionally save them to the TXT format (this is not necessary for your research).
+To export ROI as txt press the button 'Export to TXT' and enter the ROI coordinates.
+
+4.6.6. SHOW ROI ON MAP
+
+If you are not sure whether you (or your colleague) selected ROI in right way, you can press the button
+'Show ROI on map' to seel how the part of the ROI belonging to the map looks like.
+
+4.7. TRACE ANALYSIS
+
+Trace analysis allows to extract temporal dependency of a signal belonging to some ROI, average this across all pixels
+within the ROI and plot its spectrum. In order to do trace analysis press the button 'Open manager' in the section
+'Native data' and press the button 'Trace analysis'.
+
+4.7.1. ADJUSTMENT OF SYNCHRONIZATION PARAMETERS
+
+Synchronization is a process of connecting records from the CCD camera to the stimulus signal. Synchronization also
+defines what frames will be included into the analysis based on stimulus information. You can select one of four
+synchronization types:
+
+'No Synchronization'    is based on assumption that no stimulus is presented when recording the activity from the
+                        visual cortex. The analysis range contains all frames by default. However, if you want to
+                        start the analysis from a particular frame you can select the checkbox 'Start analysis from
+                        frame #' and enter an appropriate frame number. If you want to finish the analysis at a
+                        particular frame you can select the checkbox 'Finish analysis at frame #' and enter the frame
+                        you want to use for the analysis finish.
+
+'Quasi-stimulus synchronization' is based on assumption that the stimulus contains exactly integer number of frame
+                                 and the stimulation cycle starts from the very first frame. You can select how many
+                                 frames is contained in a single stimulation cycle. The analysis range always contain
+                                 the whole number of stimulus cycles. The default range is selected in such a way as to
+                                 maximize the analysis range. However, you can specify number of cycle from which the
+                                 analysis starts. Just check the box 'Start analysis from cycle #' and type the cycle
+                                 number manually. Number of the last cycle of the analysis is defined similarly. Cycle
+                                 numbers start from 1.
+
+'Quasi-time synchronization'    is based on assumption that the stimulus period in milliseconds is given exactly and
+                                the stimulation cycle starts from the very first frame. You can select how many
+                                frames is contained in a single stimulation cycle. The analysis range always contain
+                                the whole number of stimulus cycles. The default range is selected in such a way as to
+                                maximize the analysis range. However, you can specify number of cycle from which the
+                                analysis starts. Just check the box 'Start analysis from cycle #' and type the cycle
+                                number manually. Number of the last cycle of the analysis is defined similarly. Cycle
+                                numbers start from 1.
+
+'External synchronization'      this is the most precise type of the stimulus synchronization which is suitable when
+                                the experimental setup has recorded the signal not only from the CCD camera but also
+                                from the stimulation computer. If this is true for your case, always use this type of
+                                synchronization. You shall know what synchronization channel is used for the
+                                stimulus input. If you don't know, this is not problem: try both ones. If you selected
+                                the channel number incorrecty you will gen 'No signal' error. You can select how many
+                                frames is contained in a single stimulation cycle. The analysis range always contain
+                                the whole number of stimulus cycles. The default range is selected in such a way as to
+                                maximize the analysis range. However, you can specify number of cycle from which the
+                                analysis starts. Just check the box 'Start analysis from cycle #' and type the cycle
+                                number manually. Number of the last cycle of the analysis is defined similarly. Cycle
+                                numbers start from 1.
+
+In the Synchronization box you also have to select harmonic - it shows how many parameter changing cycles is in the
+single stimulus cycle. When you are interested in the orientation selectivity and the stimulus is drifting sine grating
+the harmonic equals to 2.0 (i.e., two cycles or orientation shift correspond ti a single cycle of the stimulus). But
+for direction-selective and retinotopy research the harmonic is always 1.0.
+
+4.7.2. ISOLINE REMOVE
+
+Isolines are slow non-periodic changes in the intrinsic signal that doesn't relate to the stimulation. Isolines are
+constituent that always worse the results so it need to be remove. There are three ways to remove the isoline:
+
+    (1) Don't do it. Select 'No isoline' for such a purpose.
+
+    (2) Linear fit. This way is based on assumption that isoline is straight line.
+
+    (3) Time average. The isoline if an averaged activity across 2n cycles where n is Average radius.
+
+If you don't know which way to select try all of them and compare the results quality.
+
+4.7.3. ANOTHER PARAMETER
+
+In the 'Trace reading section' you can select what ROI shall be used for the analysis. Select any of ROIs that you
+defined in Section 4.6. Additionally, if you are not sure that you will the parameter 'Select a synchronization channel'
+correctly, put the checkbox at the left of the synchronization channel number to include the signal from this chanel
+into the analysis.
+
+When you adjusted synchronization, isolines and trace reading properties, press OK to start the process of trace
+reading. Wait for a bit until the process is finished.
+
+4.7.4. PRELIMINARY TRACE VIEW
+
+In the preliminary trace view, you will check the correctness of the parameters selected and select new parameters of
+the further processing. You will see the following graphs.
+
+(1) Time arrival differences will notify you about erros in defining the temporal characteristics of the signal
+
+(2) The reference signal will show you how your trace activity is related to the visual stimulus.
+
+(3) If you included synchronization channels into analysis you can see signals from these channels as well. The
+    synchronization signal reflects how the stimulus  parameter depends on time.
+
+(4) You can see stimulus traces before the isoline remove, traces connected to isolines and stimulus traces after
+    the isoline remove.
+
+(5) Spectrums for all but one mentioned characteristics are at the right of the window.
+
+Graphs at the bottom show you final results and different graphs reflect different averaged strategy. The very bottom
+of the window contain options that you can use to select an appropriate average strategy. Select the strategy and press
+OK.
+
+4.7.5. FINAL TRACE VIEW
+
+On the last window you can see averaged traces and their spectrums and save the traces into some of the formats
+appropriate for you or to all of them. 'Add to manifest' option will add your traces to the electronic lab journal.
+All traces will be saved to a folder containing information about the animal. The following formats are available:
+
+'NPZ'   suitable for using this tool for working with processed traces as well as for the Jupyter Notebook
+'MAT'   Suitable for MATLAB
+'PNG'   Suitable for appending the traces to the Power Point
+
+Additionally you shall give the prefix and postfix - some name the will be applied to the traces full name in order to
+distinguish these traces from another ones.
