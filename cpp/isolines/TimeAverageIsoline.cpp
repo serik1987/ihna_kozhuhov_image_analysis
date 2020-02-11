@@ -88,6 +88,10 @@ namespace GLOBAL_NAMESPACE {
 
             srcIt += chans;
             isolineIt += chans;
+
+            if (progressFunction != nullptr){
+                progressFunction(frame, frames, "Trace cleaning", progressHandle);
+            }
         }
 
     }

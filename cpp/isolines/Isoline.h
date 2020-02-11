@@ -38,6 +38,7 @@ namespace GLOBAL_NAMESPACE {
         int isolineFinalFrame;
 
         ProgressFunction progressFunction;
+        void* progressHandle;
 
         virtual void printSpecial(std::ostream& out) const = 0;
 
@@ -139,6 +140,11 @@ namespace GLOBAL_NAMESPACE {
          * before thw isoline cleaning itself
          */
         void synchronizeSignal();
+
+        void setProgressFunction(ProgressFunction function, void* handle){
+            progressFunction = function;
+            progressHandle = handle;
+        }
 
         /**
          * Computes the isolines from stand-alone traces that have already been read

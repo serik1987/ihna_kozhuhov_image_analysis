@@ -27,6 +27,9 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         self.__train = train
         self.__roi_list = roi_list
 
+        if len(roi_list) == 0:
+            raise ValueError("In order to use this function you shall specify at least one ROI")
+
         main_panel = wx.Panel(self)
         general_layout = wx.BoxSizer(wx.VERTICAL)
         main_layout = wx.BoxSizer(wx.VERTICAL)

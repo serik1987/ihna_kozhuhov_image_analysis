@@ -358,31 +358,33 @@ Isoline plotting epoch: {4} - {5} cycles ({6} - {7} frames)""".format(
         duration = times[-1] - times[0]
         sample_rate = 1000.0 / sample_step
         step_rate = 1000.0 / duration
-        frequencies = np.arange(0, sample_rate, step_rate)
+        frequencies = np.arange(data.shape[0]) * step_rate
         spectrums = np.abs(fft(data, axis=0))
         idx = frequencies < sample_rate / 2
         frequencies = frequencies[idx]
         spectrums = spectrums[idx]
-        traces.set_frequencies(frequencies)
-        traces.set_spectrums(spectrums)
         avg = None
         if self.__average_method == "mean":
             avg = np.mean
         if self.__average_method == "median":
             avg = np.median
         avg_trace = avg(data, axis=1)
-        traces.set_avg_trace(avg_trace)
         avg_psd = None
         if self.__average_strategy == "average_than_psd":
             avg_psd = np.abs(fft(avg_trace))
             avg_psd = avg_psd[idx]
         if self.__average_strategy == "psd_than_average":
             avg_psd = avg(spectrums, axis=1)
-        traces.set_avg_psd(avg_psd)
         ref = self.get_reference_signal()
-        traces.set_reference_signal(ref)
         ref_psd = np.abs(fft(ref))
         ref_psd = ref_psd[idx]
+
+        traces.set_frequencies(frequencies)
+        traces.set_spectrums(spectrums)
+        traces.set_avg_trace(avg_trace)
+        traces.set_avg_psd(avg_psd)
+        traces.set_reference_signal(ref)
         traces.set_reference_psd(ref_psd)
+        print("TRACES WERE CREATED")
 
         return traces

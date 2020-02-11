@@ -56,7 +56,7 @@ class FinalTracesDlg(wx.Dialog):
         self.__ref_psd_ax.plot(freqs, traces.get_reference_psd()[fidx])
         self.__ref_psd_ax.set_xscale("log")
         self.__ref_psd_ax.get_xaxis().set_ticks([])
-        self.__ref_psd_ax.get_yaxis().set_ticks([])
+        # self.__ref_psd_ax.get_yaxis().set_ticks([])
 
         self.__pix_ax = self.__fig.add_subplot(2, 2, 3)
         self.__pix_ax.plot(times, traces.get_avg_trace())
@@ -67,7 +67,7 @@ class FinalTracesDlg(wx.Dialog):
         self.__pix_psd_ax = self.__fig.add_subplot(2, 2, 4)
         self.__pix_psd_ax.plot(freqs, traces.get_avg_psd()[fidx])
         self.__pix_psd_ax.set_xscale("log")
-        self.__pix_psd_ax.get_yaxis().set_ticks([])
+        # self.__pix_psd_ax.get_yaxis().set_ticks([])
         self.__pix_psd_ax.set_xlabel("Frequency, Hz", fontdict=caption_font)
 
         for ax in [self.__ref_ax, self.__ref_psd_ax, self.__pix_ax, self.__pix_psd_ax]:
