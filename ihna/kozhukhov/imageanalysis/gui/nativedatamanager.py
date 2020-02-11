@@ -364,10 +364,16 @@ class NativeDataManager(wx.Dialog):
             except Exception as err:
                 progress_dlg.Destroy()
                 del train
+                del reader
+                del isoline
+                del sync
                 raise err
-            if not reader.has_read:
+            if not reader.has_cleaned:
                 print("PY Trace reading cancelled or error occured")
                 del train
+                del reader
+                del isoline
+                del sync
                 progress_dlg.Destroy()
                 return
             print("PY Finish of traces reading")
@@ -386,16 +392,26 @@ class NativeDataManager(wx.Dialog):
             traces_dlg.close()
 
             traces = trace_processor.create_traces(self.__case, self.__case_name)
+            del trace_processor
             traces.set_roi_name(roi_name)
             final_traces_dlg = FinalTracesDlg(self, traces)
             if final_traces_dlg.ShowModal() == wx.ID_CANCEL:
                 final_traces_dlg.close()
                 return
-            final_traces_dlg.close()
-            npz_file = final_traces_dlg.save_files(self.__case['pathname'])
-            if npz_file is not None:
-                self.__case['traces'].append(traces)
-
+            save_dialog = wx.ProgressDialog("Trace analysis", "Saving the data", 100, self)
+            save_dialog.Update(0)
+            try:
+                npz_file = final_traces_dlg.save_files(self.__case['pathname'])
+                if npz_file is not None:
+                    self.__case['traces'].append(traces)
+                    traces.clean()
+                else:
+                    del traces
+                final_traces_dlg.close()
+                save_dialog.Destroy()
+            except Exception as err:
+                save_dialog.Destroy()
+                raise err
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             print("Exception class:", err.__class__.__name__)

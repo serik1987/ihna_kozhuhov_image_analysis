@@ -63,6 +63,7 @@ extern "C" {
         if (self->trace_reader_handle != NULL) {
             auto *reader = (TraceReader *) self->trace_reader_handle;
             delete reader;
+            self->trace_reader_handle = NULL;
         }
 
         Py_XDECREF(self->file_train);

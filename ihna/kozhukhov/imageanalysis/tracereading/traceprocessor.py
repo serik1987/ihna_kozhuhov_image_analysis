@@ -34,6 +34,19 @@ class TraceProcessor:
     __average_strategy = "psd_than_average"
     __average_method = "mean"
 
+    def __del__(self):
+        del self.__init_frame
+        del self.__final_frame
+        del self.__time_arrivals
+        del self.__synch_channels
+        del self.__data_not_removed
+        del self.__isolines
+        del self.__data
+        del self.__reference_signal
+        del self.__train_properties
+        del self.__synchronization_properties
+        del self.__isoline_properties
+
     def __init__(self, reader, isoline, sync, train):
         """
         Arguments:

@@ -18,6 +18,7 @@ namespace GLOBAL_NAMESPACE {
         isolineInitialFrame = -1;
         isolineFinalFrame = -1;
         progressFunction = nullptr;
+        removed = false;
     }
 
     Isoline::Isoline(const Isoline &other): psync(other.psync), ptrain(other.ptrain) {
@@ -31,12 +32,14 @@ namespace GLOBAL_NAMESPACE {
         isolineFinalFrame = other.isolineFinalFrame;
         offset = other.offset;
         progressFunction = other.progressFunction;
+        removed = other.removed;
     }
 
     Isoline &Isoline::operator=(const Isoline &other) noexcept {
         ptrain = other.ptrain;
         psync = other.psync;
         offset = other.offset;
+        removed = other.removed;
 
         analysisInitialCycle = other.analysisInitialCycle;
         analysisInitialFrame = other.analysisInitialFrame;
@@ -79,6 +82,7 @@ namespace GLOBAL_NAMESPACE {
         isolineFinalCycle = -1;
         isolineInitialFrame = -1;
         isolineFinalFrame = -1;
+        removed = false;
     }
 
     void Isoline::synchronizeIsolines() {

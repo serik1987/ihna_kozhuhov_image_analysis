@@ -66,6 +66,14 @@ class Case:
             raise ValueError("Unrecognized argument type for the case")
 
     def import_case(self, data):
+        """
+        Creates the case from that native experimental data
+
+        Arguments:
+              data - a dictionary containing three keys:
+                'filename' - full name of the train head
+                'filetype' - 'compressed' or 'stream' depending on the data type
+        """
         pathname, filename = os.path.split(data['filename'])
         filetype = data['filetype']
         train_files = [filename]
@@ -82,6 +90,13 @@ class Case:
             self.set_properties(pathname=pathname, filename=filename, imported=True)
 
     def load_case(self, xml, pathname=None):
+        """
+        Loads cases from the hard disk
+
+        Arguments:
+            xml - XML elements that corresponds to the case
+            pathname - folder where case files are located
+        """
         if pathname is not None:
             self.set_properties(pathname=pathname)
         if xml.attrib['autoprocess'] == "Y":
@@ -138,7 +153,6 @@ class Case:
             trace.set_isoline_properties(trace_info.find('isoline-properties').attrib)
             output_file = os.path.join(self['pathname'], trace_info.attrib['src'])
             trace.set_output_file(output_file)
-            trace.load()
             self.__traces_list.append(trace)
 
     def save_case(self, parent_xml):

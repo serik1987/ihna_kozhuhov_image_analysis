@@ -42,10 +42,18 @@ namespace GLOBAL_NAMESPACE {
 
         virtual void printSpecial(std::ostream& out) const = 0;
 
+        bool removed;
+
     public:
         Isoline(StreamFileTrain& train, Synchronization& sync);
         Isoline(const Isoline& other);
         virtual ~Isoline() = default;
+
+        /**
+         *
+         * @return true if the isoline is removed
+         */
+        [[nodiscard]] bool isRemoved() const { return removed; }
 
         Isoline& operator=(const Isoline& other) noexcept;
 

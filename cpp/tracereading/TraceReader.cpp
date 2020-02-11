@@ -155,7 +155,6 @@ namespace GLOBAL_NAMESPACE {
         extractDisplacements();
 
         readFromFile();
-        _hasRead = true;
     }
 
     void TraceReader::extractDisplacements() {
@@ -184,6 +183,7 @@ namespace GLOBAL_NAMESPACE {
         int localFinalFrame = (*next_fit)->offsetFrame - 1;
         bool veryFirst = true;
         int progress_frame = 0;
+        _hasRead = true;
         for (int n = initialFrame; n <= finalFrame; ++n){
             auto& file = selectFileAndOffset(n, localFinalFrame, localInitialFrame, fit, next_fit, veryFirst);
             readTimestamp(file, fit, local_traces);

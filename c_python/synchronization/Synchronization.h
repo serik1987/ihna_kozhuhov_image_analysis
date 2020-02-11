@@ -26,12 +26,13 @@ extern "C" {
     static void PyImanY_Synchronization_Destroy(PyImanY_SynchronizationObject* self){
         using namespace GLOBAL_NAMESPACE;
 
-        Py_XDECREF(self->parent_train);
-
         if (self->synchronization_handle != NULL){
             auto* sync = (Synchronization*)self->synchronization_handle;
             delete sync;
+            self->synchronization_handle = NULL;
         }
+
+        Py_XDECREF(self->parent_train);
 
         Py_TYPE(self)->tp_free(self);
     }

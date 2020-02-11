@@ -169,6 +169,9 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         """
         Returns a three-item tuple containing the reader, the isoline and the synchronization
         """
+        if len(self.get_pixel_list()) > 2000:
+            raise RuntimeError("ROI with area higher than 2000 px can't be processed without autoaverage\n"
+                               "Please, set the autoaverage or select smaller ROI")
         reader = TraceReader(self.__train)
         sync = self.create_synchronization()
         isoline = self.create_isoline(sync)

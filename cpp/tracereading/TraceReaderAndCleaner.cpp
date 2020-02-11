@@ -82,6 +82,10 @@ namespace GLOBAL_NAMESPACE {
         isolineRemover->synchronizeIsolines();
         setFrameRange(isolineRemover->sync());
         TraceReader::read();
+        if (!hasRead()){
+            clearState();
+            return;
+        }
         tracesBeforeRemove = traces;
         traces = nullptr;
         isolineRemover->sacrifice();
@@ -95,6 +99,10 @@ namespace GLOBAL_NAMESPACE {
         progressFunction(0, 1, "Trace cleaning", handle);
         isolineRemover->setProgressFunction(progressFunction, handle);
         isolineRemover->traceCleaning(*this, src, srcLeft, srcRight, isolines);
+        if (!isolineRemover->isRemoved()){
+            clearState();
+            return;
+        }
         int points = getFrameNumber() * getChannelNumber();
         std::transform(getTracesBeforeRemove(), getTracesBeforeRemove() + points, isolines, traces,
                 [](double x, double y) { return x-y; });
@@ -104,7 +112,9 @@ namespace GLOBAL_NAMESPACE {
     void TraceReaderAndCleaner::clearState() {
         TraceReader::clearState();
         delete [] tracesBeforeRemove;
+        tracesBeforeRemove = nullptr;
         delete [] isolines;
+        isolines = nullptr;
         cleaned = false;
     }
 

@@ -135,7 +135,12 @@ class FinalTracesDlg(wx.Dialog):
         """
         Cleans memory from the data associated with a window
         """
-        pass
+        del self.__fig
+        del self.__canvas
+        del self.__traces
+        self.__fig = None
+        self.__canvas = None
+        self.__traces = None
 
     def define_manifest_enability(self):
         self.__add_to_manifest_box.Enable(self.__save_npz_box.IsChecked())

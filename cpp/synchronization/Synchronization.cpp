@@ -201,7 +201,6 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void Synchronization::synchronize() {
-        printf("\n");
         clearState();
         calculateSynchronizationPhase();
         calculatePhaseIncrement();
@@ -213,8 +212,11 @@ namespace GLOBAL_NAMESPACE {
     void Synchronization::clearState() {
         synchronized = false;
         delete [] referenceSignalCos;
+        referenceSignalCos = nullptr;
         delete [] referenceSignalSin;
+        referenceSignalSin = nullptr;
         delete [] synchronizationPhase;
+        synchronizationPhase = nullptr;
     }
 
     void Synchronization::inverse() {

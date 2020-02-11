@@ -33,5 +33,7 @@ namespace GLOBAL_NAMESPACE {
                 ++isolinesIt;
             }
         }
+
+        removed = true;
     }
 }
