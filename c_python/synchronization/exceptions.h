@@ -18,6 +18,9 @@ extern "C" {
     static PyObject* PyImanY_NoSignalDetectedError = NULL;
     static PyObject* PyImanY_TooFewFramesError = NULL;
     static PyObject* PyImanY_BadHarmonicError = NULL;
+    static PyObject* PyImanY_NoisySignalError = NULL;
+    static PyObject* PyImanY_BadThresholdError = NULL;
+
 
     static int PyImanY_Exception_Init(PyObject* module){
         PyImanY_SynchronizationError = PyErr_NewExceptionWithDoc(
@@ -117,6 +120,23 @@ extern "C" {
             return -1;
         }
 
+        PyImanY_NoisySignalError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.synchronization.NoisySignalError",
+                "This error is generated when the synchronization signal is bad or corrupted",
+                PyImanY_SynchronizationError, NULL
+                );
+        if (PyModule_AddObject(module, "_synchronization_NoisySignalError", PyImanY_NoisySignalError) < 0){
+            return -1;
+        }
+
+        PyImanY_BadThresholdError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.synchronization.BadThresholdError",
+                "This error is generated when you set a bad value of the external synchronization threshold",
+                PyImanY_SynchronizationError, NULL);
+        if (PyModule_AddObject(module, "_synchronization_BadThresholdError", PyImanY_BadThresholdError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -131,6 +151,8 @@ extern "C" {
         Py_XDECREF(PyImanY_NoSignalDetectedError);
         Py_XDECREF(PyImanY_TooFewFramesError);
         Py_XDECREF(PyImanY_BadHarmonicError);
+        Py_XDECREF(PyImanY_NoisySignalError);
+        Py_XDECREF(PyImanY_BadThresholdError);
     }
 
     static int PyImanY_Exception_process(const void* handle){
@@ -159,6 +181,10 @@ extern "C" {
                     dynamic_cast<ExternalSynchronization::TooFewFramesException*>(synchronization_handle);
             auto* bad_harmonic_handle =
                     dynamic_cast<Synchronization::BadHarmonicException*>(synchronization_handle);
+            auto* noisy_signal_handle =
+                    dynamic_cast<ExternalSynchronization::NoisySignalException*>(synchronization_handle);
+            auto* bad_threshold_handle =
+                    dynamic_cast<ExternalSynchronization::BadThresholdException*>(synchronization_handle);
 
             if (file_not_opened_handle != nullptr) {
                 PyErr_SetString(PyImanY_FileNotOpenedError, file_not_opened_handle->what());
@@ -189,6 +215,12 @@ extern "C" {
                 return -1;
             } else if (bad_harmonic_handle != nullptr) {
                 PyErr_SetString(PyImanY_BadHarmonicError, bad_harmonic_handle->what());
+                return -1;
+            } else if (noisy_signal_handle != nullptr) {
+                PyErr_SetString(PyImanY_NoisySignalError, noisy_signal_handle->what());
+                return -1;
+            } else if (bad_threshold_handle != nullptr) {
+                PyErr_SetString(PyImanY_BadThresholdError, bad_threshold_handle->what());
                 return -1;
             } else {
                 PyErr_SetString(PyImanY_SynchronizationError, synchronization_handle->what());

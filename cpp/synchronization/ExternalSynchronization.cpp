@@ -32,6 +32,7 @@ namespace GLOBAL_NAMESPACE {
         residue = 0.0;
         synchMax = 0.0;
         syncFrames = 0;
+        threshold = 0.5;
     }
 
     ExternalSynchronization::ExternalSynchronization(ExternalSynchronization &&other) noexcept:
@@ -53,6 +54,7 @@ namespace GLOBAL_NAMESPACE {
         residue = other.residue;
         synchMax = other.synchMax;
         syncFrames = other.syncFrames;
+        threshold = other.threshold;
     }
 
     ExternalSynchronization::~ExternalSynchronization() {
@@ -60,6 +62,12 @@ namespace GLOBAL_NAMESPACE {
         std::cout << "DELETE EXTERNAL SYNCHRONIZATION\n";
 #endif
         delete [] synchronizationSignal;
+    }
+
+    void ExternalSynchronization::clearState() {
+        Synchronization::clearState();
+        delete [] synchronizationSignal;
+        synchronizationSignal = nullptr;
     }
 
     ExternalSynchronization &ExternalSynchronization::operator=(ExternalSynchronization &&other) noexcept {
@@ -81,6 +89,7 @@ namespace GLOBAL_NAMESPACE {
 
         synchMax = other.synchMax;
         syncFrames = other.syncFrames;
+        threshold = other.threshold;
 
         return *this;
     }
@@ -127,6 +136,7 @@ namespace GLOBAL_NAMESPACE {
 
     void ExternalSynchronization::specialPrint(std::ostream &out) const {
         out << "Synchronization channel: " << getSynchronizationChannel() << "\n";
+        out << "Threshold: " << getThreshold() << "\n";
         out << "Initial cycle: " << getInitialCycle() << "\n";
         out << "Final cycle: " << getFinalCycle() << "\n";
         out << "Synchronization slope: " << aa << "\n";
@@ -172,7 +182,7 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void ExternalSynchronization::checkSynchronizationSignal() {
-        double threshold = 0.5 * synchMax;
+        double absoluteThreshold = threshold * synchMax;
         double first = synchronizationSignal[0];
         double current = synchronizationSignal[1];
         int current_idx = 1;
@@ -186,7 +196,7 @@ namespace GLOBAL_NAMESPACE {
         }
         double diff = current - first;
 
-        if (diff > threshold || (diff < 0 && diff > -threshold)){
+        if (diff > absoluteThreshold || (diff < 0 && diff > -absoluteThreshold)){
             double iDum = synchMax - 1;
             for (int i=0; i < syncFrames; ++i){
                 synchronizationSignal[i] = iDum - synchronizationSignal[i];
@@ -201,6 +211,7 @@ namespace GLOBAL_NAMESPACE {
 
         for (int i = idx + 1; i < syncFrames; ++i){
             if (synchronizationSignal[i]  < synchronizationSignal[i-1]){
+                // std::cout << synchronizationSignal[i] - synchronizationSignal[i-1] << std::endl;
                 return i;
             }
         }
@@ -313,6 +324,12 @@ namespace GLOBAL_NAMESPACE {
         } else {
             phaseIncrement = 2.0 * M_PI / (double)getFrameNumber();
             initialPhase = 0.0;
+        }
+
+        if (residue > 1.0 || residue < -1.0){
+            clearState();
+            std::cout << *this << std::endl;
+            throw NoisySignalException();
         }
 
     }

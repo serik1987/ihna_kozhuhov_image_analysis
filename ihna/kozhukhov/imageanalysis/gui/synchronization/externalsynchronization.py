@@ -17,6 +17,8 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
     __initial_cycle_box = None
     __final_cycle_set_box = None
     __final_cycle_box = None
+    __threshold_caption = None
+    __threshold_box = None
 
     def get_name(self):
         return "Synchronization by the external signal"
@@ -59,6 +61,12 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
             self.__final_cycle_box.Enable(False)
             controls.Add(self.__final_cycle_box, 1, wx.EXPAND)
 
+            self.__threshold_caption = wx.StaticText(self._parent, label="Threshold")
+            controls.Add(self.__threshold_caption, 0, wx.ALIGN_CENTER_VERTICAL)
+
+            self.__threshold_box = wx.TextCtrl(self._parent, value="0.5")
+            controls.Add(self.__threshold_box, 1, wx.EXPAND);
+
             controls.AddGrowableCol(1, 1)
 
             return controls
@@ -79,6 +87,8 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
         self.__channel_caption.Enable(True)
         self.__initial_cycle_set_box.Enable(True)
         self.__final_cycle_set_box.Enable(True)
+        self.__threshold_caption.Enable(True)
+        self.__threshold_box.Enable(True)
         self.set_initial_cycle_enability()
         self.set_final_cycle_enability()
 
@@ -89,6 +99,8 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
         self.__initial_cycle_box.Enable(False)
         self.__final_cycle_set_box.Enable(False)
         self.__final_cycle_box.Enable(False)
+        self.__threshold_caption.Enable(False)
+        self.__threshold_box.Enable(False)
 
     def set_initial_cycle_enability(self):
         if self.__initial_cycle_set_box.IsChecked():
@@ -117,4 +129,9 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
                 sync.final_cycle = int(self.__final_cycle_box.GetValue())
             except ValueError:
                 raise ValueError("Please, set the correct value of the final cycle or don't check this box")
+        try:
+            sync.threshold = float(self.__threshold_box.GetValue())
+        except ValueError:
+            raise ValueError("Please, enter correct value of the threshold or don't touch it if you don't have "
+                             "problems")
         return sync

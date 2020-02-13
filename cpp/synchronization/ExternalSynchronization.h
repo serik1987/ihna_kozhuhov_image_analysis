@@ -24,6 +24,8 @@ namespace GLOBAL_NAMESPACE {
         double synchMax;
         int syncFrames;
 
+        double threshold;
+
         double aa;
         double bb;
         double cyclesPerFrame;
@@ -41,6 +43,7 @@ namespace GLOBAL_NAMESPACE {
 
     protected:
         void specialPrint(std::ostream& out) const override;
+        void clearState() override;
 
         void calculateSynchronizationPhase() override;
         void calculatePhaseIncrement() override;
@@ -107,6 +110,20 @@ namespace GLOBAL_NAMESPACE {
          */
         void setFinalCycle(int n);
 
+        /**
+         *
+         * @return Value of the relative threshold
+         */
+        [[nodiscard]] double getThreshold() const { return threshold; }
+
+        void setThreshold(double value) {
+            if (value > 0 && value < 1){
+                threshold = value;
+            } else {
+                throw BadThresholdException();
+            }
+        }
+
 
         class SynchronizationChannelException: public SynchronizationException{
         public:
@@ -123,6 +140,19 @@ namespace GLOBAL_NAMESPACE {
         class TooFewFramesException: public SynchronizationException {
         public:
             TooFewFramesException(): SynchronizationException("The record is too short") {};
+        };
+
+        class NoisySignalException: public SynchronizationException {
+        public:
+            NoisySignalException():
+                SynchronizationException("Synchronization signal is bad or noisy. Synchronization failed."
+                                         "Another threshold value may help you") {};
+        };
+
+        class BadThresholdException: public SynchronizationException{
+        public:
+            BadThresholdException():
+                SynchronizationException("Threshold shall be between 0 and 1") {};
         };
 
     };

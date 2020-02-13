@@ -135,6 +135,39 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanY_ExternalSynchronization_GetThreshold(PyImanY_ExternalSynchronizationObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        try{
+            double threshold = sync->getThreshold();
+            return PyFloat_FromDouble(threshold);
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static int PyImanY_ExternalSynchronization_SetThreshold(PyImanY_ExternalSynchronizationObject* self,
+        PyObject* arg, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* sync = (ExternalSynchronization*)self->super.synchronization_handle;
+
+        if (!PyFloat_Check(arg)){
+            PyErr_SetString(PyExc_ValueError, "threshold value for the external synchronization shall be float");
+            return -1;
+        }
+        double value = PyFloat_AsDouble(arg);
+
+        try{
+            sync->setThreshold(value);
+            return 0;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return -1;
+        }
+    }
+
     static PyGetSetDef PyImanY_ExternalSynchronization_Properties[] = {
 
             {(char*)"channel_number", (getter)PyImanY_ExternalSynchronization_GetChannelNumber,
@@ -154,6 +187,12 @@ extern "C" {
                     "When the final cycle is not set, this property equals to -1 before the synchronization\n"
                     "This means that the final cycle will be set automatically during the synchronization\n"
                     "in such a way as to maximize the analysis epoch"},
+
+            {(char*)"threshold", (getter)PyImanY_ExternalSynchronization_GetThreshold,
+             (setter)PyImanY_ExternalSynchronization_SetThreshold,
+             (char*)"Minimum probable value of difference between the initial value of the synchronization signal\n"
+                    "and its value at the beginning of the very first cycle\n"
+                    "Set this parameter when you receive NoisySignalError. Don't touch it otherwise"},
 
             {NULL}
     };

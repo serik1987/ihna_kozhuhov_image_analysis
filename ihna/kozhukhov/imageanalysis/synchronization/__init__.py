@@ -24,3 +24,5 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_QuasiSt
     QuasiStimulusSynchronization
 from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_QuasiTimeSynchronization as \
     QuasiTimeSynchronization
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_NoisySignalError as NoisySignalError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _synchronization_BadThresholdError as BadThresholdError
