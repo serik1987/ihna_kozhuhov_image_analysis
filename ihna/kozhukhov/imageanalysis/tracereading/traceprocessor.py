@@ -33,6 +33,9 @@ class TraceProcessor:
 
     __average_strategy = "psd_than_average"
     __average_method = "mean"
+    __average_auto = None
+
+    __auto_avg_signal = None
 
     def __del__(self):
         del self.__init_frame
@@ -47,19 +50,40 @@ class TraceProcessor:
         del self.__synchronization_properties
         del self.__isoline_properties
 
-    def __init__(self, reader, isoline, sync, train):
+    def __init__(self, reader, isoline, sync, train, autoaverage=False, method=None):
         """
         Arguments:
              reader - instance of the TraceReaderAndCleaner. Note, that at least 'TIME' channel shall be read
              isoline - instance of the Isoline that you used for the isoline remove during the trace read
              sync - instance of Synchronization that you used for trace reading and cleaning
+             autoaverage - compute the averaged signal and spectrum of the averaged signal, don't load the traces
+             method - average method: 'mean' or 'median'
         """
+        self.__average_auto = autoaverage
         self.__init_frame = reader.initial_frame
         self.__final_frame = reader.final_frame
         self.__synch_channels = []
         self.__data = []
         self.__data_not_removed = []
         self.__isolines = []
+
+        self.__reference_signal = sync.reference_sin
+        cycles = isoline.analysis_final_cycle - isoline.analysis_initial_cycle + 1
+        self.__accepted_points = cycles * 10
+
+        if autoaverage:
+            self.__init_auto(reader, method)
+        else:
+            self.__init_manual(reader)
+
+        self.__set_train_properties(train)
+        self.__set_sync_properties(sync)
+        self.__set_isoline_properties(isoline)
+
+    def __init_auto(self, reader, method):
+        pass
+
+    def __init_manual(self, reader):
         data_raw = reader.traces_before_remove
         isolines = reader.isolines
         idx = 0
@@ -76,13 +100,6 @@ class TraceProcessor:
         self.__data_not_removed = np.hstack(self.__data_not_removed)
         self.__isolines = np.hstack(self.__isolines)
         self.__data = np.hstack(self.__data)
-        self.__reference_signal = sync.reference_sin
-        cycles = isoline.analysis_final_cycle - isoline.analysis_initial_cycle + 1
-        self.__accepted_points = cycles * 10
-
-        self.__set_train_properties(train)
-        self.__set_sync_properties(sync)
-        self.__set_isoline_properties(isoline)
 
     def get_frame_lim(self):
         """

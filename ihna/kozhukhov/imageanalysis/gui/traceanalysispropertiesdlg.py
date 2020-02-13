@@ -20,6 +20,9 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
     __roi_box = None
     __roi_list = None
     __correctness_check_box = None
+    __autoprocess_box = None
+    __mean_box = None
+    __median_box = None
 
     def __init__(self, parent, train, roi_list):
         super().__init__(parent, title="Trace analysis properties", size=(800, 600))
@@ -36,9 +39,6 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
         upper_panel = self.__init_upper_panel(main_panel)
         main_layout.Add(upper_panel, 0, wx.BOTTOM, 10)
-
-        middle_panel = self.__init_middle_panel(main_panel)
-        main_layout.Add(middle_panel, 0, wx.BOTTOM, 10)
 
         lower_panel = self.__init_lower_panel(main_panel)
         main_layout.Add(lower_panel, 0, wx.ALIGN_CENTER)
@@ -78,41 +78,40 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
                 wid = wx.CheckBox(parent, label="Include synchronization signal # " + str(chan))
                 self.__sync_signal_widgets.append(wid)
                 layout.Add(wid, 0, wx.EXPAND | wx.BOTTOM, 5)
-
-            roi_layout = wx.BoxSizer(wx.HORIZONTAL)
-
-            roi_caption = wx.StaticText(parent, label="ROI")
-            roi_layout.Add(roi_caption, 0, wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5)
-
-            choices = []
-            for roi in self.__roi_list:
-                choices.append(roi.get_name())
-            self.__roi_box = wx.Choice(parent, choices=choices)
-            if len(choices) != 0:
-                self.__roi_box.SetSelection(0)
-            roi_layout.Add(self.__roi_box, 1, wx.EXPAND)
-
-            layout.Add(roi_layout, 0, wx.EXPAND)
         except Exception as err:
             print("Synchronization signal can't be included")
             print("Reason:", err.__class__.__name__)
             print("Comment:", str(err))
 
+        roi_layout = wx.BoxSizer(wx.HORIZONTAL)
+
+        roi_caption = wx.StaticText(parent, label="ROI")
+        roi_layout.Add(roi_caption, 0, wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5)
+
+        choices = []
+        for roi in self.__roi_list:
+            choices.append(roi.get_name())
+        self.__roi_box = wx.Choice(parent, choices=choices)
+        if len(choices) != 0:
+            self.__roi_box.SetSelection(0)
+        roi_layout.Add(self.__roi_box, 1, wx.EXPAND)
+
+        layout.Add(roi_layout, 0, wx.EXPAND)
+
+        self.__autoprocess_box = wx.CheckBox(parent, label="Autoaverage")
+        self.Bind(wx.EVT_CHECKBOX, lambda evt: self.__switch_autoaverage(), self.__autoprocess_box)
+        layout.Add(self.__autoprocess_box, 0, wx.EXPAND)
+
+        self.__mean_box = wx.RadioButton(parent, label="Compute mean", style=wx.RB_GROUP)
+        self.__mean_box.Enable(False)
+        layout.Add(self.__mean_box, 0, wx.EXPAND)
+
+        self.__median_box = wx.RadioButton(parent, label="Compute median")
+        self.__median_box.Enable(False)
+        layout.Add(self.__median_box, 0, wx.EXPAND)
+
         box.Add(layout, 1, wx.EXPAND | wx.ALL, 5)
         return box
-
-    def __init_middle_panel(self, parent):
-        middle_panel = wx.BoxSizer(wx.HORIZONTAL)
-
-        check_button = wx.Button(parent, label="Check parameters for correctness")
-        check_button.Bind(wx.EVT_BUTTON, lambda evt: self.correctness_check())
-        middle_panel.Add(check_button, 0, wx.RIGHT, 5)
-
-        self.__correctness_check_box = wx.StaticText(parent,
-                                                     label="Please the button at the left to check and continue")
-        middle_panel.Add(self.__correctness_check_box, 0, wx.ALIGN_CENTER_VERTICAL)
-
-        return middle_panel
 
     def __init_lower_panel(self, parent):
         lower_panel = wx.BoxSizer(wx.HORIZONTAL)
@@ -183,3 +182,22 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         roi_number = self.__roi_box.GetSelection()
         roi_name = self.__roi_box.GetItems()[roi_number]
         return roi_name
+
+    def __switch_autoaverage(self):
+        if self.__autoprocess_box.IsChecked():
+            self.__mean_box.Enable(True)
+            self.__median_box.Enable(True)
+        else:
+            self.__mean_box.Enable(False)
+            self.__median_box.Enable(False)
+
+    def is_autoaverage(self):
+        return self.__autoprocess_box.IsChecked()
+
+    def get_avg_mode(self):
+        if self.__mean_box.GetValue():
+            return "mean"
+        elif self.__median_box.GetValue():
+            return "median"
+        else:
+            raise RuntimeError("The average mode selected by the user is unknonwn or unsupported")

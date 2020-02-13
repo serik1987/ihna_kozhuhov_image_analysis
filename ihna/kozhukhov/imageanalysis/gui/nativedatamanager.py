@@ -355,6 +355,11 @@ class NativeDataManager(wx.Dialog):
                 return
             reader, isoline, sync = properties_dlg.create_reader()
             roi_name = properties_dlg.get_roi_name()
+            autoaverage = properties_dlg.is_autoaverage()
+            if autoaverage:
+                avg_mode = properties_dlg.get_avg_mode()
+            else:
+                avg_mode = None
             properties_dlg.close()
 
             progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
@@ -363,10 +368,6 @@ class NativeDataManager(wx.Dialog):
                 reader.read()
             except Exception as err:
                 progress_dlg.Destroy()
-                del train
-                del reader
-                del isoline
-                del sync
                 raise err
             if not reader.has_cleaned:
                 print("PY Trace reading cancelled or error occured")
@@ -379,17 +380,18 @@ class NativeDataManager(wx.Dialog):
             print("PY Finish of traces reading")
             progress_dlg.done()
 
-            trace_processor = TraceProcessor(reader, isoline, sync, train)
+            trace_processor = TraceProcessor(reader, isoline, sync, train, autoaverage, avg_mode)
             del reader
             del isoline
             del sync
             del train
-            traces_dlg = TracesDlg(self, trace_processor)
-            if traces_dlg.ShowModal() == wx.ID_CANCEL:
+            if not autoaverage:
+                traces_dlg = TracesDlg(self, trace_processor)
+                if traces_dlg.ShowModal() == wx.ID_CANCEL:
+                    traces_dlg.close()
+                    return
+                traces_dlg.set_average_method_and_strategy(trace_processor)
                 traces_dlg.close()
-                return
-            traces_dlg.set_average_method_and_strategy(trace_processor)
-            traces_dlg.close()
 
             traces = trace_processor.create_traces(self.__case, self.__case_name)
             del trace_processor
