@@ -5,13 +5,15 @@
 #include "cpp/source_files/StreamFileTrain.h"
 #include "cpp/synchronization/ExternalSynchronization.h"
 #include "cpp/isolines/TimeAverageIsoline.h"
-#include "cpp/tracereading/TraceReaderAndCleaner.h"
+#include "cpp/accumulators/MapFilter.h"
 
-#define WORKING_DIR "/home/serik1987/vasomotor-oscillations/sample_data/c022z/"
+#define WORKING_DIR "/home/serik1987/vasomotor-oscillations/c022/"
 
 using namespace ihna::kozhukhov::image_analysis;
 
 bool progress_function(int completed, int total, const char* msg, void* handle){
+    std::cout << msg << std::endl;
+    std::cout << handle << std::endl;
     std::cout << (double)completed * 100 / total << "% completed\n";
 }
 
@@ -20,39 +22,29 @@ int main() {
     using namespace std;
 
     {
-        printf("C++ Trace reading test...\n");
-        const uint32_t file_size[] = {1299503468, 1299503468, 1299503468, 1135885676};
-        StreamFileTrain train(WORKING_DIR, "T_1BF.0200", file_size,
+        printf("CPP Trace reading test...\n");
+        const uint32_t file_size[] = {1299503468, 1299503468, 1299503468, 380726636};
+        StreamFileTrain train(WORKING_DIR, "T_1BF.0100", file_size,
                               true);
         train.open();
 
         ExternalSynchronization sync(train);
         TimeAverageIsoline isoline(train, sync);
-        TraceReaderAndCleaner reader(train);
-        reader.setIsolineRemover(isoline);
+        MapFilter filter(isoline);
+        vector<double> b = {1, 2, 3, 4};
+        vector<double> a = {5, 6, 7, 8};
+        filter.setB(b);
+        filter.setA(a);
 
-        cout << "Frame offset: " << isoline.getFrameOffset() << endl;
-        cout << "Analysis epoch (cycles): " << isoline.getAnalysisInitialCycle() << " " << isoline.getAnalysisFinalCycle() << "\n";
-        cout << "Analysis epoch (frames): " << isoline.getAnalysisInitialFrame() << " " << isoline.getAnalysisFinalFrame() << "\n";
-        cout << "Time average epoch (cycles): " << isoline.getIsolineInitialCycle() << " " << isoline.getIsolineFinalCycle() << "\n";
-        cout << "Time average epoch (frames): " << isoline.getIsolineInitialFrame() << " " << isoline.getIsolineFinalFrame() << "\n";
-        cout << "Time average radius (cycles): " << isoline.getAverageCycles() << "\n";
+        cout << filter << endl;
+        cout << "CPP Isoline" << endl;
+        cout << filter.getIsoline() << endl;
+        cout << "CPP Synchronization" << endl;
+        cout << filter.getSynchronization() << endl;
+        cout << "CPP Get train" << endl;
+        cout << filter.getTrain() << endl;
 
-        cout << reader << endl;
-
-        reader.addPixel(PixelListItem(reader, PixelListItem::ARRIVAL_TIME, 0));
-        reader.addPixel(PixelListItem(reader, PixelListItem::SYNCH, 0));
-        reader.addPixel(PixelListItem(reader, PixelListItem::SYNCH, 1));
-
-        for (int i=100; i < 200; i++){
-            for (int j=100; j < 200; j++){
-                reader.addPixel(PixelListItem(reader, i, j));
-            }
-        }
-
-        reader.clearPixels();
-
-        reader.printAllPixels();
+        filter.accumulate();
 
     }
     return 0;

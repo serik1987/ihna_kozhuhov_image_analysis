@@ -188,6 +188,12 @@ namespace GLOBAL_NAMESPACE {
 
         /**
          *
+         * @return the stream file train
+         */
+        StreamFileTrain& getTrain() { return train; }
+
+        /**
+         *
          * @return true if synchronization was successfully completed
          */
         [[nodiscard]] bool isSynchronized() const { return synchronized; }

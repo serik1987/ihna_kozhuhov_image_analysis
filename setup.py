@@ -70,7 +70,12 @@ imageanalysis = Extension("ihna.kozhukhov.imageanalysis._imageanalysis",
                               "cpp/isolines/LinearFitIsoline.cpp",
                               "cpp/isolines/TimeAverageIsoline.cpp",
                               "cpp/tracereading/TraceReaderAndCleaner.cpp",
-                              "cpp/misc/LinearFit.cpp"
+                              "cpp/misc/LinearFit.cpp",
+                              "cpp/accumulators/Accumulator.cpp",
+                              "cpp/accumulators/TraceAutoReader.cpp",
+                              "cpp/accumulators/FrameAccumulator.cpp",
+                              "cpp/accumulators/MapPlotter.cpp",
+                              "cpp/accumulators/MapFilter.cpp"
                           ],
                           include_dirs=[numpy.get_include()],
                           extra_compile_args=extra_compile_args

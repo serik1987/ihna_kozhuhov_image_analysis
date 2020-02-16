@@ -145,7 +145,7 @@ namespace GLOBAL_NAMESPACE {
 
         /**
          * Synchronizes the analysis epoch. This method shall be called immediately after sacrifice() method and
-         * before thw isoline cleaning itself
+         * before the isoline cleaning itself
          */
         void synchronizeSignal();
 
