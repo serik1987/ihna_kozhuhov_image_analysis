@@ -30,6 +30,9 @@ namespace GLOBAL_NAMESPACE {
          */
         virtual void printSpecial(std::ostream& out) const = 0;
 
+        ProgressFunction progressFunction;
+        void* progressHandle;
+
     public:
 
         /**
@@ -142,6 +145,18 @@ namespace GLOBAL_NAMESPACE {
          * Performs the accumulation process
          */
         void accumulate();
+
+        /**
+         * Sets the progress function. This function will be executed after processing each 100 frames
+         * and shall be used for update of the progress bar
+         *
+         * @param f pointer to the progress function
+         * @param handle
+         */
+        void setProgressFunction(ProgressFunction f, void* handle){
+            progressFunction = f;
+            progressHandle = handle;
+        }
 
 
 

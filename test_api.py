@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import matplotlib.pyplot as plt
 import ihna.kozhukhov.imageanalysis as iman
 import ihna.kozhukhov.imageanalysis.sourcefiles as files
@@ -8,8 +9,7 @@ import ihna.kozhukhov.imageanalysis.tracereading as trace
 from ihna.kozhukhov.imageanalysis import manifest
 from ihna.kozhukhov.imageanalysis import synchronization as synchr
 from ihna.kozhukhov.imageanalysis import isolines
-from ihna.kozhukhov.imageanalysis.gui import isolines as isoline_editors
-from ihna.kozhukhov.imageanalysis.gui.isolines.selector import IsolineSelector
+import ihna.kozhukhov.imageanalysis.accumulators as acc
 
 
 def progress_bar(completed, total, message):
@@ -17,10 +17,26 @@ def progress_bar(completed, total, message):
 
 
 if __name__ == "__main__":
-    print("PY Test begin")
 
-    train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/sample_data/c022z/T_1BF.0200")
+    train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/c022/T_1BF.0200")
     train.open()
-    sync = synchr.QuasiStimulusSynchronization(train)
+    sync = synchr.ExternalSynchronization(train)
+    sync.channel_number = 1
+    isoline = isolines.TimeAverageIsoline(train, sync)
+    accumulator = acc.TraceAutoReader(isoline)
+
+    print(accumulator)
+
+    del train
+    print("PY Train destroyed")
+
+    del sync
+    print("PY Synchronization destroyed")
+
+    del isoline
+    print("PY Isoline destroyed")
+
+    del accumulator
+    print("PY Accumulator destroyed")
 
     print("PY Test end")

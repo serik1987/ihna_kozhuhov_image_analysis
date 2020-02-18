@@ -15,11 +15,10 @@ extern "C" {
     #ifdef C_EXCEPTION_TEST
     static PyObject *PyIman_Test_exception(PyObject *, PyObject *) {
         using namespace GLOBAL_NAMESPACE;
-        std::exception e;
-//        iman_exception e("Sample exception message");
-//        io_exception e("Sample IO exception", "FILE001.DAT");
-//        FileTrain::train_exception e("Sample IO exception", "TRAIN001.DAT");
-//        Decompressor::decompression_exception e;
+//        std::exception e;
+//        iman_exception e("Sample IMAN exception");
+//        Accumulator::AccumulatorException e("Sample accumulator exception");
+        FrameAccumulator::BadPreprocessFilterRadiusException e;
         PyIman_Exception_process(&e);
         return NULL;
     }
@@ -97,7 +96,16 @@ extern "C" {
             PyImanS_Destroy();
             Py_DECREF(PyIman_ImanError);
             Py_DECREF(imageanalysis);
+        }
 
+        if (PyImanA_Init(imageanalysis) < 0){
+            PyImanI_Destroy();
+            PyImanY_Destroy();
+            PyImanT_Destroy();
+            PyImanC_Destroy();
+            PyImanS_Destroy();
+            Py_DECREF(PyIman_ImanError);
+            Py_DECREF(imageanalysis);
         }
 
         return imageanalysis;

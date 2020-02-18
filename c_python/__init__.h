@@ -21,6 +21,7 @@ static bool PyIman_ReadingProgressFunction(int processed, int total, const char*
 #include "tracereading/__init__.h"
 #include "synchronization/__init__.h"
 #include "isolines/__init__.h"
+#include "accumulators/__init__.h"
 
 extern "C" {
 
@@ -51,6 +52,7 @@ extern "C" {
             if (PyImanT_Exception_process(handle) < 0) return;
             if (PyImanY_Exception_process(handle) < 0) return;
             if (PyImanI_Exception_Process(handle) < 0) return;
+            if (PyImanA_Exception_process(handle) < 0) return;
             PyErr_SetString(PyIman_ImanError, iman_handle->what());
         } else {
             PyErr_SetString(PyExc_RuntimeError, exception_handle->what());

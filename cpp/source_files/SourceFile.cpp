@@ -36,7 +36,7 @@ namespace GLOBAL_NAMESPACE{
 #endif
         fileStream.open(fullName, std::ios_base::binary);
         if (fileStream.fail()){
-            std::string originalName = fullName;
+            std::string originalName = fileName;
             std::transform(fileName.begin(), fileName.end(), fileName.begin(), [](unsigned char c){
                 return std::tolower(c);
             });

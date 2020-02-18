@@ -92,6 +92,9 @@ namespace GLOBAL_NAMESPACE {
     }
 
     MapFilter::~MapFilter() {
+#ifdef DEBUG_DELETE_CHECK
+        std::cout << "Map filter destruction\n";
+#endif
         delete [] targetMap;
         for (double* buffer: sourceMapList){
             delete [] buffer;
