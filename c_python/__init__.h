@@ -33,7 +33,8 @@ extern "C" {
             return true;
         }
         if (!PyBool_Check(result)){
-            printf("SO progress_function has returned value dufferent from bool\n");
+            Py_DECREF(result);
+            printf("SO progress_function has returned value different from bool\n");
         }
         bool r = result == Py_True;
         Py_DECREF(result);

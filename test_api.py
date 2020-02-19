@@ -12,20 +12,43 @@ from ihna.kozhukhov.imageanalysis import isolines
 import ihna.kozhukhov.imageanalysis.accumulators as acc
 
 
-def progress_bar(completed, total, message):
-    print("{0}: {1} percent completed".format(message, completed/total))
+class ProgressBar:
+
+    def progress_function(self, processed, total, message):
+        print("{0} / {1}: {2}".format(processed, total, message))
+        return True
+
+    def __del__(self):
+        print("PROGRESS BAR DESTRUCTION")
 
 
 if __name__ == "__main__":
 
-    train = files.StreamFileTrain("/home/serik1987/vasomotor-oscillations/c022/T_1BF.0200")
+    animal_list = manifest.Animals("/home/serik1987/vasomotor-oscillations")
+    animal = animal_list['c022']
+    case_list = manifest.CasesList(animal)
+    case = case_list['02']
+    filename = os.path.join(case['pathname'], case['native_data_files'][0])
+    roi = case['roi']['tissue']
+    print(roi)
+
+    train = files.StreamFileTrain(filename)
     train.open()
     sync = synchr.ExternalSynchronization(train)
     sync.channel_number = 1
     isoline = isolines.TimeAverageIsoline(train, sync)
     accumulator = acc.TraceAutoReader(isoline)
+    bar = ProgressBar()
+    accumulator.set_roi()
+    accumulator.set_progress_bar(bar)
 
     print(accumulator)
+    print("PY Channel number: ", accumulator.channel_number)
+    print("PY Accumulated: ", accumulator.is_accumulated)
+    accumulator.accumulate()
+
+    del bar
+    print("PY Progress bar destroyed")
 
     del train
     print("PY Train destroyed")

@@ -11,6 +11,8 @@ namespace GLOBAL_NAMESPACE {
         this->isoline = &isoline;
         readingBuffer = nullptr;
         accumulated = false;
+        progressFunction = nullptr;
+        progressHandle = nullptr;
     }
 
     Accumulator::Accumulator(const Accumulator &other) {
@@ -22,6 +24,8 @@ namespace GLOBAL_NAMESPACE {
             readingBuffer = new double[other.getChannelNumber()];
             std::memcpy(readingBuffer, other.readingBuffer, other.getChannelNumber() * sizeof(double));
         }
+        progressFunction = other.progressFunction;
+        progressHandle = other.progressHandle;
     }
 
     Accumulator::Accumulator(Accumulator&& other) noexcept{
@@ -29,6 +33,8 @@ namespace GLOBAL_NAMESPACE {
         accumulated = other.accumulated;
         readingBuffer = other.readingBuffer;
         other.readingBuffer = nullptr;
+        progressFunction = other.progressFunction;
+        progressHandle = other.progressHandle;
     }
 
     Accumulator &Accumulator::operator=(const Accumulator &other) {
@@ -46,6 +52,8 @@ namespace GLOBAL_NAMESPACE {
             readingBuffer = new double[other.getChannelNumber()];
             std::memcpy(readingBuffer, other.readingBuffer, other.getChannelNumber()*sizeof(double));
         }
+        progressFunction = other.progressFunction;
+        progressHandle = other.progressHandle;
 
         return *this;
     }
@@ -54,6 +62,8 @@ namespace GLOBAL_NAMESPACE {
         isoline = other.isoline;
         accumulated = other.accumulated;
         readingBuffer = other.readingBuffer;
+        progressFunction = other.progressFunction;
+        progressHandle = other.progressHandle;
 
         return *this;
     }
@@ -88,5 +98,10 @@ namespace GLOBAL_NAMESPACE {
 
     void Accumulator::accumulate() {
         std::cout << "ACCUMULATE\n";
+        if (progressFunction != nullptr && !progressFunction(1, 20, "Sample message", progressHandle)){
+            printf("ACCUMULATION ABORTED\n");
+            return;
+        }
+        printf("ACCUMULATION COMPLETED\n");
     }
 }
