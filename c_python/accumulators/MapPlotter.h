@@ -37,6 +37,30 @@ extern "C" {
         return 0;
     }
 
+    static PyObject* PyImanA_MapPlotter_GetAveragedMap(PyImanA_MapPlotterObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+
+        try{
+            auto* plotter = (MapPlotter*)self->parent.parent.handle;
+            auto& train = plotter->getTrain();
+            const double* real_map = plotter->getRealMap();
+            const double* img_map = plotter->getImaginaryMap();
+            npy_intp dims[] = {train.getYSize(), train.getXSize()};
+            PyObject* result = PyArray_SimpleNew(2, dims, NPY_COMPLEX128);
+            return result;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyGetSetDef PyImanA_MapPloter_Properties[] = {
+            {(char*)"target_map", (getter)PyImanA_MapPlotter_GetAveragedMap, NULL,
+                    (char*)"The resultant average map, or data processing results"},
+
+            {NULL}
+    };
+
     static int PyImanA_MapPlotter_Create(PyObject* module){
 
         PyImanA_MapPlotterType.tp_flags = Py_TPFLAGS_BASETYPE | Py_TPFLAGS_DEFAULT;
@@ -48,6 +72,7 @@ extern "C" {
                 "where isoline is ihna.kozhukhov.imageanalysis.isolines.Isoline object that is used for the isoline\n"
                 "remove. This object also contains information about the synchronization and the train";
         PyImanA_MapPlotterType.tp_init = (initproc)PyImanA_MapPlotter_Init;
+        PyImanA_MapPlotterType.tp_getset = PyImanA_MapPloter_Properties;
 
         if (PyType_Ready(&PyImanA_MapPlotterType) < 0){
             return -1;

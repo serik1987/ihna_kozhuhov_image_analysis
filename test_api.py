@@ -2,6 +2,7 @@
 
 import os
 import matplotlib.pyplot as plt
+from scipy.signal import butter
 import ihna.kozhukhov.imageanalysis as iman
 import ihna.kozhukhov.imageanalysis.sourcefiles as files
 import ihna.kozhukhov.imageanalysis.compression as comp
@@ -29,27 +30,31 @@ if __name__ == "__main__":
     case_list = manifest.CasesList(animal)
     case = case_list['02']
     filename = os.path.join(case['pathname'], case['native_data_files'][0])
-    roi = case['roi']['tissue']
-    print(roi)
+
+    b, a = butter(4, [0.1, 0.2], 'bandpass')
+    print(b, a)
 
     train = files.StreamFileTrain(filename)
     train.open()
     sync = synchr.ExternalSynchronization(train)
     sync.channel_number = 1
     isoline = isolines.TimeAverageIsoline(train, sync)
-    accumulator = acc.TraceAutoReader(isoline)
+    accumulator = acc.MapFilter(isoline)
+    accumulator.preprocess_filter = True
+    accumulator.preprocess_filter_radius = 10
+    accumulator.divide_by_average = True
+    accumulator.set_filter(b, a)
     bar = ProgressBar()
-    accumulator.set_roi(roi)
+
     accumulator.set_progress_bar(bar)
 
     print(accumulator)
     print("PY Channel number: ", accumulator.channel_number)
     print("PY Accumulated: ", accumulator.is_accumulated)
+    print("PY Preprocess filter: ", accumulator.preprocess_filter)
+    print("PY Preprocess filter radius: ", accumulator.preprocess_filter_radius)
+    print("PY Divide by average: ", accumulator.divide_by_average)
     accumulator.accumulate()
-    try:
-        print(accumulator.averaged_signal)
-    except Exception as err:
-        print(err)
 
     del bar
     print("PY Progress bar destroyed")
