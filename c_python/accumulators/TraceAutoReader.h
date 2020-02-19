@@ -38,6 +38,77 @@ extern "C" {
         return 0;
     }
 
+    static PyObject* PyImanA_TraceAutoReader_SetRoi(PyImanA_TraceAutoReaderObject* self,
+            PyObject* args, PyObject* kwds){
+
+        using namespace GLOBAL_NAMESPACE;
+
+        PyObject* roi;
+        if (!PyArg_ParseTuple(args, "O", &roi)){
+            return NULL;
+        }
+
+        PyObject* result = PyObject_CallMethod(roi, "get_coordinate_list", "");
+        if (result == NULL){
+            return NULL;
+        }
+
+        if (!PyList_Check(result)){
+            Py_DECREF(result);
+            PyErr_SetString(PyExc_ValueError, "The roi object shall have get_coordinate_list() method that shall "
+                                              "return list of pixels available for the trace registration");
+        }
+
+        auto* reader = (TraceAutoReader*)self->parent.handle;
+
+        try{
+            reader->clearPixels();
+            int pixel_number = PyList_Size(result);
+            for (int i=0; i < pixel_number; ++i){
+                PyObject* pixel_info = PyList_GetItem(result, i);
+                if (!PyTuple_Check(pixel_info) && PyTuple_Size(pixel_info) != 2){
+                    Py_DECREF(result);
+                    PyErr_SetString(PyExc_ValueError, "Each item in the list returned by the ROI's get_coordinate_list "
+                                                      "method shall be 2-item tuple");
+                    return NULL;
+                }
+                PyObject* coordinate_object;
+                int coordinates[2];
+                for (int j=0; j < 2; ++j){
+                    coordinate_object = PyTuple_GetItem(pixel_info, j);
+                    if (!PyLong_Check(coordinate_object)){
+                        Py_DECREF(result);
+                        PyErr_SetString(PyExc_ValueError, "Pixel coordinate shall be integer\n");
+                    }
+                    coordinates[j] = PyLong_AsLong(coordinate_object);
+                }
+                PixelListItem pixel(*reader, coordinates[0], coordinates[1]);
+                reader->addPixel(pixel);
+            }
+            PixelListItem time_channel(*reader, PixelListItem::ArrivalTime, 0);
+            reader->addPixel(time_channel);
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            Py_DECREF(result);
+            return NULL;
+        }
+
+        Py_DECREF(result);
+        printf("SO ROI was parsed successfully\n");
+        return Py_BuildValue("");
+    }
+
+    static PyMethodDef PyImanA_TraceAutoReader_Methods[] = {
+            {"set_roi", (PyCFunction)PyImanA_TraceAutoReader_SetRoi, METH_VARARGS,
+             "Sets the ROI from which the signal will be averaged and saved\n"
+             "Usage: set_roi(roi)\n"
+             "where roi is usually an ihna.kozhukhov.imageanalysis.manifest.Roi instance\n"
+             "(both SimpleRoi and ComplexRoi is applicable). However any object that have get_coordinate_list method\n"
+             "with the same signature as Roi and the same format of output data is applicable"},
+
+            {NULL}
+    };
+
     static int PyImanA_TraceAutoReader_Create(PyObject* module){
 
         PyImanA_TraceAutoReaderType.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
@@ -49,6 +120,7 @@ extern "C" {
                 "where isoline is an object that will remove isoline from your record\n"
                 "(see ihna.kozhukhov.imageanalysis.isolines.Isoline for details)";
         PyImanA_TraceAutoReaderType.tp_init = (initproc)&PyImanA_TraceAutoReader_Init;
+        PyImanA_TraceAutoReaderType.tp_methods = PyImanA_TraceAutoReader_Methods;
 
         if (PyType_Ready(&PyImanA_TraceAutoReaderType) < 0){
             return -1;

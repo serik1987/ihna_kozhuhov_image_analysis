@@ -39,7 +39,7 @@ if __name__ == "__main__":
     isoline = isolines.TimeAverageIsoline(train, sync)
     accumulator = acc.TraceAutoReader(isoline)
     bar = ProgressBar()
-    accumulator.set_roi()
+    accumulator.set_roi(roi)
     accumulator.set_progress_bar(bar)
 
     print(accumulator)
