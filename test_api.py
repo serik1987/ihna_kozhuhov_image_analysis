@@ -46,6 +46,10 @@ if __name__ == "__main__":
     print("PY Channel number: ", accumulator.channel_number)
     print("PY Accumulated: ", accumulator.is_accumulated)
     accumulator.accumulate()
+    try:
+        print(accumulator.averaged_signal)
+    except Exception as err:
+        print(err)
 
     del bar
     print("PY Progress bar destroyed")

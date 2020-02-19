@@ -85,8 +85,6 @@ extern "C" {
                 PixelListItem pixel(*reader, coordinates[0], coordinates[1]);
                 reader->addPixel(pixel);
             }
-            PixelListItem time_channel(*reader, PixelListItem::ArrivalTime, 0);
-            reader->addPixel(time_channel);
         } catch (std::exception& e){
             PyIman_Exception_process(&e);
             Py_DECREF(result);
@@ -94,9 +92,56 @@ extern "C" {
         }
 
         Py_DECREF(result);
-        printf("SO ROI was parsed successfully\n");
         return Py_BuildValue("");
     }
+
+    static PyObject* PyImanA_TraceAutoReader_GetTimes(PyImanA_TraceAutoReaderObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceAutoReader*)self->parent.handle;
+
+        try{
+            const double* presult = reader->getTimes();
+            int n = reader->getFrameNumber();
+            npy_intp dims[] = {n};
+            PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+            for (int i=0; i < n; ++i){
+                *(double*)PyArray_GETPTR1((PyArrayObject*)result, i) = presult[i];
+            }
+            return result;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyObject* PyImanA_TraceAutoReader_GetAveragedSignal(PyImanA_TraceAutoReaderObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceAutoReader*)self->parent.handle;
+
+        try{
+            const double* presult = reader->getAveragedSignal();
+            int n = reader->getFrameNumber();
+            npy_intp dims[] = {n};
+            PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+            for (int i=0; i < n; ++i){
+                *(double*)PyArray_GETPTR1((PyArrayObject*)result, i) = presult[i];
+            }
+            return result;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
+    static PyGetSetDef PyImanA_TraceAutoReader_Properties[] = {
+            {(char*)"times", (getter)PyImanA_TraceAutoReader_GetTimes, NULL,
+                    (char*)"Returns vector that contains arrival times in ms"},
+
+            {(char*)"averaged_signal", (getter)PyImanA_TraceAutoReader_GetAveragedSignal, NULL,
+             (char*)"Returns the averaged signal after processing"},
+
+            {NULL}
+    };
 
     static PyMethodDef PyImanA_TraceAutoReader_Methods[] = {
             {"set_roi", (PyCFunction)PyImanA_TraceAutoReader_SetRoi, METH_VARARGS,
@@ -121,6 +166,7 @@ extern "C" {
                 "(see ihna.kozhukhov.imageanalysis.isolines.Isoline for details)";
         PyImanA_TraceAutoReaderType.tp_init = (initproc)&PyImanA_TraceAutoReader_Init;
         PyImanA_TraceAutoReaderType.tp_methods = PyImanA_TraceAutoReader_Methods;
+        PyImanA_TraceAutoReaderType.tp_getset = PyImanA_TraceAutoReader_Properties;
 
         if (PyType_Ready(&PyImanA_TraceAutoReaderType) < 0){
             return -1;
