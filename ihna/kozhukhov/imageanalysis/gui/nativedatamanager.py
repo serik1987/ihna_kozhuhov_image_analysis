@@ -5,7 +5,7 @@ import time
 import wx
 import scipy
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
-from ihna.kozhukhov.imageanalysis import compression
+from ihna.kozhukhov.imageanalysis import compression, accumulators
 from ihna.kozhukhov.imageanalysis.tracereading import TraceProcessor
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
@@ -14,6 +14,7 @@ from .traceanalysispropertiesdlg import TraceAnalysisPropertiesDlg
 from .readingprogressdlg import ReadingProgressDialog
 from .tracesdlg import TracesDlg
 from .finaltracesdlg import FinalTracesDlg
+from .mapplotterdlg import MapPlotterDlg
 
 
 class NativeDataManager(wx.Dialog):
@@ -337,10 +338,42 @@ class NativeDataManager(wx.Dialog):
             dlg.ShowModal()
 
     def get_averaged_maps(self):
-        print("NATIVE DATA MANAGER get averaged maps")
+        self.__train.close()
+
+        try:
+            pathname = self.__case['pathname']
+            filename = self.__case['native_data_files'][0]
+            fullname = os.path.join(pathname, filename)
+            train = sfiles.StreamFileTrain(fullname)
+            train.open()
+            map_plotter_dlg = MapPlotterDlg(self, train)
+            if map_plotter_dlg.ShowModal() == wx.ID_CANCEL:
+                map_plotter_dlg.close()
+                return
+            try:
+                plotter = map_plotter_dlg.create_accumulator()
+            except Exception as err:
+                map_plotter_dlg.close()
+                raise err
+            map_plotter_dlg.close()
+            progress_dlg = ReadingProgressDialog(self, "Map averaging", 1000, "Map averaging")
+            try:
+                plotter.set_progress_bar(progress_dlg)
+                plotter.accumulate()
+            except Exception as err:
+                progress_dlg.done()
+                raise err
+            progress_dlg.done()
+            print(plotter)
+        except Exception as err:
+            print("Error class:", err.__class__.__name__)
+            print("Error message:", err)
+            dlg = wx.MessageDialog(self, str(err), "Averaged maps", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def trace_analysis(self):
         self.__train.close()
+
         try:
             pathname = self.__case['pathname']
             filename = self.__case['native_data_files'][0]
@@ -353,69 +386,92 @@ class NativeDataManager(wx.Dialog):
                 properties_dlg.close()
                 del train
                 return
-            reader, isoline, sync = properties_dlg.create_reader()
-            roi_name = properties_dlg.get_roi_name()
-            autoaverage = properties_dlg.is_autoaverage()
-            if autoaverage:
-                avg_mode = properties_dlg.get_avg_mode()
+
+            if properties_dlg.is_autoaverage():
+                self.__trace_analysis_auto(train, properties_dlg)
             else:
-                avg_mode = None
+                self.__trace_analysis_manual(train, properties_dlg)
             properties_dlg.close()
-
-            progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
-            reader.progress_bar = progress_dlg
-            try:
-                reader.read()
-            except Exception as err:
-                progress_dlg.Destroy()
-                raise err
-            if not reader.has_cleaned:
-                print("PY Trace reading cancelled or error occured")
-                del train
-                del reader
-                del isoline
-                del sync
-                progress_dlg.Destroy()
-                return
-            print("PY Finish of traces reading")
-            progress_dlg.done()
-
-            trace_processor = TraceProcessor(reader, isoline, sync, train, autoaverage, avg_mode)
-            del reader
-            del isoline
-            del sync
+            if train.is_opened:
+                train.close()
             del train
-            if not autoaverage:
-                traces_dlg = TracesDlg(self, trace_processor)
-                if traces_dlg.ShowModal() == wx.ID_CANCEL:
-                    traces_dlg.close()
-                    return
-                traces_dlg.set_average_method_and_strategy(trace_processor)
-                traces_dlg.close()
-
-            traces = trace_processor.create_traces(self.__case, self.__case_name)
-            del trace_processor
-            traces.set_roi_name(roi_name)
-            final_traces_dlg = FinalTracesDlg(self, traces)
-            if final_traces_dlg.ShowModal() == wx.ID_CANCEL:
-                final_traces_dlg.close()
-                return
-            save_dialog = wx.ProgressDialog("Trace analysis", "Saving the data", 100, self)
-            save_dialog.Update(0)
-            try:
-                npz_file = final_traces_dlg.save_files(self.__case['pathname'])
-                if npz_file is not None:
-                    self.__case['traces'].append(traces)
-                    traces.clean()
-                else:
-                    del traces
-                final_traces_dlg.close()
-                save_dialog.Destroy()
-            except Exception as err:
-                save_dialog.Destroy()
-                raise err
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             print("Exception class:", err.__class__.__name__)
             print("Exception message:", str(err))
             dlg.ShowModal()
+
+    def __trace_analysis_auto(self, train, properties_dlg):
+        sync = properties_dlg.create_synchronization()
+        isoline = properties_dlg.create_isoline(sync)
+        reader = accumulators.TraceAutoReader(isoline)
+        roi_name = properties_dlg.get_roi_name()
+        roi = self.__case['roi'][roi_name]
+        reader.set_roi(roi)
+        progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Preparing")
+        reader.set_progress_bar(progress_dlg)
+        reader.accumulate()
+        progress_dlg.done()
+        print(train)
+        print(sync)
+        print(isoline)
+        print(reader)
+        print(roi)
+        properties_dlg.close()
+
+    def __trace_analysis_manual(self, train, properties_dlg):
+        reader, isoline, sync = properties_dlg.create_reader()
+        roi_name = properties_dlg.get_roi_name()
+        properties_dlg.close()
+
+        progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Reading traces")
+        reader.progress_bar = progress_dlg
+        try:
+            reader.read()
+        except Exception as err:
+            progress_dlg.Destroy()
+            raise err
+        if not reader.has_cleaned:
+            print("PY Trace reading cancelled or error occured")
+            del train
+            del reader
+            del isoline
+            del sync
+            progress_dlg.Destroy()
+            return
+        print("PY Finish of traces reading")
+        progress_dlg.done()
+
+        trace_processor = TraceProcessor(reader, isoline, sync, train, False, "mean")
+        del train
+        del reader
+        del isoline
+        del sync
+        traces_dlg = TracesDlg(self, trace_processor)
+        if traces_dlg.ShowModal() == wx.ID_CANCEL:
+            traces_dlg.close()
+            return
+        traces_dlg.set_average_method_and_strategy(trace_processor)
+        traces_dlg.close()
+
+        traces = trace_processor.create_traces(self.__case, self.__case_name)
+        del trace_processor
+        traces.set_roi_name(roi_name)
+        final_traces_dlg = FinalTracesDlg(self, traces)
+        if final_traces_dlg.ShowModal() == wx.ID_CANCEL:
+            final_traces_dlg.close()
+            return
+        save_dialog = wx.ProgressDialog("Trace analysis", "Saving the data", 100, self)
+        save_dialog.Update(0)
+        try:
+            npz_file = final_traces_dlg.save_files(self.__case['pathname'])
+            if npz_file is not None:
+                self.__case['traces'].append(traces)
+                traces.clean()
+            else:
+                del traces
+            final_traces_dlg.close()
+            save_dialog.Destroy()
+        except Exception as err:
+            save_dialog.Destroy()
+            raise err

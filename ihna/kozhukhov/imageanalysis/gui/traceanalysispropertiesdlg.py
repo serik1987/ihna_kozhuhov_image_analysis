@@ -21,8 +21,6 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
     __roi_list = None
     __correctness_check_box = None
     __autoprocess_box = None
-    __mean_box = None
-    __median_box = None
 
     def __init__(self, parent, train, roi_list):
         super().__init__(parent, title="Trace analysis properties", size=(800, 600))
@@ -102,14 +100,6 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, lambda evt: self.__switch_autoaverage(), self.__autoprocess_box)
         layout.Add(self.__autoprocess_box, 0, wx.EXPAND)
 
-        self.__mean_box = wx.RadioButton(parent, label="Compute mean", style=wx.RB_GROUP)
-        self.__mean_box.Enable(False)
-        layout.Add(self.__mean_box, 0, wx.EXPAND)
-
-        self.__median_box = wx.RadioButton(parent, label="Compute median")
-        self.__median_box.Enable(False)
-        layout.Add(self.__median_box, 0, wx.EXPAND)
-
         box.Add(layout, 1, wx.EXPAND | wx.ALL, 5)
         return box
 
@@ -137,13 +127,6 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
         self.__sync_selector.close()
         self.__isoline_selector.close()
-
-    def correctness_check(self):
-        print("PY correctness check")
-        sync = self.create_synchronization()
-        isoline = self.create_isoline(sync)
-        print(sync)
-        print(isoline)
 
     def get_pixel_list(self):
         roi_number = self.__roi_box.GetSelection()
@@ -185,19 +168,12 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
     def __switch_autoaverage(self):
         if self.__autoprocess_box.IsChecked():
-            self.__mean_box.Enable(True)
-            self.__median_box.Enable(True)
+            for signal_widget in self.__sync_signal_widgets:
+                signal_widget.SetValue(False)
+                signal_widget.Enable(False)
         else:
-            self.__mean_box.Enable(False)
-            self.__median_box.Enable(False)
+            for signal_widget in self.__sync_signal_widgets:
+                signal_widget.Enable(True)
 
     def is_autoaverage(self):
         return self.__autoprocess_box.IsChecked()
-
-    def get_avg_mode(self):
-        if self.__mean_box.GetValue():
-            return "mean"
-        elif self.__median_box.GetValue():
-            return "median"
-        else:
-            raise RuntimeError("The average mode selected by the user is unknonwn or unsupported")
