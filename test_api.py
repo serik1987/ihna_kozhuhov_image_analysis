@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import matplotlib.pyplot as plt
 from scipy.signal import butter
 import ihna.kozhukhov.imageanalysis as iman
@@ -30,6 +31,9 @@ if __name__ == "__main__":
     case_list = manifest.CasesList(animal)
     case = case_list['02']
     filename = os.path.join(case['pathname'], case['native_data_files'][0])
+
+    for case in animal_list.get_animal_filter():
+        print(case.get_animal_name(), case['short_name'])
 
     b, a = butter(4, [0.1, 0.2], 'bandpass')
     print(b, a)

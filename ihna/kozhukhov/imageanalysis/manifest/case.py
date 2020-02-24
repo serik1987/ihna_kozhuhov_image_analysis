@@ -46,11 +46,12 @@ class Case:
                       'additional_information', 'native_data_files', 'compressed_data_files', 'roi', 'trace_files',
                       'averaged_maps', 'auto', 'imported', 'special_conditions']
 
+    __animal_name = None
     __properties = None
     __roi_list = None
     __traces_list = None
 
-    def __init__(self, input_object, pathname=None):
+    def __init__(self, input_object, pathname=None, animal_name=None):
         self.__properties = {}
         for property_name in self.property_names:
             self.__properties[property_name] = None
@@ -64,6 +65,10 @@ class Case:
             self.load_case(input_object, pathname)
         else:
             raise ValueError("Unrecognized argument type for the case")
+        self.__animal_name = animal_name
+
+    def get_animal_name(self):
+        return self.__animal_name
 
     def import_case(self, data):
         """

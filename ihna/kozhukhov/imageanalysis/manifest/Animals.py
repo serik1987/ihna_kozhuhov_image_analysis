@@ -4,7 +4,9 @@ import os
 import os.path
 import shutil
 from .animal import Animal
+from .animalfilter import AnimalFilter
 import xml.etree.ElementTree as ET
+
 
 class Animals:
     """
@@ -26,18 +28,23 @@ class Animals:
 
         Other functions:
             animals.save() - to save the animal list to the hard disk drive
+            animals.get_filter() - returns the animal filter. The animal filter is used to select which animals undergo
+            to the processing and iterate through all cases within them
     """
 
     __working_dir = None
     __animal_list = None
     __animals_manifest = "iman-manifest.xml"
     __current_iterator = None
+    __filter = None
 
     def __init__(self, working_dir):
         self.__working_dir = working_dir
         self.__animal_list = dict()
         if os.path.isfile(self.manifest_fullname):
             self.load()
+        else:
+            self.__filter = AnimalFilter(self)
 
     def __getattr__(self, item):
         if item == "manifest_fullname":
@@ -54,6 +61,7 @@ class Animals:
             fullname = os.path.join(self.__working_dir, animal['folder_name'])
             animal['folder_full_name'] = fullname
             self[specimen] = animal
+        self.__filter = AnimalFilter(self, root.find("animal-filter"))
 
     def save(self):
         root = ET.Element("animals")
@@ -65,6 +73,7 @@ class Animals:
                 "conditions": animal['conditions'],
                 "recording_site": animal['recording_site']
             }).tail = "\n"
+        self.__filter.save(root, "animal-filter")
         tree = ET.ElementTree(root)
         tree.write(self.manifest_fullname, encoding="utf-8", xml_declaration=True)
 
@@ -105,3 +114,9 @@ class Animals:
         if old_key != new_key:
             self.__animal_list[new_key] = self.__animal_list[old_key]
             del self.__animal_list[old_key]
+
+    def get_animal_filter(self):
+        return self.__filter
+
+    def get_animal_keys(self):
+        return list(self.__animal_list.keys())

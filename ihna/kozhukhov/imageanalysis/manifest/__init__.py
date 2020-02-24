@@ -15,3 +15,6 @@ from .roi import Roi
 from .simpleroi import SimpleRoi
 from .roilist import RoiList
 from .complexroi import ComplexRoi
+from .filter import Filter
+from .animalfilter import AnimalFilter
+from .casefilter import CaseFilter

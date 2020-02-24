@@ -7,6 +7,8 @@ from .importcasedialog import ImportCaseDialog
 from .importcasemanager import ImportCaseManager
 from .nativedatamanager import NativeDataManager
 from .roimanager import RoiManager
+from .animalfilterdlg import AnimalFilterDlg
+from .casefilterdlg import CaseFilterDlg
 
 
 class MainWindow(wx.Frame):
@@ -378,7 +380,17 @@ class MainWindow(wx.Frame):
             print(err)
 
     def open_animal_filter(self):
-        print("Open animal filter")
+        try:
+            animal_filter = self.__animals.get_animal_filter()
+            animal_filter_dlg = AnimalFilterDlg(self, animal_filter)
+            if animal_filter_dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            self.__animals.save()
+        except Exception as err:
+            print("Error class:", err.__class__.__name__)
+            print("Error name:", err)
+            dlg = wx.MessageDialog(self, str(err), "Animal filter", wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def save_animal_info(self):
         try:
@@ -426,7 +438,17 @@ class MainWindow(wx.Frame):
         self.load_cases()
 
     def open_case_filter(self):
-        print("Case filter")
+        try:
+            case_filter = self.__cases.get_case_filter()
+            case_filter_dlg = CaseFilterDlg(self, case_filter)
+            if case_filter_dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            self.__cases.save()
+        except Exception as err:
+            print("Error class:", err.__class__.__name__)
+            print("Error message:", err)
+            dlg = wx.MessageDialog(self, str(err), "Case Filter", wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
 
     def save_case_info(self):
         if self.__case_short_name_box.GetValue() == "":
