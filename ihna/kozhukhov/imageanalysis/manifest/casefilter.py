@@ -44,3 +44,6 @@ class CaseFilter(Filter):
                     next_case = _next_case
 
         return next_case
+
+    def reset_iteration(self):
+        self.__index = None

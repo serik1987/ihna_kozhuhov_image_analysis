@@ -9,6 +9,7 @@ from .nativedatamanager import NativeDataManager
 from .roimanager import RoiManager
 from .animalfilterdlg import AnimalFilterDlg
 from .casefilterdlg import CaseFilterDlg
+from .autoprocess import *
 
 
 class MainWindow(wx.Frame):
@@ -295,9 +296,15 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX, self.__set_decompress_before_processing, self.__decompress_before_processing_box)
         main_layout.Add(self.__decompress_before_processing_box, 0, wx.EXPAND | wx.BOTTOM, 5)
 
+        some_actions_box = wx.BoxSizer(wx.HORIZONTAL)
         self.__extract_frame_button = wx.Button(panel, label="Extract frame")
         self.Bind(wx.EVT_BUTTON, lambda evt: self.extract_frame(), self.__extract_frame_button)
-        main_layout.Add(self.__extract_frame_button, 0, wx.BOTTOM, 5)
+        some_actions_box.Add(self.__extract_frame_button, 0, wx.RIGHT, 5)
+
+        autofilter = wx.Button(panel, label="Map filtration")
+        self.Bind(wx.EVT_BUTTON, lambda evt: self.do_autofilter(), autofilter)
+        some_actions_box.Add(autofilter)
+        main_layout.Add(some_actions_box, 0, wx.BOTTOM, 5)
 
         actions_box = wx.BoxSizer(wx.HORIZONTAL)
 
@@ -574,26 +581,61 @@ class MainWindow(wx.Frame):
         self.__include_auto_box.Enable(False)
 
     def autocompress(self):
-        print("Autocompress")
+        try:
+            autocompress_dlg = AutocompressDlg(self, self.__animals.get_animal_filter())
+            autocompress_dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Autocompress")
 
     def autodecompress(self):
-        print("Autodecompress")
+        try:
+            autodecompress_dlg = AutodecompressDlg(self, self.__animals.get_animal_filter())
+            autodecompress_dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Autodecompress")
 
     def is_decompress_before_processing(self):
         return self.__decompress_before_processing
 
     def __set_decompress_before_processing(self, evt):
         self.__decompress_before_processing = evt.IsChecked()
-        print(self.is_decompress_before_processing())
 
     def extract_frame(self):
-        print("Extract frame")
+        try:
+            autoextract_dlg = AutoFrameExtractDlg(self, self.__animals.get_animal_filter())
+            autoextract_dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Extract frame")
+
+    @staticmethod
+    def show_error_message(parent, err, caption):
+        print("Exception class:", err.__class__.__name__)
+        print("Exception name:", err)
+        dlg = wx.MessageDialog(parent, str(err), caption, wx.OK | wx.CENTRE | wx.ICON_ERROR)
+        dlg.ShowModal()
 
     def auto_trace_analysis(self):
-        print("Auto trace analysis")
+        try:
+            autotrace_dlg = AutotraceDlg(self, self.__animals.get_animal_filter(), autodecompress)
+            autotrace_dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Auto trace")
 
     def auto_average_maps(self):
-        print("Auto average maps")
+        try:
+            autodecompress = self.is_decompress_before_processing()
+            autoaverage_dlg = AutoaverageDlg(self, self.__animals.get_animal_filter(), autodecompress)
+            autoaverage_dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Autoaverage")
+
+    def do_autofilter(self):
+        try:
+            autodecompress = self.is_decompress_before_processing()
+            autofilter_dlg = AutofilterDlg(self, self.__animals.get_animal_filter(), autodecompress)
+            autofilter_dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Autofilter")
 
     def open_working_dir(self, dir):
         self.__working_dir = dir

@@ -53,3 +53,9 @@ class AnimalFilter(Filter):
                 next_case = None
 
         return next_case
+
+    def reset_iteration(self):
+        self.__animal_index = None
+        if self.__case_filter is not None:
+            self.__case_filter.reset_iteration()
+        self.__case_filter = None
