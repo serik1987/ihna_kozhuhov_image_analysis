@@ -15,6 +15,7 @@ from .readingprogressdlg import ReadingProgressDialog
 from .tracesdlg import TracesDlg
 from .finaltracesdlg import FinalTracesDlg
 from .mapplotterdlg import MapPlotterDlg
+from .mapfilterdlg.basicwindow import BasicWindow as MapFilterDlg
 
 
 class NativeDataManager(wx.Dialog):
@@ -260,6 +261,10 @@ class NativeDataManager(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, lambda event: self.frame_view(), frame_view_button)
         processing_box_layout.Add(frame_view_button, pos=(0, 0), flag=wx.EXPAND)
 
+        map_filter_button = wx.Button(main_panel, label="Map filter")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.map_filter(), map_filter_button)
+        processing_box_layout.Add(map_filter_button, pos=(0, 1), flag=wx.EXPAND)
+
         averaged_maps_button = wx.Button(main_panel, label="Averaged maps")
         self.Bind(wx.EVT_BUTTON, lambda event: self.get_averaged_maps(), averaged_maps_button)
         averaged_maps_button.Enable(processing_enabled)
@@ -365,6 +370,40 @@ class NativeDataManager(wx.Dialog):
                 raise err
             progress_dlg.done()
             print(plotter)
+        except Exception as err:
+            print("Error class:", err.__class__.__name__)
+            print("Error message:", err)
+            dlg = wx.MessageDialog(self, str(err), "Averaged maps", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
+            dlg.ShowModal()
+
+    def map_filter(self):
+        self.__train.close()
+
+        try:
+            pathname = self.__case['pathname']
+            filename = self.__case['native_data_files'][0]
+            fullname = os.path.join(pathname, filename)
+            train = sfiles.StreamFileTrain(fullname)
+            train.open()
+            map_filter_dlg = MapFilterDlg(self, train)
+            if map_filter_dlg.ShowModal() == wx.ID_CANCEL:
+                map_filter_dlg.close()
+                return
+            try:
+                map_filter = map_filter_dlg.create_accumulator()
+            except Exception as err:
+                map_filter_dlg.close()
+                raise err
+            map_filter_dlg.close()
+            progress_dlg = ReadingProgressDialog(self, "Map filtration", 1000, "Map filtration")
+            try:
+                map_filter.set_progress_bar(progress_dlg)
+                map_filter.accumulate()
+            except Exception as err:
+                progress_dlg.done()
+                raise err
+            progress_dlg.done()
+            print(map_filter)
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)

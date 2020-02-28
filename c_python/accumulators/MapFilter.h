@@ -123,7 +123,8 @@ extern "C"{
              "\n"
              "Usage: f.set_filter(b, a)\n"
              "where b and a are nominator and denominator filter polynomials respectively\n"
-             "See help on scipy.signal on what is b and a and how they can be achieved\n"},
+             "See help on scipy.signal for detailed information about b and a polymials\n"
+             "Also, use functions from this package to generate them"},
 
             {NULL}
     };

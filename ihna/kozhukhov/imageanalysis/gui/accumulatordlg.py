@@ -148,3 +148,6 @@ class AccumulatorDlg(wx.Dialog):
         AccumulatorClass = self._get_accumulator_class()
         accumulator = AccumulatorClass(isoline)
         return accumulator
+
+    def get_train(self):
+        return self.__train
