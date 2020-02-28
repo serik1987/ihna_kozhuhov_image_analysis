@@ -26,6 +26,8 @@ class TrainAutoprocessDlg(AutoprocessDlg):
                 self._train = StreamFileTrain(filename)
                 self._train.open()
                 dlg = self._open_process_dlg(self._train)
+                if dlg is None:
+                    raise ValueError("_open_process_dlg shall return the dialog")
                 print("PY Success in opening {0}".format(filename))
                 break
             except Exception as err:
@@ -33,6 +35,7 @@ class TrainAutoprocessDlg(AutoprocessDlg):
         if dlg is None:
             raise RuntimeError("In order to do this action please, open at least one case containing native data files")
         else:
+            dlg.ShowModal()
             self._sub_dlg = dlg
 
     def _open_process_dlg(self, train):

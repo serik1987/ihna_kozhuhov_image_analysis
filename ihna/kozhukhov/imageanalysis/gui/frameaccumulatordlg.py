@@ -38,7 +38,8 @@ class FrameAccumulatorDlg(AccumulatorDlg):
         result.Add(accumulator_box, 0, wx.EXPAND | wx.BOTTOM, 5)
 
         frame_accumulator_box = self._create_frame_accumulator_box(parent)
-        result.Add(frame_accumulator_box, 0, wx.EXPAND)
+        if frame_accumulator_box is not None:
+            result.Add(frame_accumulator_box, 0, wx.EXPAND)
 
         return result
 

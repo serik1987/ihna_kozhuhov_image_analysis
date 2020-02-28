@@ -12,3 +12,6 @@ class MapPlotterDlg(FrameAccumulatorDlg):
 
     def _get_accumulator_class(self):
         return MapPlotter
+
+    def _create_frame_accumulator_box(self, parent):
+        pass
