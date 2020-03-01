@@ -1,9 +1,13 @@
 # -*- coding: utf-8
 
+import numpy as np
+from scipy.stats import linregress
 import wx
+from ihna.kozhukhov.imageanalysis.tracereading import TraceReader
 from ihna.kozhukhov.imageanalysis.accumulators import MapFilter
+from ihna.kozhukhov.imageanalysis.gui.readingprogressdlg import ReadingProgressDialog
 from ihna.kozhukhov.imageanalysis.gui.frameaccumulatordlg import FrameAccumulatorDlg
-from ihna.kozhukhov.imageanalysis.gui.mapfilterdlg import filters
+from .filterdlg import FilterDlg
 
 
 class BasicWindow(FrameAccumulatorDlg):
@@ -11,6 +15,10 @@ class BasicWindow(FrameAccumulatorDlg):
     __filter_type_box = None
     __filter_editors = None
     __parent = None
+
+    __fs = None
+    __filter_dlg = None
+    __filter_dlg_applied = None
 
     def __init__(self, parent, train):
         super().__init__(parent, train, "Map filter")
@@ -20,48 +28,47 @@ class BasicWindow(FrameAccumulatorDlg):
 
     def _create_frame_accumulator_box(self, parent):
         self.__parent = parent
+        self.__calc_fs()
         filter_box = wx.StaticBoxSizer(wx.VERTICAL, parent, label="Filter properties")
         filter_layout = wx.BoxSizer(wx.VERTICAL)
-        filter_type_layout = wx.BoxSizer(wx.HORIZONTAL)
 
-        filter_type_caption = wx.StaticText(parent, label="Filter type")
-        filter_type_layout.Add(filter_type_caption, 0, wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 5)
+        filter_type_button = wx.Button(parent, label="Open filter properties")
+        filter_type_button.Bind(wx.EVT_BUTTON, lambda event: self.__open_filter_dlg())
+        filter_layout.Add(filter_type_button)
 
-        self.__filter_type_box = wx.Choice(parent, choices=list(filters.keys()), style=wx.CB_SORT)
-        self.__filter_type_box.Bind(wx.EVT_CHOICE, lambda event: self.select_current())
-        filter_type_layout.Add(self.__filter_type_box, 1, wx.EXPAND)
-
-        filter_layout.Add(filter_type_layout, 0, wx.EXPAND | wx.BOTTOM, 5)
-
-        self.__filter_editors = {}
-        default_filter = None
-        for filter_name, FilterEditor in filters.items():
-            if FilterEditor is None:
-                print("TO-DO: Implement editor for", filter_name)
-            else:
-                editor = FilterEditor(self, parent)
-                self.__filter_editors[filter_name] = editor
-                editor.hide()
-                filter_layout.Add(editor, 0, wx.EXPAND)
-            if default_filter is None:
-                default_filter = filter_name
-        self.select(default_filter)
+        self.__filter_dlg = FilterDlg(self.__parent, self.__fs)
+        self.__filter_dlg_applied = False
 
         filter_box.Add(filter_layout, 1, wx.ALL | wx.EXPAND, 5)
         return filter_box
 
-    def select(self, selected_name):
-        for filter_name, filter_editor in self.__filter_editors.items():
-            if filter_name == selected_name:
-                print(filter_name)
-                filter_editor.show()
-            else:
-                filter_editor.hide()
-        n = self.__filter_type_box.FindString(selected_name)
-        self.__filter_type_box.SetSelection(n)
-        self.Layout()
-        self.__parent.Layout()
+    def __calc_fs(self):
+        reader = TraceReader(self.get_train())
+        reader.add_pixel(('TIME', 0))
+        pbar = ReadingProgressDialog(self.__parent, "Calculation of sample rate", 1000,
+                                     "Calculation of sample rate")
+        reader.progress_bar = pbar
+        try:
+            reader.read()
+        except Exception as err:
+            print("PY Time vector reading failed")
+            pbar.done()
+            raise err
+        pbar.done()
+        times = reader.get_trace(0) * 1e-3
+        timestamps = np.arange(times.size)
+        result = linregress(timestamps, times)
+        self.__fs = 1.0 / result[0]
 
-    def select_current(self):
-        filter_name = self.__filter_type_box.GetStringSelection()
-        self.select(filter_name)
+    def __open_filter_dlg(self):
+        if self.__filter_dlg.ShowModal() == wx.ID_OK:
+            self.__filter_dlg_applied = True
+
+    def get_sample_rate(self):
+        return self.__fs
+
+    def create_accumulator(self):
+        map_filter = super().create_accumulator()
+        b, a = self.__filter_dlg.get_filter_coefficients()
+        map_filter.set_filter(b, a)
+        return map_filter
