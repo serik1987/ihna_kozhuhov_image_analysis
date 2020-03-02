@@ -112,10 +112,11 @@ setup(
     ext_modules=[imageanalysis],
     requires=[
         "psutil",
-        "numpy(>=1.18)",
-        "matplotlib(>=3.1)",
-        "scipy(>=1.4)",
-        "wxpython(>=4.0)"
+        "numpy",
+        "matplotlib",
+        "scipy",
+        "wxpython",
+        "pypng"
     ],
     provides=["ihna_kozhukhov_iman"],
     scripts=["iman"]

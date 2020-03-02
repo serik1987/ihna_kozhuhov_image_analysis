@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+from time import sleep
 import wx
 from wx.lib.scrolledpanel import ScrolledPanel
 
@@ -18,16 +19,37 @@ class AutoprocessEditor(wx.BoxSizer):
 
         status_caption = wx.StaticText(parent, label=case_name)
         size = status_caption.GetSize()
-        size.SetWidth(150)
+        size.SetWidth(159)
         status_caption.SetSizeHints(size)
         self.Add(status_caption, 0, wx.RIGHT, 5)
 
-        self.__case_status_box = wx.StaticText(parent, label="Ready")
+        self.__case_status_box = wx.StaticText(parent, label="Ready",
+                                               style=wx.ALIGN_LEFT | wx.ST_NO_AUTORESIZE | wx.ST_ELLIPSIZE_END)
         self.__case_status_box.SetForegroundColour("orange")
         font = self.__case_status_box.GetFont()
         font.SetWeight(wx.FONTWEIGHT_BOLD)
         self.__case_status_box.SetFont(font)
+        size = self.__case_status_box.GetSize()
+        self.__case_status_box.SetSizeHints(300, size[1])
         self.Add(self.__case_status_box, 0)
+
+    def done(self):
+        self.__case_status_box.SetLabel("Done")
+        self.__case_status_box.SetForegroundColour("green")
+        self.__parent.Update()
+        self.__parent.Refresh()
+
+    def error(self, err):
+        self.__case_status_box.SetLabel(str(err))
+        self.__case_status_box.SetForegroundColour("red")
+        self.__parent.Update()
+        self.__parent.Refresh()
+
+    def progress_function(self, completed, total, message):
+        self.__case_status_box.SetLabel("{0} ({1}% completed)".format(message, 100 * completed / total))
+        self.__parent.Refresh()
+        self.__parent.Update()
+        print("{0} ({1}% completed)".format(message, 100 * completed / total))
 
 
 class AutoprocessDlg(wx.Dialog):
@@ -59,7 +81,7 @@ class AutoprocessDlg(wx.Dialog):
         for case in animal_filter:
             case_box = AutoprocessEditor(editor_box, case)
             editor_box_sizer.Add(case_box, 0, wx.BOTTOM | wx.EXPAND, 5)
-            self.__editor_list.append(case)
+            self.__editor_list.append((case, case_box))
         editor_box.SetSizer(editor_box_sizer)
         editor_box.SetupScrolling(False, True)
         main_layout.Add(editor_box, 1, wx.BOTTOM | wx.EXPAND, 10)
@@ -68,10 +90,6 @@ class AutoprocessDlg(wx.Dialog):
         self.__do_button = wx.Button(panel, label="Continue")
         self.__do_button.Bind(wx.EVT_BUTTON, lambda event: self.__do())
         buttons_box.Add(self.__do_button, 0, wx.RIGHT, 5)
-
-        self.__cancel_button = wx.Button(panel, label="Cancel")
-        self.__cancel_button.Bind(wx.EVT_BUTTON, lambda event: self.__cancel())
-        buttons_box.Add(self.__cancel_button, 0)
 
         self.__close_button = wx.Button(panel, label="Close")
         self.__close_button.Bind(wx.EVT_BUTTON, lambda event: self.Close())
@@ -96,15 +114,24 @@ class AutoprocessDlg(wx.Dialog):
     def __do(self):
         self.__do_button.Hide()
         self.__panel.Layout()
+        self.Layout()
         self.Update()
         self.Refresh()
-        print("DO BUTTON")
-
-    def __cancel(self):
-        if self.__in_progress:
-            print("CANCEL")
-        else:
-            self.Close()
+        for case, case_box in self.__editor_list:
+            try:
+                case_full_name = "Processing case: %s_%s" % (case.get_animal_name(), case['short_name'])
+                case_box.progress_function(0, 100, "In progress")
+                print(case_full_name)
+                self._process_single_case(case, case_box)
+                case_box.done()
+            except Exception as err:
+                case_box.error(err)
+        self.__close_button.Show(True)
+        self.__panel.Layout()
+        self.Layout()
 
     def get_ready(self):
         return self.__ready
+
+    def _process_single_case(self, case, case_box):
+        raise NotImplementedError("_process_single_case")
