@@ -32,11 +32,14 @@ class TrainAutoprocessDlg(AutoprocessDlg):
                 break
             except Exception as err:
                 print("PY Opening {0} failed due to: {1}".format(filename, err))
+        self._animal_filter.reset_iteration()
         if dlg is None:
             raise RuntimeError("In order to do this action please, open at least one case containing native data files")
         else:
-            dlg.ShowModal()
+            if dlg.ShowModal() == wx.ID_CANCEL:
+                return False
             self._sub_dlg = dlg
+            return True
 
     def _open_process_dlg(self, train):
         raise NotImplementedError("_open_process_dlg")

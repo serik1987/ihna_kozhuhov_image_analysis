@@ -44,6 +44,7 @@ class AutoprocessDlg(wx.Dialog):
     __in_progress = False
     __buttons_box = None
     __panel = None
+    __ready = False
 
     def __init__(self, parent, animal_filter, title):
         super().__init__(parent, title=title, size=(500, 800))
@@ -87,10 +88,10 @@ class AutoprocessDlg(wx.Dialog):
         self._parent = parent
         panel.Layout()
 
-        self._open_sub_dlg()
+        self.__ready = self._open_sub_dlg()
 
     def _open_sub_dlg(self):
-        pass
+        return True
 
     def __do(self):
         self.__do_button.Hide()
@@ -104,3 +105,6 @@ class AutoprocessDlg(wx.Dialog):
             print("CANCEL")
         else:
             self.Close()
+
+    def get_ready(self):
+        return self.__ready

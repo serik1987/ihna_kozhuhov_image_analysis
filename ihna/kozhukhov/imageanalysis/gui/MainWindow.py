@@ -617,7 +617,8 @@ class MainWindow(wx.Frame):
     def auto_trace_analysis(self):
         try:
             autotrace_dlg = AutotraceDlg(self, self.__animals.get_animal_filter(), autodecompress)
-            autotrace_dlg.ShowModal()
+            if autotrace_dlg.get_ready():
+                autotrace_dlg.ShowModal()
         except Exception as err:
             self.show_error_message(self, err, "Auto trace")
 
@@ -625,7 +626,8 @@ class MainWindow(wx.Frame):
         try:
             autodecompress = self.is_decompress_before_processing()
             autoaverage_dlg = AutoaverageDlg(self, self.__animals.get_animal_filter(), autodecompress)
-            autoaverage_dlg.ShowModal()
+            if autoaverage_dlg.get_ready():
+                autoaverage_dlg.ShowModal()
         except Exception as err:
             self.show_error_message(self, err, "Autoaverage")
 
@@ -633,7 +635,8 @@ class MainWindow(wx.Frame):
         try:
             autodecompress = self.is_decompress_before_processing()
             autofilter_dlg = AutofilterDlg(self, self.__animals.get_animal_filter(), autodecompress)
-            autofilter_dlg.ShowModal()
+            if autofilter_dlg.get_ready():
+                autofilter_dlg.ShowModal()
         except Exception as err:
             self.show_error_message(self, err, "Autofilter")
 
