@@ -33,6 +33,20 @@ namespace GLOBAL_NAMESPACE {
         ProgressFunction progressFunction;
         void* progressHandle;
 
+        /**
+         * Initializes the accumulation process, including:
+         *
+         * - doing synchronization
+         * - creating all necessary buffer
+         * - initialization of the isoline remover
+         */
+        void initialize();
+
+        /**
+         * Initializes memory for all necessary buffers
+         */
+        virtual void initializeBuffers();
+
     public:
 
         /**
@@ -169,6 +183,11 @@ namespace GLOBAL_NAMESPACE {
         class NotAccumulatedException: public AccumulatorException{
         public:
             NotAccumulatedException(): AccumulatorException("Please, accumulate() the data to apply this function") {};
+        };
+
+        class InterruptedException: public AccumulatorException{
+        public:
+            InterruptedException(): AccumulatorException("The action is interrupted by the user") {};
         };
 
     };

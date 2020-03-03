@@ -45,4 +45,14 @@ namespace GLOBAL_NAMESPACE {
     void MapPlotter::clearState() {
         FrameAccumulator::clearState();
     }
+
+    void MapPlotter::initializeBuffers() {
+        Accumulator::initializeBuffers();
+        resultMapList.push_back(new double[getChannelNumber()]);
+        resultMapList.push_back(new double[getChannelNumber()]);
+        for (int i=0; i < getChannelNumber(); ++i){
+            resultMapList[0][i] = 0.0;
+            resultMapList[1][i] = 0.0;
+        }
+    }
 }

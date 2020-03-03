@@ -97,11 +97,38 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void Accumulator::accumulate() {
-        std::cout << "ACCUMULATE\n";
-        if (progressFunction != nullptr && !progressFunction(1, 20, "Sample message", progressHandle)){
-            printf("ACCUMULATION ABORTED\n");
-            return;
+        clearState();
+        initialize();
+        accumulated = true;
+
+        std::cout << *isoline << std::endl;
+        std::cout << "===============================================================\n";
+        std::cout << isoline->sync() << std::endl;
+        std::cout << "===============================================================\n";
+    }
+
+    void Accumulator::initialize() {
+        isoline->extendRange();
+        if (progressFunction != nullptr){
+            progressFunction(0, 1, "Synchronization", progressHandle);
+            isoline->setProgressFunction(progressFunction, progressHandle);
         }
-        printf("ACCUMULATION COMPLETED\n");
+        isoline->synchronizeIsolines();
+        if (!isoline->sync().isSynchronized()){
+            clearState();
+            throw InterruptedException();
+        }
+        isoline->sync().clearState();
+        isoline->sacrifice();
+        isoline->synchronizeSignal();
+        if (!isoline->sync().isSynchronized()){
+            clearState();
+            throw InterruptedException();
+        }
+        initializeBuffers();
+    }
+
+    void Accumulator::initializeBuffers() {
+        readingBuffer = new double[getChannelNumber()];
     }
 }

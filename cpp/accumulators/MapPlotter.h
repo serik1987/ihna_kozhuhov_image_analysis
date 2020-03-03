@@ -14,6 +14,9 @@ namespace GLOBAL_NAMESPACE {
      * This accumulator plots single map from the native data
      */
     class MapPlotter: public FrameAccumulator {
+    protected:
+        void initializeBuffers() override;
+
     public:
 
         explicit MapPlotter(Isoline& isoline);

@@ -10,6 +10,7 @@ extern "C" {
     static PyObject* PyImanA_AccumulatorError = NULL;
     static PyObject* PyImanA_NotAccumulatedError = NULL;
     static PyObject* PyImanA_BadPreprocessFilterRadiusError = NULL;
+    static PyObject* PyImanA_InterruptedError = NULL;
 
     /**
      * Initializes exceptions of the accumulators package
@@ -47,6 +48,14 @@ extern "C" {
             return -1;
         }
 
+        PyImanA_InterruptedError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.accumulators.InterruptedError",
+                "This error will be generated when the accumulation process is interrupted by the user",
+                PyImanA_InterruptedError, NULL);
+        if (PyModule_AddObject(module, "_accumulators_InterruptedError", PyImanA_InterruptedError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -57,6 +66,7 @@ extern "C" {
         Py_XDECREF(PyImanA_AccumulatorError);
         Py_XDECREF(PyImanA_NotAccumulatedError);
         Py_XDECREF(PyImanA_BadPreprocessFilterRadiusError);
+        Py_XDECREF(PyImanA_InterruptedError);
     }
 
     /**
@@ -83,6 +93,13 @@ extern "C" {
                     dynamic_cast<FrameAccumulator::BadPreprocessFilterRadiusException*>(exception_handle);
             if (BadPreprocessFilterRadiusError_handle != nullptr){
                 PyErr_SetString(PyImanA_BadPreprocessFilterRadiusError, exception_handle->what());
+                return -1;
+            }
+
+            auto* InterruptedError_handle =
+                    dynamic_cast<Accumulator::InterruptedException*>(exception_handle);
+            if (InterruptedError_handle != nullptr){
+                PyErr_SetString(PyImanA_InterruptedError, exception_handle->what());
                 return -1;
             }
 
