@@ -136,7 +136,7 @@ extern "C" {
         return Py_BuildValue("");
     }
 
-    static PyObject* PyImanA_Accumulator_Print(PyImanA_AccumulatorObject* self){
+    static PyObject* PyImanA_Accumulator_Print(PyImanA_AccumulatorObject* self, void*){
         using namespace GLOBAL_NAMESPACE;
         using namespace std;
         auto* accumulator = (Accumulator*)self->handle;
@@ -151,12 +151,20 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanA_Accumulator_GetIsoline(PyImanA_AccumulatorObject* self, void*){
+        Py_INCREF(self->corresponding_isoline);
+        return self->corresponding_isoline;
+    }
+
     static PyGetSetDef PyImanA_Accumulator_Properties[] = {
             {(char*)"channel_number", (getter)PyImanA_Accumulator_GetChannelNumber, NULL,
             (char*)"Number of pixels on the map that will be used for the accumulation process"},
 
             {(char*)"is_accumulated", (getter)PyImanA_Accumulator_IsAccumulated, NULL,
              (char*)"True if the accumulation process is completed, false otherwise"},
+
+            {(char*)"isoline", (getter)PyImanA_Accumulator_GetIsoline, NULL,
+            (char*)"Returns the isoline that corresponds to a certain accumulator"},
 
             {NULL}
     };

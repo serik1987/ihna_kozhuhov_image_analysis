@@ -162,6 +162,11 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanI_Isoline_GetSynchronization(PyImanI_IsolineObject* self, void*){
+        Py_INCREF(self->parent_synchronization);
+        return (PyObject*)self->parent_synchronization;
+    }
+
     static PyGetSetDef PyImanI_Isoline_Properties[] = {
             {(char*)"analysis_initial_frame", (getter)PyImanI_Isoline_GetAnalysisInitialFrame, NULL,
                     (char*)"Number of frame that starts the analysis or -1 before the isoline remove\n"
@@ -194,6 +199,9 @@ extern "C" {
             {(char*)"isoline_final_cycle", (getter)PyImanI_Isoline_GetIsolineFinalCycle, NULL,
              (char*)"Number of the very last cycle used for isoline estimation or -1 before isoline remove\n"
                     "This is a read-only property and will be calculated during the isoline remove"},
+
+            {(char*)"synchronization", (getter)PyImanI_Isoline_GetSynchronization, NULL,
+             (char*)"Synchronization that was used for the isoline remove"},
 
             {NULL}
     };

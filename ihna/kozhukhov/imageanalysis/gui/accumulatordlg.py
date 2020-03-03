@@ -151,3 +151,9 @@ class AccumulatorDlg(wx.Dialog):
 
     def get_train(self):
         return self.__train
+
+    def get_prefix_name(self):
+        return self.__prefix_name_box.GetValue()
+
+    def get_postfix_name(self):
+        return self.__postfix_name_box.GetValue()

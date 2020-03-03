@@ -276,6 +276,11 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanY_Synchronization_GetTrain(PyImanY_SynchronizationObject* self, void*){
+        Py_INCREF(self->parent_train);
+        return (PyObject*)self->parent_train;
+    }
+
     static PyGetSetDef PyImanY_Synchronization_Properties[] = {
             {(char*)"initial_frame", (getter)PyImanY_Synchronization_GetInitialFrame, NULL,
                     (char*)"Initial frame from which the analysis starts\n"
@@ -336,6 +341,9 @@ extern "C" {
 
             {(char*)"synchronized", (getter)PyImanY_Synchronization_GetSynchronized, NULL,
              (char*)"True after successful synchronization process, False before this"},
+
+            {(char*)"train", (getter)PyImanY_Synchronization_GetTrain, NULL,
+             (char*)"The train to be synchronized or was synchronized"},
 
             {NULL}
 

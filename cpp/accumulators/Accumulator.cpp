@@ -100,18 +100,13 @@ namespace GLOBAL_NAMESPACE {
         clearState();
         initialize();
         accumulated = true;
-
-        std::cout << *isoline << std::endl;
-        std::cout << "===============================================================\n";
-        std::cout << isoline->sync() << std::endl;
-        std::cout << "===============================================================\n";
     }
 
     void Accumulator::initialize() {
         isoline->extendRange();
         if (progressFunction != nullptr){
             progressFunction(0, 1, "Synchronization", progressHandle);
-            isoline->setProgressFunction(progressFunction, progressHandle);
+            isoline->sync().setProgressFunction(progressFunction, progressHandle);
         }
         isoline->synchronizeIsolines();
         if (!isoline->sync().isSynchronized()){

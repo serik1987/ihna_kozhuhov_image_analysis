@@ -6,3 +6,5 @@ try:
     from ._imageanalysis import *
 except ImportError:
     raise ImportError("ihna/kozhukhov/imageanalysis/_imageanalysis.so not found")
+
+from .imagingmap import ImagingMap

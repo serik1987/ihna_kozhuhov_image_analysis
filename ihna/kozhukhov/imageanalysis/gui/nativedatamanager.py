@@ -4,6 +4,7 @@ import os.path
 import time
 import wx
 import scipy
+from ihna.kozhukhov.imageanalysis import ImagingMap
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression, accumulators
 from ihna.kozhukhov.imageanalysis.tracereading import TraceProcessor
@@ -15,6 +16,7 @@ from .readingprogressdlg import ReadingProgressDialog
 from .tracesdlg import TracesDlg
 from .finaltracesdlg import FinalTracesDlg
 from .mapplotterdlg import MapPlotterDlg
+from .mapviewerdlg import MapViewerDlg
 from .mapfilterdlg.basicwindow import BasicWindow as MapFilterDlg
 
 
@@ -369,7 +371,13 @@ class NativeDataManager(wx.Dialog):
                 progress_dlg.done()
                 raise err
             progress_dlg.done()
-            print(plotter)
+            animal_name = self.__case.get_animal_name()
+            prefix_name = map_plotter_dlg.get_prefix_name()
+            postfix_name = map_plotter_dlg.get_postfix_name()
+            short_name = self.__case["short_name"]
+            major_name = "%s_%s%s%s" % (animal_name, prefix_name, short_name, postfix_name)
+            result_map = ImagingMap(plotter, major_name)
+            MapViewerDlg(self, result_map).ShowModal()
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)
@@ -403,7 +411,6 @@ class NativeDataManager(wx.Dialog):
                 progress_dlg.done()
                 raise err
             progress_dlg.done()
-            print(map_filter)
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)

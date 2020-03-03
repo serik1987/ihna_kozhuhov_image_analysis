@@ -47,6 +47,13 @@ extern "C" {
             const double* img_map = plotter->getImaginaryMap();
             npy_intp dims[] = {train.getYSize(), train.getXSize()};
             PyObject* result = PyArray_SimpleNew(2, dims, NPY_COMPLEX128);
+            for (unsigned int i=0; i < train.getYSize(); ++i){
+                for (unsigned int j=0; j < train.getXSize(); ++j){
+                    auto* pixel = (double*)PyArray_GETPTR2((PyArrayObject*)result, i, j);
+                    *pixel = *(real_map++);
+                    *(pixel+1) = *(img_map++);
+                }
+            }
             return result;
         } catch (std::exception& e){
             PyIman_Exception_process(&e);
