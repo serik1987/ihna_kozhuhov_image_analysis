@@ -41,7 +41,7 @@ class MapViewerDlg(wx.Dialog):
 
         features = "; ".join(["%s: %s" % (key, value) for key, value in complexMap.get_features().items()])
         features_box = wx.StaticText(panel, label=features)
-        features_box.SetSizeHints((600, 300))
+        features_box.SetSizeHints((800, 300))
         main_sizer.Add(features_box, 0, wx.BOTTOM | wx.EXPAND, 10)
 
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)

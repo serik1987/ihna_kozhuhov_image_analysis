@@ -20,9 +20,9 @@ namespace GLOBAL_NAMESPACE {
     class Accumulator {
     private:
         double* readingBuffer;
-        Isoline* isoline;
 
     protected:
+        Isoline* isoline;
         bool accumulated;
 
         /**

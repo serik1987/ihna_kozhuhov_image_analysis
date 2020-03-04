@@ -26,6 +26,8 @@ namespace GLOBAL_NAMESPACE {
     protected:
         void printSpecial(std::ostream& out) const override;
 
+        void initializeBuffers() override;
+
     public:
         /**
          * Initializes the object

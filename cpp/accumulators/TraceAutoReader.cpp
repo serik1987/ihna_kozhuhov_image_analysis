@@ -75,5 +75,16 @@ namespace GLOBAL_NAMESPACE {
         out << "Frame number: " << getFrameNumber() << std::endl;
     }
 
+    void TraceAutoReader::initializeBuffers() {
+        Accumulator::initializeBuffers();
+        unsigned int N = isoline->getAnalysisFrameNumber();
+        times = new double[N];
+        averagedSignal = new double[N];
+        for (unsigned int i = 0; i < N; ++i){
+            times[i] = i;
+            averagedSignal[i] = i * i;
+        }
+    }
+
 
 }

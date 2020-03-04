@@ -4,7 +4,7 @@ import os.path
 import time
 import wx
 import scipy
-from ihna.kozhukhov.imageanalysis import ImagingMap
+from ihna.kozhukhov.imageanalysis import ImagingMap, ImagingSignal
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression, accumulators
 from ihna.kozhukhov.imageanalysis.tracereading import TraceProcessor
@@ -17,6 +17,7 @@ from .tracesdlg import TracesDlg
 from .finaltracesdlg import FinalTracesDlg
 from .mapplotterdlg import MapPlotterDlg
 from .mapviewerdlg import MapViewerDlg
+from .signalviewerdlg import SignalViewerDlg
 from .mapfilterdlg.basicwindow import BasicWindow as MapFilterDlg
 
 
@@ -456,14 +457,19 @@ class NativeDataManager(wx.Dialog):
         reader.set_roi(roi)
         progress_dlg = ReadingProgressDialog(self, "Trace analysis", 1000, "Preparing")
         reader.set_progress_bar(progress_dlg)
-        reader.accumulate()
-        progress_dlg.done()
-        print(train)
-        print(sync)
-        print(isoline)
-        print(reader)
-        print(roi)
+        try:
+            reader.accumulate()
+        except Exception as err:
+            progress_dlg.done()
+            properties_dlg.close()
+            raise err
         properties_dlg.close()
+        progress_dlg.done()
+        major_name = "%s_%s" % (self.__case.get_animal_name(), self.__case['short_name'])
+        imaging_signal = ImagingSignal(reader, major_name)
+        imaging_signal.get_features()["ROI"] = roi_name
+        SignalViewerDlg(self, imaging_signal, True).ShowModal()
+        print(imaging_signal)
 
     def __trace_analysis_manual(self, train, properties_dlg):
         reader, isoline, sync = properties_dlg.create_reader()

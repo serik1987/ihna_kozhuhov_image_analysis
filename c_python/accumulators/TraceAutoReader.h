@@ -101,7 +101,7 @@ extern "C" {
 
         try{
             const double* presult = reader->getTimes();
-            int n = reader->getFrameNumber();
+            int n = reader->getIsoline().getAnalysisFrameNumber();
             npy_intp dims[] = {n};
             PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
             for (int i=0; i < n; ++i){
@@ -120,7 +120,7 @@ extern "C" {
 
         try{
             const double* presult = reader->getAveragedSignal();
-            int n = reader->getFrameNumber();
+            int n = reader->getIsoline().getAnalysisFrameNumber();
             npy_intp dims[] = {n};
             PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
             for (int i=0; i < n; ++i){
