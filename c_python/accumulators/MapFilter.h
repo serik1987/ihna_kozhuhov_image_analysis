@@ -130,7 +130,7 @@ extern "C"{
     };
 
     static PyGetSetDef PyImanA_MapFilter_Properties[] = {
-            {(char*)"target", (getter)PyImanA_MapFilter_GetTarget, NULL,
+            {(char*)"target_map", (getter)PyImanA_MapFilter_GetTarget, NULL,
                     (char*)"The resultant map that represents distribution of the power of the filtered signal"},
 
             {NULL}

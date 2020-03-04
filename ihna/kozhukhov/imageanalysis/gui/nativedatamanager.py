@@ -16,8 +16,9 @@ from .readingprogressdlg import ReadingProgressDialog
 from .tracesdlg import TracesDlg
 from .finaltracesdlg import FinalTracesDlg
 from .mapplotterdlg import MapPlotterDlg
-from .mapviewerdlg import MapViewerDlg
 from .signalviewerdlg import SignalViewerDlg
+from .complexmapviewerdlg import ComplexMapViewerDlg
+from .amplitudemapviewerdlg import AmplitudeMapViewerDlg
 from .mapfilterdlg.basicwindow import BasicWindow as MapFilterDlg
 
 
@@ -378,7 +379,7 @@ class NativeDataManager(wx.Dialog):
             short_name = self.__case["short_name"]
             major_name = "%s_%s%s%s" % (animal_name, prefix_name, short_name, postfix_name)
             result_map = ImagingMap(plotter, major_name)
-            MapViewerDlg(self, result_map).ShowModal()
+            ComplexMapViewerDlg(self, result_map).ShowModal()
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)
@@ -412,6 +413,10 @@ class NativeDataManager(wx.Dialog):
                 progress_dlg.done()
                 raise err
             progress_dlg.done()
+            major_name = "%s_%s%s%s" % (self.__case.get_animal_name(), map_filter_dlg.get_prefix_name(),
+                                        self.__case['short_name'], map_filter_dlg.get_postfix_name())
+            filtered_map = ImagingMap(map_filter, major_name)
+            AmplitudeMapViewerDlg(self, filtered_map).ShowModal()
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)

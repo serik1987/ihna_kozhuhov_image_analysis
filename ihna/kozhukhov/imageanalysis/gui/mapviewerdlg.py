@@ -19,19 +19,7 @@ class MapViewerDlg(wx.Dialog):
 
         figure_panel = wx.Panel(panel, size=(800, 300))
         figure = Figure()
-        amplitude_axes = figure.add_subplot(121)
-        amplitude_map = amplitude_axes.imshow(np.abs(complexMap.get_data()), cmap="gray")
-        figure.colorbar(amplitude_map, ax=amplitude_axes)
-        amplitude_axes.set_title("Amplitude map")
-        phase_axes = figure.add_subplot(122)
-        H = complexMap.get_harmonic()
-        phase_data = np.angle(complexMap.get_data()) / H
-        phase_data[phase_data < 0] += 2 * np.pi / H
-        phase_data = 180 * phase_data / np.pi
-        phase_max = 360 / H
-        phase_map = phase_axes.imshow(phase_data, cmap="hsv", vmin=0, vmax=phase_max)
-        phase_axes.set_title("Phase map")
-        figure.colorbar(phase_map, ax=phase_axes)
+        self._plot_graphs(figure, complexMap)
         canvas = FigureCanvas(panel, -1, figure)
         figure_sizer = wx.BoxSizer(wx.VERTICAL)
         figure_sizer.Add(canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
@@ -54,3 +42,6 @@ class MapViewerDlg(wx.Dialog):
         panel.SetSizerAndFit(general_sizer)
         self.Centre()
         self.Fit()
+
+    def _plot_graphs(self, figure, data):
+        raise NotImplementedError("_plot_graphs")

@@ -3,6 +3,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _accumulators_NotAccumul
 from ihna.kozhukhov.imageanalysis._imageanalysis import _accumulators_BadPreprocessFilterRadiusError as \
     BadPreprocessFilterRadiusError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _accumulators_InterruptedError as InterruptedError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _accumulators_FilterNotSetError as FilterNotSetError
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _accumulators_Accumulator as Accumulator
 from ihna.kozhukhov.imageanalysis._imageanalysis import _accumulators_FrameAccumulator as FrameAccumulator

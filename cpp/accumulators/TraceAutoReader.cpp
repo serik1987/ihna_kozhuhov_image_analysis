@@ -81,8 +81,8 @@ namespace GLOBAL_NAMESPACE {
         times = new double[N];
         averagedSignal = new double[N];
         for (unsigned int i = 0; i < N; ++i){
-            times[i] = i;
-            averagedSignal[i] = i * i;
+            times[i] = 0.0;
+            averagedSignal[i] = 0.0;
         }
     }
 

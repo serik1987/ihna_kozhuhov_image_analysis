@@ -23,6 +23,8 @@ namespace GLOBAL_NAMESPACE {
     protected:
         void printSpecial(std::ostream& out) const override;
 
+        void initializeBuffers() override;
+
     public:
         explicit MapFilter(Isoline& isoline);
 
@@ -60,13 +62,18 @@ namespace GLOBAL_NAMESPACE {
          *
          * @return target map
          */
-        [[nodiscard]] const double* getTargetMap() const { return targetMap; };
+        [[nodiscard]] const double* getTargetMap() const;
 
         /**
          *
          * @return the accumulator name
          */
         [[nodiscard]] std::string getName() const override { return "MAP FILTER"; }
+
+        class FilterNotSetException: AccumulatorException{
+        public:
+            FilterNotSetException(): AccumulatorException("Please, set the filter coefficients") {};
+        };
 
     };
 

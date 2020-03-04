@@ -109,8 +109,6 @@ namespace GLOBAL_NAMESPACE {
             delete [] buffer;
         }
         sourceMapList.clear();
-        b.clear();
-        a.clear();
     }
 
     void MapFilter::printSpecial(std::ostream &out) const {
@@ -125,6 +123,34 @@ namespace GLOBAL_NAMESPACE {
             out << coefficients << " ";
         }
         out << "\n";
+    }
+
+    const double *MapFilter::getTargetMap() const {
+        if (isAccumulated() && targetMap != nullptr){
+            return targetMap;
+        } else {
+            throw NotAccumulatedException();
+        }
+    }
+
+    void MapFilter::initializeBuffers() {
+        unsigned int N = getChannelNumber();
+        targetMap = new double[N];
+        for (unsigned int i = 0; i < N; ++i){
+            targetMap[i] = 0.0;
+        }
+        int b_size = (int)b.size() - 1;
+        int a_size = (int)a.size() - 1;
+        if (b_size < 0 || a_size < 0){
+            clearState();
+            throw FilterNotSetException();
+        }
+        if (b_size != 0){
+            for (int k = 0; k < b_size; ++k){
+                resultMapList.push_back(new double[N]);
+                sourceMapList.push_back(new double[N]);
+            }
+        }
     }
 
 }
