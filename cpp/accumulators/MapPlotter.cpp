@@ -47,12 +47,20 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void MapPlotter::initializeBuffers() {
-        Accumulator::initializeBuffers();
+        FrameAccumulator::initializeBuffers();
         resultMapList.push_back(new double[getChannelNumber()]);
         resultMapList.push_back(new double[getChannelNumber()]);
         for (int i=0; i < getChannelNumber(); ++i){
-            resultMapList[0][i] = 0.0;
-            resultMapList[1][i] = 0.0;
+            resultMapList[Real][i] = 0.0;
+            resultMapList[Imag][i] = 0.0;
+        }
+    }
+
+    void MapPlotter::processFrameData(int timestamp) {
+        double* readingBuffer = getReadingBuffer();
+
+        for (int i=0; i < getChannelNumber(); ++i){
+            resultMapList[Real][i] = readingBuffer[i];
         }
     }
 }

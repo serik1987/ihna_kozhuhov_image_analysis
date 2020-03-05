@@ -27,6 +27,7 @@ namespace GLOBAL_NAMESPACE {
         void printSpecial(std::ostream& out) const override;
 
         void initializeBuffers() override;
+        void processFrameData(int timestamp) override;
 
     public:
         /**
@@ -83,6 +84,16 @@ namespace GLOBAL_NAMESPACE {
         void read() override {
             accumulate();
         }
+
+        /**
+         * Reads all data related to a particular frame.
+         * Values from the individual pixels will be placed into readingBuffer
+         * as they are, they will not be averaged across the signal
+         *
+         * @param frameNumber number of frame to read
+         * @return pointer to the readingBuffer
+         */
+        double* readFrameData(int frameNumber) override;
 
         friend std::ostream& operator<<(std::ostream& out, const TraceAutoReader& reader) {
             const auto* accumulator = (Accumulator*)&reader;

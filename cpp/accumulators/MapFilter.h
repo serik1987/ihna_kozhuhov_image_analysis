@@ -24,6 +24,7 @@ namespace GLOBAL_NAMESPACE {
         void printSpecial(std::ostream& out) const override;
 
         void initializeBuffers() override;
+        void processFrameData(int timestamp) override;
 
     public:
         explicit MapFilter(Isoline& isoline);

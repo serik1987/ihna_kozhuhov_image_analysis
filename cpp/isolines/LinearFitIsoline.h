@@ -6,6 +6,7 @@
 #define IHNA_KOZHUKHOV_IMAGE_ANALYSIS_LINEARFITISOLINE_H
 
 #include "Isoline.h"
+#include "../misc/LinearFit.h"
 
 namespace GLOBAL_NAMESPACE {
 
@@ -13,11 +14,22 @@ namespace GLOBAL_NAMESPACE {
      * Provides the isoline remove based on the linear regression
      */
     class LinearFitIsoline: public Isoline {
+    private:
+        LinearFit* linearFit; // for accumulator usage only
+
     protected:
         void printSpecial(std::ostream& out) const override {};
 
     public:
-        LinearFitIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {};
+        LinearFitIsoline(StreamFileTrain& train, Synchronization& sync): Isoline(train, sync) {
+            linearFit = nullptr;
+        };
+
+        ~LinearFitIsoline() override {
+            delete linearFit;
+        }
+
+        void clearState() override;
 
         [[nodiscard]] const char* getName() const noexcept override { return "linear fit isoline"; }
 
@@ -33,6 +45,8 @@ namespace GLOBAL_NAMESPACE {
 
         void traceCleaning(TraceReaderAndCleaner& reader, const double* src, const double* srcLeft,
                 const double* srcRight, double* isolines) override;
+
+        void initialize(Accumulator& accumulator) override;
     };
 
 }

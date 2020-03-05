@@ -99,6 +99,21 @@ namespace GLOBAL_NAMESPACE {
     void Accumulator::accumulate() {
         clearState();
         initialize();
+        int timestamp, frameNumber;
+        int initFrame = isoline->getAnalysisInitialFrame();
+        int finalFrame = isoline->getAnalysisFinalFrame();
+        int totalFrames = finalFrame - initFrame + 1;
+        for (timestamp = 0, frameNumber = initFrame; frameNumber <= finalFrame; ++timestamp, ++frameNumber){
+            double* buffer = readFrameData(frameNumber);
+            processFrameData(timestamp);
+            if (progressFunction != nullptr && timestamp % 100 == 0){
+                bool progressStatus = progressFunction(timestamp, totalFrames, "Accumulation", progressHandle);
+                if (!progressStatus){
+                    clearState();
+                    return;
+                }
+            }
+        }
         accumulated = true;
     }
 
@@ -121,9 +136,11 @@ namespace GLOBAL_NAMESPACE {
             throw InterruptedException();
         }
         initializeBuffers();
+        isoline->initialize(*this);
     }
 
     void Accumulator::initializeBuffers() {
+        std::cout << "INITIALIZE ACCUMULATOR\n";
         readingBuffer = new double[getChannelNumber()];
     }
 }

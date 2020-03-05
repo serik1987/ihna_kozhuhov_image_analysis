@@ -151,6 +151,9 @@ namespace GLOBAL_NAMESPACE {
 
     void ExternalSynchronization::calculateSynchronizationPhase() {
         getSynchronizationSignal();
+        if (synchronizationSignal == nullptr){
+            return;
+        }
         checkSynchronizationSignal();
         setFrameRange();
         setSynchronizationPhase();
@@ -164,6 +167,9 @@ namespace GLOBAL_NAMESPACE {
             reader.setProgressFunction(progressFunction, "Synchronization", handle);
         }
         reader.read();
+        if (!reader.hasRead()){
+            return;
+        }
 
         synchronizationSignal = new double[reader.getFrameNumber()];
         for (int i=0; i < reader.getFrameNumber(); ++i){

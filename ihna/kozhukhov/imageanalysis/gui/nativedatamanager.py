@@ -8,6 +8,7 @@ from ihna.kozhukhov.imageanalysis import ImagingMap, ImagingSignal
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis import compression, accumulators
 from ihna.kozhukhov.imageanalysis.tracereading import TraceProcessor
+from ihna.kozhukhov.imageanalysis.accumulators import InterruptedError
 from .chunk import ChunkViewer
 from .frameviewer import FrameViewer
 from .compressiondlg import CompressionDlg
@@ -369,8 +370,11 @@ class NativeDataManager(wx.Dialog):
             try:
                 plotter.set_progress_bar(progress_dlg)
                 plotter.accumulate()
+                print("PY accumulation completed")
             except Exception as err:
-                progress_dlg.done()
+                print("PY Accumulation not completed")
+                progress_dlg.Destroy()
+                print("PY Exception rethrow")
                 raise err
             progress_dlg.done()
             animal_name = self.__case.get_animal_name()
@@ -380,9 +384,13 @@ class NativeDataManager(wx.Dialog):
             major_name = "%s_%s%s%s" % (animal_name, prefix_name, short_name, postfix_name)
             result_map = ImagingMap(plotter, major_name)
             ComplexMapViewerDlg(self, result_map).ShowModal()
+            del plotter
+            del train
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)
+            if isinstance(err, InterruptedError):
+                return
             dlg = wx.MessageDialog(self, str(err), "Averaged maps", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
 
@@ -410,16 +418,19 @@ class NativeDataManager(wx.Dialog):
                 map_filter.set_progress_bar(progress_dlg)
                 map_filter.accumulate()
             except Exception as err:
-                progress_dlg.done()
+                progress_dlg.Destroy()
                 raise err
             progress_dlg.done()
             major_name = "%s_%s%s%s" % (self.__case.get_animal_name(), map_filter_dlg.get_prefix_name(),
                                         self.__case['short_name'], map_filter_dlg.get_postfix_name())
             filtered_map = ImagingMap(map_filter, major_name)
             AmplitudeMapViewerDlg(self, filtered_map).ShowModal()
+            del map_filter
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)
+            if isinstance(err, InterruptedError):
+                return
             dlg = wx.MessageDialog(self, str(err), "Averaged maps", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
 
@@ -448,9 +459,11 @@ class NativeDataManager(wx.Dialog):
                 train.close()
             del train
         except Exception as err:
-            dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             print("Exception class:", err.__class__.__name__)
             print("Exception message:", str(err))
+            if isinstance(err, InterruptedError):
+                return
+            dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
 
     def __trace_analysis_auto(self, train, properties_dlg):
@@ -465,7 +478,7 @@ class NativeDataManager(wx.Dialog):
         try:
             reader.accumulate()
         except Exception as err:
-            progress_dlg.done()
+            progress_dlg.Destroy()
             properties_dlg.close()
             raise err
         properties_dlg.close()

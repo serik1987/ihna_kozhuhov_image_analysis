@@ -11,6 +11,7 @@
 namespace GLOBAL_NAMESPACE {
 
     class TraceReaderAndCleaner;
+    class Accumulator;
 
     /**
      * This is the base class for all objects that provide the isoline remove. This class is abstract, you can't
@@ -148,6 +149,13 @@ namespace GLOBAL_NAMESPACE {
          * before the isoline cleaning itself
          */
         void synchronizeSignal();
+
+        /**
+         * Initializes the isoline, i.e., prepares it for the following usage of some Accumulator.
+         * After the initialization the isoline shall be used only by a certain accumulator. Its usage by
+         * any other accumulators may result to fail
+         */
+        virtual void initialize(Accumulator& accumulator) = 0;
 
         void setProgressFunction(ProgressFunction function, void* handle){
             progressFunction = function;

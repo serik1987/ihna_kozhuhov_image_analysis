@@ -22,6 +22,9 @@ namespace GLOBAL_NAMESPACE {
     protected:
 
         std::vector<double*> resultMapList;
+        double* filterBuffer;
+
+        void initializeBuffers() override;
 
         void printSpecial(std::ostream& out) const override;
 
@@ -121,6 +124,15 @@ namespace GLOBAL_NAMESPACE {
          * @return total number of channels
          */
         [[nodiscard]] int getChannelNumber() const override { return getTrain().getXYSize(); }
+
+        /**
+         * Reads the whole frame data from the buffer.
+         * Additionally, provides preprocess spatial LPF
+         *
+         * @param frameNumber number of frames to read
+         * @return pointer to the reading buffer
+         */
+        double* readFrameData(int frameNumber) override;
 
 
         class BadPreprocessFilterRadiusException: public AccumulatorException{

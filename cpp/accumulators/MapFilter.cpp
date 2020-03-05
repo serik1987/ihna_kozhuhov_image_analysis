@@ -134,6 +134,7 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void MapFilter::initializeBuffers() {
+        FrameAccumulator::initializeBuffers();
         unsigned int N = getChannelNumber();
         targetMap = new double[N];
         for (unsigned int i = 0; i < N; ++i){
@@ -151,6 +152,10 @@ namespace GLOBAL_NAMESPACE {
                 sourceMapList.push_back(new double[N]);
             }
         }
+    }
+
+    void MapFilter::processFrameData(int timestamp) {
+
     }
 
 }

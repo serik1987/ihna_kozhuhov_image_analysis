@@ -86,5 +86,14 @@ namespace GLOBAL_NAMESPACE {
         }
     }
 
+    double *TraceAutoReader::readFrameData(int frameNumber) {
+        auto* readingBuffer = getReadingBuffer();
+        return readingBuffer;
+    }
+
+    void TraceAutoReader::processFrameData(int timestamp) {
+
+    }
+
 
 }

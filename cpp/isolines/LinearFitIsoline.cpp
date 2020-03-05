@@ -3,8 +3,8 @@
 //
 
 #include "../tracereading/TraceReaderAndCleaner.h"
-#include "../misc/LinearFit.h"
 #include "LinearFitIsoline.h"
+#include "../accumulators/Accumulator.h"
 
 namespace GLOBAL_NAMESPACE {
 
@@ -35,5 +35,15 @@ namespace GLOBAL_NAMESPACE {
         }
 
         removed = true;
+    }
+
+    void LinearFitIsoline::initialize(Accumulator &accumulator) {
+        linearFit = new LinearFit(accumulator.getChannelNumber());
+    }
+
+    void LinearFitIsoline::clearState() {
+        Isoline::clearState();
+        delete linearFit;
+        linearFit = nullptr;
     }
 }

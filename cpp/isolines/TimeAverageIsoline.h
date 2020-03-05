@@ -51,6 +51,8 @@ namespace GLOBAL_NAMESPACE {
         void traceCleaning(TraceReaderAndCleaner& reader, const double* src, const double* srcLeft,
                 const double* srcRight, double* isolines) override;
 
+        void initialize(Accumulator& accumulator) override;
+
         /**
          * Adjusts boundaries from isoline plotting range to the analysis range
          */

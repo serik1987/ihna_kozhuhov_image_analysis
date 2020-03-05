@@ -47,6 +47,16 @@ namespace GLOBAL_NAMESPACE {
          */
         virtual void initializeBuffers();
 
+        /**
+         * Accumulator-specific processing of the frame
+         *
+         * This function assumes that the data related to the current frame
+         * (already preprocessed and time-averaged) stores in the readingBuffer/
+         * Its duty is to process these data and place results into the target
+         * output buffer
+         */
+        virtual void processFrameData(int timestamp) = 0;
+
     public:
 
         /**
@@ -171,6 +181,16 @@ namespace GLOBAL_NAMESPACE {
             progressFunction = f;
             progressHandle = handle;
         }
+
+        /**
+         * Reads the data from a particular frame denoted by the user.
+         * The read frame will be put to the readingBuffer array which
+         * in turn can be accessed by getReadingBuffer function.
+         *
+         * @param frameNumber number of frame which data shall be read
+         * @return pointer to the readingBuffer
+         */
+        virtual double* readFrameData(int frameNumber) = 0;
 
 
 

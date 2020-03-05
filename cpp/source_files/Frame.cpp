@@ -17,7 +17,7 @@ namespace GLOBAL_NAMESPACE{
 
     Frame::~Frame(){
 #ifdef DEBUG_DELETE_CHECK
-        std::cout << "DELETE FRAME\n";
+        // std::cout << "DELETE FRAME\n";
 #endif
         delete framChunk;
         delete stimulationChunk;

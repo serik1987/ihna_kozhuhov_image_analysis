@@ -57,7 +57,7 @@ namespace GLOBAL_NAMESPACE {
 
         virtual ~Chunk(){
 #ifdef DEBUG_DELETE_CHECK
-            std::cout << "DELETE THE CHUNK\n";
+            // std::cout << "DELETE THE CHUNK\n";
 #endif
         }
 

@@ -15,7 +15,10 @@ namespace GLOBAL_NAMESPACE {
      */
     class MapPlotter: public FrameAccumulator {
     protected:
+        enum MapTypes {Real = 0, Imag = 1};
+
         void initializeBuffers() override;
+        void processFrameData(int timestamp) override;
 
     public:
 

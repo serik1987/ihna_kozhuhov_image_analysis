@@ -203,6 +203,10 @@ namespace GLOBAL_NAMESPACE {
     void Synchronization::synchronize() {
         clearState();
         calculateSynchronizationPhase();
+        if (synchronizationPhase == nullptr){
+            clearState();
+            return;
+        }
         calculatePhaseIncrement();
         inverse();
 
