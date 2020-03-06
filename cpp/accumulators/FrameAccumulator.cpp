@@ -145,7 +145,7 @@ namespace GLOBAL_NAMESPACE {
         Frame& frame = train[frameNumber];
         auto* body = frame.getBody();
 
-        for (unsigned i = 0; i < train.getXYSize(); ++i){
+        for (int i = 0; i < train.getXYSize(); ++i){
             readingBuffer[i] = body[i];
         }
 

@@ -110,7 +110,7 @@ namespace GLOBAL_NAMESPACE {
                 bool progressStatus = progressFunction(timestamp, totalFrames, "Accumulation", progressHandle);
                 if (!progressStatus){
                     clearState();
-                    return;
+                    throw InterruptedException();
                 }
             }
         }

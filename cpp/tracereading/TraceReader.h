@@ -27,7 +27,6 @@ namespace GLOBAL_NAMESPACE {
 
         int initialFrame;
         int finalFrame;
-        std::vector<PixelListItem> pixelList;
 
         size_t initialDisplacement;
         size_t* dataDisplacements;
@@ -51,6 +50,7 @@ namespace GLOBAL_NAMESPACE {
         ProgressFunction progressFunction;
         std::string progressMessage;
         void* handle;
+        std::vector<PixelListItem> pixelList;
 
         virtual void clearState();
 

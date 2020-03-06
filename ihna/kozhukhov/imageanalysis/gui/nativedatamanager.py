@@ -481,13 +481,12 @@ class NativeDataManager(wx.Dialog):
             progress_dlg.Destroy()
             properties_dlg.close()
             raise err
-        properties_dlg.close()
         progress_dlg.done()
+        properties_dlg.close()
         major_name = "%s_%s" % (self.__case.get_animal_name(), self.__case['short_name'])
         imaging_signal = ImagingSignal(reader, major_name)
         imaging_signal.get_features()["ROI"] = roi_name
         SignalViewerDlg(self, imaging_signal, True).ShowModal()
-        print(imaging_signal)
 
     def __trace_analysis_manual(self, train, properties_dlg):
         reader, isoline, sync = properties_dlg.create_reader()

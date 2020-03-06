@@ -2,7 +2,9 @@
 // Created by serik1987 on 15.02.2020.
 //
 
+#include <algorithm>
 #include "TraceAutoReader.h"
+#include "../source_files/Frame.h"
 
 namespace GLOBAL_NAMESPACE {
 
@@ -84,15 +86,45 @@ namespace GLOBAL_NAMESPACE {
             times[i] = 0.0;
             averagedSignal[i] = 0.0;
         }
+        std::sort(pixelList.begin(), pixelList.end());
+        auto final_iterator = std::unique(pixelList.begin(), pixelList.end());
+        pixelList.erase(final_iterator, pixelList.end());
     }
 
     double *TraceAutoReader::readFrameData(int frameNumber) {
         auto* readingBuffer = getReadingBuffer();
+
+        auto& train = isoline->sync().getTrain();
+        auto& frame = train[frameNumber];
+        time = frame.getFramChunk().getTimeArrival();
+
+        auto* readingIt = readingBuffer;
+        auto* frameBody = frame.getBody();
+        unsigned int X = train.getXSize();
+        for (int i = 0; i < getChannelNumber(); ++i){
+            auto item = getPixelItem(i);
+            if (item.getPointType() == PixelListItem::PixelValue){
+                int y = item.getI();
+                int x = item.getJ();
+                unsigned int P = y * X + x;
+                *(readingIt++) = frameBody[P];
+            } else {
+                std::cout << "WARNING. CHANNEL WILL BE IGNORED\n";
+            }
+        }
+
         return readingBuffer;
     }
 
     void TraceAutoReader::processFrameData(int timestamp) {
+        times[timestamp] = time;
 
+        auto* readingBuffer = getReadingBuffer();
+        double S = 0.0;
+        for (int i=0; i < getChannelNumber(); ++i){
+            S += readingBuffer[i];
+        }
+        averagedSignal[timestamp] = S / getChannelNumber();
     }
 
 
