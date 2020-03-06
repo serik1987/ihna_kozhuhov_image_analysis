@@ -35,6 +35,7 @@ namespace GLOBAL_NAMESPACE {
         [[nodiscard]] const char* getName() const noexcept override { return "no isoline"; }
 
         void initialize(Accumulator& accumulator) override {};
+        void advance(Accumulator& accumulator, int frameNumber) override {};
 
     };
 

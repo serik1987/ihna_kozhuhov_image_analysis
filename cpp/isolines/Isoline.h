@@ -157,6 +157,16 @@ namespace GLOBAL_NAMESPACE {
          */
         virtual void initialize(Accumulator& accumulator) = 0;
 
+        /**
+         * Reads the frame data (i.e., the data that relate to a particular frame) before the isoline remove,
+         * then provides the isoline remove itself and puts the data after isoline remove
+         *
+         * @param accumulator the accumulator that shall be used. The parameter shall be the same as accumulator
+         * parameter in the initialize() method. Without initialize()'ation this isoline will not work
+         * @param frameNumber the absolute frame number, relatively to the beginning of the record
+         */
+        virtual void advance(Accumulator& accumulator, int frameNumber) = 0;
+
         void setProgressFunction(ProgressFunction function, void* handle){
             progressFunction = function;
             progressHandle = handle;

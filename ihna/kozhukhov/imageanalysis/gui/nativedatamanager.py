@@ -487,6 +487,9 @@ class NativeDataManager(wx.Dialog):
         imaging_signal = ImagingSignal(reader, major_name)
         imaging_signal.get_features()["ROI"] = roi_name
         SignalViewerDlg(self, imaging_signal, True).ShowModal()
+        del reader
+        train.close()
+        train.clear_cache()
 
     def __trace_analysis_manual(self, train, properties_dlg):
         reader, isoline, sync = properties_dlg.create_reader()

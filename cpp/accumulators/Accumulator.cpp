@@ -104,7 +104,8 @@ namespace GLOBAL_NAMESPACE {
         int finalFrame = isoline->getAnalysisFinalFrame();
         int totalFrames = finalFrame - initFrame + 1;
         for (timestamp = 0, frameNumber = initFrame; frameNumber <= finalFrame; ++timestamp, ++frameNumber){
-            double* buffer = readFrameData(frameNumber);
+            readFrameData(frameNumber);
+            isoline->advance(*this, frameNumber);
             processFrameData(timestamp);
             if (progressFunction != nullptr && timestamp % 100 == 0){
                 bool progressStatus = progressFunction(timestamp, totalFrames, "Accumulation", progressHandle);
@@ -135,8 +136,15 @@ namespace GLOBAL_NAMESPACE {
             clearState();
             throw InterruptedException();
         }
-        initializeBuffers();
-        isoline->initialize(*this);
+        try {
+            initializeBuffers();
+            isoline->setProgressFunction(progressFunction, progressHandle);
+            isoline->initialize(*this);
+        } catch (std::exception& e){
+            std::cout << "CLEAR STATE\n";
+            clearState();
+            throw;
+        }
     }
 
     void Accumulator::initializeBuffers() {

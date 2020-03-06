@@ -105,4 +105,8 @@ namespace GLOBAL_NAMESPACE {
     void TimeAverageIsoline::initialize(Accumulator &accumulator) {
         std::cout << "TIME AVERAGE INITIALIZATION\n";
     }
+
+    void TimeAverageIsoline::advance(Accumulator &accumulator, int frameNumber) {
+        std::cout << "TIME AVERAGE ADVANCE\n";
+    }
 }

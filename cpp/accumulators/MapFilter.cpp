@@ -155,7 +155,11 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void MapFilter::processFrameData(int timestamp) {
+        double* readingBuffer = getReadingBuffer();
 
+        for (int i = 0; i < getChannelNumber(); ++i){
+            targetMap[i] = readingBuffer[i];
+        }
     }
 
 }

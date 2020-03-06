@@ -5,6 +5,7 @@
 #include "../tracereading/TraceReaderAndCleaner.h"
 #include "LinearFitIsoline.h"
 #include "../accumulators/Accumulator.h"
+#include "../source_files/Frame.h"
 
 namespace GLOBAL_NAMESPACE {
 
@@ -39,11 +40,36 @@ namespace GLOBAL_NAMESPACE {
 
     void LinearFitIsoline::initialize(Accumulator &accumulator) {
         linearFit = new LinearFit(accumulator.getChannelNumber());
+        int frameNumber, timestamp;
+        int totalFrames = getAnalysisFinalFrame() - getAnalysisInitialFrame() + 1;
+        for (frameNumber = getAnalysisInitialFrame(), timestamp = 0;
+                frameNumber <= getAnalysisFinalFrame(); ++frameNumber, ++timestamp){
+
+            accumulator.readFrameData(frameNumber);
+            linearFit->add(accumulator.getReadingBuffer());
+
+            if (progressFunction != nullptr && timestamp % 100 == 0){
+                bool status = progressFunction(timestamp, totalFrames, "Initialization of linear fit", progressHandle);
+                if (!status){
+                    throw Accumulator::InterruptedException();
+                }
+            }
+
+        }
+        linearFit->ready();
     }
 
     void LinearFitIsoline::clearState() {
         Isoline::clearState();
         delete linearFit;
         linearFit = nullptr;
+    }
+
+    void LinearFitIsoline::advance(Accumulator &accumulator, int frameNumber) {
+        double* readingBuffer = accumulator.getReadingBuffer();
+        for (int i=0; i < accumulator.getChannelNumber(); ++i){
+            int timestamp = frameNumber - getAnalysisInitialFrame();
+            readingBuffer[i] -= linearFit->getIntersect(i) + linearFit->getSlope(i) * timestamp;
+        }
     }
 }

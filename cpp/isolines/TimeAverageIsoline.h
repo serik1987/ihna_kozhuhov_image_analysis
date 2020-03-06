@@ -52,6 +52,7 @@ namespace GLOBAL_NAMESPACE {
                 const double* srcRight, double* isolines) override;
 
         void initialize(Accumulator& accumulator) override;
+        void advance(Accumulator& accumulator, int frameNumber) override;
 
         /**
          * Adjusts boundaries from isoline plotting range to the analysis range
