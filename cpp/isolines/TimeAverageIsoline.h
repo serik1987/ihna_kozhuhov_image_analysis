@@ -17,11 +17,16 @@ namespace GLOBAL_NAMESPACE {
     private:
         int averageCycles;
 
+        double *averageBuffer, *beforeSubstractBuffer;
+        int bufferSize, avgSize;
+        int avgRadius;
+
         void printSpecial(std::ostream& out) const override;
 
     public:
         TimeAverageIsoline(StreamFileTrain& train, Synchronization& sync);
         TimeAverageIsoline(const TimeAverageIsoline& other);
+        ~TimeAverageIsoline() override;
 
         TimeAverageIsoline& operator=(const TimeAverageIsoline& other);
 
@@ -58,6 +63,11 @@ namespace GLOBAL_NAMESPACE {
          * Adjusts boundaries from isoline plotting range to the analysis range
          */
         void sacrifice() override;
+
+        /**
+         * Clears the state
+         */
+        void clearState() override;
 
         class AverageCyclesException: public IsolineException {
         public:

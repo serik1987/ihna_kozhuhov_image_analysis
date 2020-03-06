@@ -47,6 +47,7 @@ from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FramChunkNo
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CompressedFrameReadError as \
     CompressedFrameReadError
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_CacheSizeError as CacheSizeError
+from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_ClearCacheError as ClearCacheError
 
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_FileTrain as FileTrain
 from ihna.kozhukhov.imageanalysis._imageanalysis import _sourcefiles_StreamFileTrain as _StreamFileTrain

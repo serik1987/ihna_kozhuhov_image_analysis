@@ -53,6 +53,7 @@ extern "C" {
     static PyObject* PyImanS_CompressedFrameReadError = NULL;
     static PyObject* PyImanS_CacheSizeError = NULL;
     static PyObject* PyImanS_FileWriteError = NULL;
+    static PyObject* PyImanS_ClearCacheError = NULL;
 
     static int PyImanS_Create_exceptions(PyObject* module){
         PyImanS_IoError = PyErr_NewExceptionWithDoc("ihna.kozhukhov.imageanalysis.sourcefiles.IoError",
@@ -371,6 +372,17 @@ extern "C" {
             return -1;
         }
 
+        PyImanS_ClearCacheError = PyErr_NewExceptionWithDoc(
+                "ihna.kozhukhov.imageanalysis.sourcefiles.ClearCacheError",
+                "This error will be generated after you will try to clear cache after the frame has been read\n"
+                "To avoid this exception you can use on of the following options:\n"
+                "1. Don't use clear_cache()\n"
+                "2; Don;t use subscript index like train[n] where n is frame number",
+                PyImanS_TrainError, NULL);
+        if (PyModule_AddObject(module, "_sourcefiles_ClearCacheError", PyImanS_ClearCacheError) < 0){
+            return -1;
+        }
+
         return 0;
     }
 
@@ -421,6 +433,7 @@ extern "C" {
         Py_XDECREF(PyImanS_CompressedFrameReadError);
         Py_XDECREF(PyImanS_CacheSizeError);
         Py_XDECREF(PyImanS_FileWriteError);
+        Py_XDECREF(PyImanS_ClearCacheError);
     }
 
     static int PyImanS_Exception_process(const void* handle){

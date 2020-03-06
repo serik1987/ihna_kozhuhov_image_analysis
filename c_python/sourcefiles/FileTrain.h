@@ -10,6 +10,7 @@ extern "C" {
     typedef struct {
         PyObject_HEAD
         void* train_handle;
+        int frame_read;
     } PyImanS_FileTrainObject;
 
     typedef struct {
@@ -36,6 +37,7 @@ extern "C" {
         self = (PyImanS_FileTrainObject*)type->tp_alloc(type, 0);
         if (self != NULL){
             self->train_handle = NULL;
+            self->frame_read = 0;
         }
         return (PyObject*)self;
     }
@@ -213,11 +215,15 @@ extern "C" {
 
     static PyObject* PyImanS_FileTrain_ClearCache(PyImanS_FileTrainObject* self,
             PyObject* args, PyObject* kwds){
-        printf("Warning. Calling clear_cache() when some frames are not collected by the GC may be segmentation "
-               "faulted\n");
         using namespace GLOBAL_NAMESPACE;
         auto* ptrain = (FileTrain*)self->train_handle;
         PyObject* result;
+
+        if (self->frame_read){
+            PyErr_SetString(PyImanS_ClearCacheError, "Can't apply clear_cache() when at least one frame has been "
+                                                     "read by means of FileTrain's subscript index");
+            return NULL;
+        }
 
         try{
             ptrain->clearCache();
@@ -337,6 +343,7 @@ extern "C" {
 
         auto* frame_object = (PyImanS_FrameObject*)PyObject_CallFunction((PyObject*)&PyImanS_FrameType,
                 "O", (PyObject*)self);
+        self->frame_read = 1;
         frame_object->frame_handle = frame;
         frame->iLock = true;
 

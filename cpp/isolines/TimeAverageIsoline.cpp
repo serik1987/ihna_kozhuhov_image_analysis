@@ -5,21 +5,42 @@
 #include <cmath>
 #include "../synchronization/ExternalSynchronization.h"
 #include "../tracereading/TraceReaderAndCleaner.h"
+#include "../accumulators/Accumulator.h"
 #include "TimeAverageIsoline.h"
 
 namespace GLOBAL_NAMESPACE {
 
     TimeAverageIsoline::TimeAverageIsoline(StreamFileTrain &train, Synchronization &sync) : Isoline(train, sync) {
         averageCycles = 1;
+        averageBuffer = nullptr;
+        beforeSubstractBuffer = nullptr;
+        bufferSize = 0;
+        avgSize = 0;
     }
 
     TimeAverageIsoline::TimeAverageIsoline(const TimeAverageIsoline &other): Isoline(other) {
         averageCycles = other.averageCycles;
+        averageBuffer = new double[other.bufferSize];
+        std::memcpy(averageBuffer, other.averageBuffer, sizeof(double) * other.bufferSize);
+        beforeSubstractBuffer = new double[other.bufferSize];
+        std::memcpy(beforeSubstractBuffer, other.beforeSubstractBuffer, sizeof(double) * other.bufferSize);
+        bufferSize = other.bufferSize;
+        avgSize = other.avgSize;
     }
 
     TimeAverageIsoline &TimeAverageIsoline::operator=(const TimeAverageIsoline &other) {
+        if (&other == this){
+            return *this;
+        }
         Isoline::operator=(other);
         averageCycles = other.averageCycles;
+
+        delete [] averageBuffer;
+        averageBuffer = new double[other.bufferSize];
+        delete [] beforeSubstractBuffer;
+        beforeSubstractBuffer = new double[other.bufferSize];
+        bufferSize = other.bufferSize;
+        avgSize = other.avgSize;
 
         return *this;
     }
@@ -102,11 +123,81 @@ namespace GLOBAL_NAMESPACE {
 
     }
 
+    TimeAverageIsoline::~TimeAverageIsoline() {
+        delete [] averageBuffer;
+        delete [] beforeSubstractBuffer;
+    }
+
+    void TimeAverageIsoline::clearState() {
+        Isoline::clearState();
+
+        delete [] averageBuffer;
+        averageBuffer = nullptr;
+        delete [] beforeSubstractBuffer;
+        beforeSubstractBuffer = nullptr;
+        bufferSize = 0;
+        avgSize = 0;
+    }
+
     void TimeAverageIsoline::initialize(Accumulator &accumulator) {
-        std::cout << "TIME AVERAGE INITIALIZATION\n";
+        bufferSize = accumulator.getChannelNumber();
+        avgSize = 0;
+        averageBuffer = new double[bufferSize];
+        beforeSubstractBuffer = new double[bufferSize];
+        for (int i=0; i < bufferSize; ++i){
+            averageBuffer[i] = 0.0;
+        }
+
+        double* readingBuffer = accumulator.getReadingBuffer();
+        int start = getIsolineInitialFrame();
+        int cycles = sync().getCycleNumber();
+        int frames = sync().getFrameNumber();
+        avgRadius = averageCycles * (int)rint((double)(frames + 1) / cycles);
+        int finish = getAnalysisInitialFrame() + avgRadius;
+        int frame, timestamp;
+
+        for (timestamp = 0, frame = start; frame < finish; ++frame, ++timestamp){
+
+            accumulator.readFrameData(frame);
+            ++avgSize;
+            for (int j = 0; j < bufferSize; ++j){
+                averageBuffer[j] += readingBuffer[j];
+            }
+
+            if (timestamp % 100 == 0 && progressFunction != nullptr){
+                int status = progressFunction(timestamp, 2 * avgRadius, "Initializing time average", progressHandle);
+                if (!status){
+                    throw Accumulator::InterruptedException();
+                }
+            }
+        }
     }
 
     void TimeAverageIsoline::advance(Accumulator &accumulator, int frameNumber) {
-        std::cout << "TIME AVERAGE ADVANCE\n";
+        double* readingBuffer = accumulator.getReadingBuffer();
+        std::memcpy(beforeSubstractBuffer, readingBuffer, sizeof(double) * bufferSize);
+
+        int finalframe_ta = getIsolineFinalFrame();
+        int initframe_ta = getIsolineInitialFrame();
+
+        if (frameNumber <= finalframe_ta - avgRadius){
+            accumulator.readFrameData(frameNumber + avgRadius);
+            avgSize += 1;
+            for (int i=0; i < bufferSize; ++i){
+                averageBuffer[i] += readingBuffer[i];
+            }
+        }
+
+        if (frameNumber > initframe_ta + avgRadius){
+            accumulator.readFrameData(frameNumber - avgRadius);
+            avgSize -= 1;
+            for (int i=0; i < bufferSize; ++i){
+                averageBuffer[i] -= readingBuffer[i];
+            }
+        }
+
+        for (int i=0; i < bufferSize; ++i){
+            readingBuffer[i] = beforeSubstractBuffer[i] - averageBuffer[i] / avgSize;
+        }
     }
 }

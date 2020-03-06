@@ -32,10 +32,15 @@ namespace GLOBAL_NAMESPACE {
         isolineFinalFrame = other.isolineFinalFrame;
         offset = other.offset;
         progressFunction = other.progressFunction;
+        progressHandle = other.progressHandle;
         removed = other.removed;
     }
 
     Isoline &Isoline::operator=(const Isoline &other) noexcept {
+        if (&other == this){
+            return *this;
+        }
+
         ptrain = other.ptrain;
         psync = other.psync;
         offset = other.offset;
