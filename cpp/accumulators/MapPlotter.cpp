@@ -58,10 +58,13 @@ namespace GLOBAL_NAMESPACE {
 
     void MapPlotter::processFrameData(int timestamp) {
         double* readingBuffer = getReadingBuffer();
+        auto& sync = isoline->sync();
+        double co = sync.getReferenceSignalCos()[timestamp];
+        double si = sync.getReferenceSignalSin()[timestamp];
 
         for (int i=0; i < getChannelNumber(); ++i){
-            resultMapList[Real][i] = readingBuffer[i];
-            resultMapList[Imag][i] = readingBuffer[i];
+            resultMapList[Real][i] += readingBuffer[i] * co;
+            resultMapList[Imag][i] += readingBuffer[i] * si;
         }
     }
 }
