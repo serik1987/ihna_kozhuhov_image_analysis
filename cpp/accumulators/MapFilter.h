@@ -26,6 +26,9 @@ namespace GLOBAL_NAMESPACE {
         void initializeBuffers() override;
         void processFrameData(int timestamp) override;
 
+        int getFinalizationMapNumber() override { return 1; };
+        double* getFinalizationMap(int number) override { return targetMap; };
+
     public:
         explicit MapFilter(Isoline& isoline);
 

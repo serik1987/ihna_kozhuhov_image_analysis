@@ -12,6 +12,7 @@ namespace GLOBAL_NAMESPACE {
         preprocessFilterRadius = -1;
         divideByAverage = false;
         filterBuffer = nullptr;
+        avgMap = nullptr;
     }
 
     FrameAccumulator::FrameAccumulator(const FrameAccumulator &other): Accumulator(other) {
@@ -30,6 +31,10 @@ namespace GLOBAL_NAMESPACE {
             filterBuffer = new double[other.getChannelNumber()];
             std::memcpy(filterBuffer, other.filterBuffer, other.getChannelNumber() * sizeof(double));
         }
+        if (other.avgMap != nullptr){
+            avgMap = new double[other.getChannelNumber()];
+            std::memcpy(avgMap, other.avgMap, other.getChannelNumber() * sizeof(double));
+        }
     }
 
     FrameAccumulator::FrameAccumulator(FrameAccumulator &&other) noexcept: Accumulator(std::move(other)) {
@@ -43,6 +48,8 @@ namespace GLOBAL_NAMESPACE {
         other.resultMapList.clear();
         filterBuffer = other.filterBuffer;
         other.filterBuffer = nullptr;
+        avgMap = other.avgMap;
+        other.avgMap = nullptr;
     }
 
     FrameAccumulator &FrameAccumulator::operator=(const FrameAccumulator &other) {
@@ -71,6 +78,13 @@ namespace GLOBAL_NAMESPACE {
             filterBuffer = new double[other.getChannelNumber()];
             std::memcpy(filterBuffer, other.filterBuffer, other.getChannelNumber() * sizeof(double));
         }
+        delete [] avgMap;
+        if (other.avgMap == nullptr){
+            avgMap = nullptr;
+        } else {
+            avgMap = new double[other.getChannelNumber()];
+            std::memcpy(avgMap, other.avgMap, getChannelNumber() * sizeof(double));
+        }
 
         return *this;
     }
@@ -97,6 +111,9 @@ namespace GLOBAL_NAMESPACE {
         delete [] filterBuffer;
         filterBuffer = other.filterBuffer;
         other.filterBuffer = nullptr;
+        delete [] avgMap;
+        avgMap = other.avgMap;
+        other.avgMap = nullptr;
 
         return *this;
     }
@@ -109,6 +126,7 @@ namespace GLOBAL_NAMESPACE {
             delete [] buffer;
         }
         delete [] filterBuffer;
+        delete [] avgMap;
     }
 
     void FrameAccumulator::clearState() {
@@ -121,6 +139,9 @@ namespace GLOBAL_NAMESPACE {
 
         delete [] filterBuffer;
         filterBuffer = nullptr;
+
+        delete [] avgMap;
+        avgMap = nullptr;
     }
 
     void FrameAccumulator::printSpecial(std::ostream &out) const {
@@ -185,6 +206,34 @@ namespace GLOBAL_NAMESPACE {
         Accumulator::initializeBuffers();
         if (preprocessFilter){
             filterBuffer = new double[getChannelNumber()];
+        }
+        if (divideByAverage){
+            avgMap = new double[getChannelNumber()];
+            for (int i=0; i < getChannelNumber(); ++i){
+                avgMap[i] = 0.0;
+            }
+        }
+    }
+
+    void FrameAccumulator::framePreprocessing(int frameNumber, int timestamp) {
+        if (divideByAverage){
+            double* readingBuffer = getReadingBuffer();
+            for (int i=0; i < getChannelNumber(); ++i){
+                avgMap[i] += readingBuffer[i];
+            }
+        }
+    }
+
+    void FrameAccumulator::finalize() {
+        if (divideByAverage){
+            int N = isoline->getAnalysisFrameNumber();
+            for (int i=0; i < getFinalizationMapNumber(); ++i){
+                double* finalizationMap = getFinalizationMap(i);
+                for (int j=0; j < getChannelNumber(); ++j){
+                    double factor = avgMap[j] / N / 100.0;
+                    finalizationMap[j] /= factor;
+                }
+            }
         }
     }
 

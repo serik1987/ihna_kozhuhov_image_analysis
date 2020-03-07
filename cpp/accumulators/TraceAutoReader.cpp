@@ -89,6 +89,7 @@ namespace GLOBAL_NAMESPACE {
         std::sort(pixelList.begin(), pixelList.end());
         auto final_iterator = std::unique(pixelList.begin(), pixelList.end());
         pixelList.erase(final_iterator, pixelList.end());
+        signalNorm = 0.0;
     }
 
     double *TraceAutoReader::readFrameData(int frameNumber) {
@@ -125,6 +126,25 @@ namespace GLOBAL_NAMESPACE {
             S += readingBuffer[i];
         }
         averagedSignal[timestamp] = S / getChannelNumber();
+    }
+
+    void TraceAutoReader::framePreprocessing(int frameNumber, int timestamp) {
+        double* readingBuffer = getReadingBuffer();
+        double avgValue = 0.0;
+        for (int i=0; i < getChannelNumber(); ++i){
+            avgValue += readingBuffer[i];
+        }
+        avgValue /= getChannelNumber();
+        signalNorm += avgValue;
+    }
+
+    void TraceAutoReader::finalize() {
+        unsigned int N = isoline->getAnalysisFrameNumber();
+        signalNorm /= N;
+        double factor = 100.0 / signalNorm;
+        for (unsigned int i=0; i < N; ++i){
+            averagedSignal[i] *= factor;
+        }
     }
 
 

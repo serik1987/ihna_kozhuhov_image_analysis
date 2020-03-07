@@ -426,6 +426,7 @@ class NativeDataManager(wx.Dialog):
             filtered_map = ImagingMap(map_filter, major_name)
             AmplitudeMapViewerDlg(self, filtered_map).ShowModal()
             del map_filter
+            del train
         except Exception as err:
             print("Error class:", err.__class__.__name__)
             print("Error message:", err)

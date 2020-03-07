@@ -22,12 +22,15 @@ namespace GLOBAL_NAMESPACE {
         double time;
         double* times;
         double* averagedSignal;
+        double signalNorm;
 
     protected:
         void printSpecial(std::ostream& out) const override;
 
         void initializeBuffers() override;
         void processFrameData(int timestamp) override;
+        void framePreprocessing(int frameNumber, int timestamp) override;
+        void finalize() override;
 
     public:
         /**

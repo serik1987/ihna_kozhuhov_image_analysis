@@ -23,10 +23,27 @@ namespace GLOBAL_NAMESPACE {
 
         std::vector<double*> resultMapList;
         double* filterBuffer;
+        double* avgMap;
 
         void initializeBuffers() override;
+        void framePreprocessing(int frameNumber, int timestamp) override;
+        void finalize() override;
 
         void printSpecial(std::ostream& out) const override;
+
+        /**
+         *
+         * @return total number of maps for the finalization
+         */
+        virtual int getFinalizationMapNumber() = 0;
+
+        /**
+         * Returns the finalization map
+         *
+         * @param number map number
+         * @return the map itself
+         */
+        virtual double* getFinalizationMap(int number) = 0;
 
     public:
         /**

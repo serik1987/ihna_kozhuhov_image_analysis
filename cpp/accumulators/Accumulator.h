@@ -57,6 +57,20 @@ namespace GLOBAL_NAMESPACE {
          */
         virtual void processFrameData(int timestamp) = 0;
 
+        /**
+         * Provides all calculations after frame reading and before isoline remove
+         * that are not included into frame reading
+         *
+         * @param frameNumber absolute frame number
+         * @param timestamp number of timestamp
+         */
+        virtual void framePreprocessing(int frameNumber, int timestamp) = 0;
+
+        /**
+         * Performs the finalization routine, i.e., routines after all frames were read and processed
+         */
+        virtual void finalize() = 0;
+
     public:
 
         /**

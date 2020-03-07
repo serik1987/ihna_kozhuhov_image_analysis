@@ -20,6 +20,9 @@ namespace GLOBAL_NAMESPACE {
         void initializeBuffers() override;
         void processFrameData(int timestamp) override;
 
+        int getFinalizationMapNumber() override { return 2; }
+        double* getFinalizationMap(int number) override { return resultMapList[number]; }
+
     public:
 
         explicit MapPlotter(Isoline& isoline);

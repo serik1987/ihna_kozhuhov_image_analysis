@@ -61,6 +61,7 @@ namespace GLOBAL_NAMESPACE {
 
         for (int i=0; i < getChannelNumber(); ++i){
             resultMapList[Real][i] = readingBuffer[i];
+            resultMapList[Imag][i] = readingBuffer[i];
         }
     }
 }
