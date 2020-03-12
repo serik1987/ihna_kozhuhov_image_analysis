@@ -22,3 +22,6 @@ class NoIsolineEditor(IsolineEditor):
     def create_isoline(self, train, sync):
         isoline = NoIsoline(train, sync)
         return isoline
+
+    def get_options(self):
+        return "no isoline"

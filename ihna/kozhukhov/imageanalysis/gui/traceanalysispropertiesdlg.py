@@ -177,3 +177,15 @@ class TraceAnalysisPropertiesDlg(wx.Dialog):
 
     def is_autoaverage(self):
         return self.__autoprocess_box.IsChecked()
+
+    def is_save_npz(self):
+        return True
+
+    def is_add_to_manifest(self):
+        return True
+
+    def is_save_mat(self):
+        return True
+
+    def is_save_png(self):
+        return True

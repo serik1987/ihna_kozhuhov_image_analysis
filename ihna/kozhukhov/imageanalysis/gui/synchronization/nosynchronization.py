@@ -92,3 +92,6 @@ class NoSynchronizationEditor(SynchronizationEditor):
             except ValueError:
                 raise ValueError("Please, type a correct value of the final frame")
         return sync
+
+    def get_options(self):
+        return "no sync"

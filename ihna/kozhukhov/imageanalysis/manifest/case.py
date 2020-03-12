@@ -50,6 +50,7 @@ class Case:
     __properties = None
     __roi_list = None
     __traces_list = None
+    __result_list = None
 
     def __init__(self, input_object, pathname=None, animal_name=None):
         self.__properties = {}
@@ -66,8 +67,12 @@ class Case:
         else:
             raise ValueError("Unrecognized argument type for the case")
         self.__animal_name = animal_name
+        self.__result_list = []
 
     def get_animal_name(self):
+        """
+        Returns the name of the animal this case belongs to
+        """
         return self.__animal_name
 
     def import_case(self, data):
@@ -161,6 +166,13 @@ class Case:
             self.__traces_list.append(trace)
 
     def save_case(self, parent_xml):
+        """
+        adds the case to the XML element
+
+        Arguments:
+            parent_xml - an elements where the case info shall be added to. The function will add the <case> element
+            inside the parent_xml
+        """
         if self['imported']:
             return
         if self['auto']:
@@ -191,6 +203,8 @@ class Case:
         roi_xml.tail = "\n"
         root.append(roi_xml)
         self.__save_trace_list(root)
+        if len(self.__result_list) > 0:
+            self.__save_result_list(root)
 
     def __save_trace_list(self, root):
         if self.traces_exist():
@@ -220,6 +234,22 @@ class Case:
                     properties[key] = str(value)
                 ET.SubElement(trace_element, "isoline-properties", properties).tail = "\n"
 
+    def __save_result_list(self, parent_xml):
+        result_list_xml = ET.SubElement(parent_xml, "results")
+        result_list_xml.text = "\n"
+        result_list_xml.tail = "\n"
+        for data in self.data():
+            type = data.__class__.__name__
+            name = data.get_full_name()
+            filename = data.get_filename()
+            result_xml = ET.SubElement(result_list_xml, "result", {
+                "type": type,
+                "name": name,
+                "src": filename
+            })
+            result_xml.text = "\n"
+            result_xml.tail = "\n"
+
     def __add_file_list(self, root, list_name, list_element_name, filelist):
         list_element = ET.SubElement(root, list_name)
         list_element.text = "\n"
@@ -234,11 +264,26 @@ class Case:
         roi_list_element.tail = "\n"
 
     def set_properties(self, **kwargs):
+        """
+        Sets the main properties to the case
+
+        Arguments:
+            the keyword arguments like property_name=property_value
+        The detailed information on property names is given in help pn __setitem__ function
+        """
         for property_name in self.property_names:
             if property_name in kwargs:
                 self.__properties[property_name] = copy.deepcopy(kwargs[property_name])
 
     def __getitem__(self, key):
+        """
+        Returns the property with a given name
+
+        key is a string with one of the following meanings:
+            "roi" - ROI list
+            "traces" - all traces revealed without autoreading
+            any other text properties are given in property_names global variable
+        """
         if key == "roi":
             return self.__roi_list
         if key == "traces":
@@ -249,6 +294,14 @@ class Case:
             raise IndexError("Subscript index doesn't refer to the valid property name")
 
     def __setitem__(self, key, value):
+        """
+        Sets a certain property.
+
+        key is a string with one of the following meanings:
+            "roi" - ROI list
+            "traces" - all traces revealed without autoreading
+            any other text properties are given in property_names global variable
+        """
         if key in self.property_names:
             self.__properties[key] = value
         else:
@@ -281,12 +334,21 @@ class Case:
         return s
 
     def get_traces_list(self):
+        """
+        Returns list of all traces revealed without autoprocess option
+        """
         return self.__traces_list
 
     def get_traces_number(self):
+        """
+        Returns total number of traces revealed without using autoprocess
+        """
         return len(self.__traces_list)
 
     def get_discarded_list(self):
+        """
+        Returns the list of all native data files associated with a particular case
+        """
         discarded_list = []
         short_list = []
         if self['native_data_files'] is not None:
@@ -303,6 +365,9 @@ class Case:
         return discarded_list
 
     def native_data_files_exist(self):
+        """
+        Returns True if native data exist and valid
+        """
         if self['native_data_files'] is None:
             return False
         fullfile = os.path.join(self['pathname'], self['native_data_files'][0])
@@ -315,6 +380,9 @@ class Case:
             return False
 
     def compressed_data_files_exist(self):
+        """
+        Returns True if compressed data files exist and valid
+        """
         if self['compressed_data_files'] is None:
             return False
         fullfile = os.path.join(self['pathname'], self['compressed_data_files'][0])
@@ -327,7 +395,31 @@ class Case:
             return False
 
     def roi_exist(self):
+        """
+        Returns True if at least one ROI is given
+        """
         return len(self.__roi_list) > 0
 
     def traces_exist(self):
         return self.get_traces_number() > 0
+
+    def add_data(self, data):
+        """
+        Adds results to the case
+
+        Arguments:
+             data - the object that represents results. The object shall be an instance of the ImagingData
+        """
+        self.__result_list.append(data)
+
+    def data_exists(self):
+        """
+        Returns True if at least one processing result is added or loaded
+        """
+        return len(self.__result_list) > 0
+
+    def data(self):
+        """
+        Returns iterator over all data participated in the analysis
+        """
+        return iter(self.__result_list)

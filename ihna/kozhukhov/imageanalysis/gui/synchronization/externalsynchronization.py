@@ -135,3 +135,6 @@ class ExternalSynchronizationEditor(SynchronizationEditor):
             raise ValueError("Please, enter correct value of the threshold or don't touch it if you don't have "
                              "problems")
         return sync
+
+    def get_options(self):
+        return "External synchronization, channel {0}".format(self.__channel_box.GetCurrentSelection())

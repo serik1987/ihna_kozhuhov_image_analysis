@@ -32,3 +32,11 @@ class ImagingMap(ImagingData):
         Returns 1.0 for directional and retinotopic maps, 2.0 for orientation maps
         """
         return float(self.get_features()["harmonic"])
+
+    def _save_data(self, npz_filename):
+        np.savez(npz_filename, data=self.__data)
+
+    def _get_data_to_save(self):
+        return {
+            "DATA": self.__data
+        }

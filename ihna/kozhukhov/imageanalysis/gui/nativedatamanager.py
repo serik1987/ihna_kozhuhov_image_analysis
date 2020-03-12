@@ -383,7 +383,11 @@ class NativeDataManager(wx.Dialog):
             short_name = self.__case["short_name"]
             major_name = "%s_%s%s%s" % (animal_name, prefix_name, short_name, postfix_name)
             result_map = ImagingMap(plotter, major_name)
-            ComplexMapViewerDlg(self, result_map).ShowModal()
+            result_map.get_features().update(map_plotter_dlg.get_options())
+            result_map.get_features()['minor_name'] = "mapraw"
+            result_dlg = ComplexMapViewerDlg(self, result_map)
+            result_dlg.ShowModal()
+            self.__save_data(map_plotter_dlg, result_map, result_dlg, pathname)
             del plotter
             del train
         except Exception as err:
@@ -452,7 +456,7 @@ class NativeDataManager(wx.Dialog):
                 return
 
             if properties_dlg.is_autoaverage():
-                self.__trace_analysis_auto(train, properties_dlg)
+                self.__trace_analysis_auto(train, properties_dlg, pathname)
             else:
                 self.__trace_analysis_manual(train, properties_dlg)
             properties_dlg.close()
@@ -467,7 +471,7 @@ class NativeDataManager(wx.Dialog):
             dlg = wx.MessageDialog(self, str(err), caption="Trace analysis", style=wx.OK | wx.CENTRE | wx.ICON_ERROR)
             dlg.ShowModal()
 
-    def __trace_analysis_auto(self, train, properties_dlg):
+    def __trace_analysis_auto(self, train, properties_dlg, pathname):
         sync = properties_dlg.create_synchronization()
         isoline = properties_dlg.create_isoline(sync)
         reader = accumulators.TraceAutoReader(isoline)
@@ -487,10 +491,13 @@ class NativeDataManager(wx.Dialog):
         major_name = "%s_%s" % (self.__case.get_animal_name(), self.__case['short_name'])
         imaging_signal = ImagingSignal(reader, major_name)
         imaging_signal.get_features()["ROI"] = roi_name
-        SignalViewerDlg(self, imaging_signal, True).ShowModal()
-        del reader
+        imaging_signal.get_features()["minor_name"] = "trace(%s)" % roi_name
+        viewer_dlg = SignalViewerDlg(self, imaging_signal, True)
+        viewer_dlg.ShowModal()
+        self.__save_data(properties_dlg, imaging_signal, viewer_dlg, pathname)
         train.close()
         train.clear_cache()
+        del reader
 
     def __trace_analysis_manual(self, train, properties_dlg):
         reader, isoline, sync = properties_dlg.create_reader()
@@ -548,3 +555,13 @@ class NativeDataManager(wx.Dialog):
         except Exception as err:
             save_dialog.Destroy()
             raise err
+
+    def __save_data(self, accumulator_dlg, accumulator_result, result_dlg, folder_name):
+        if accumulator_dlg.is_save_npz():
+            accumulator_result.save_npz(folder_name)
+            if accumulator_dlg.is_add_to_manifest():
+                self.__case.add_data(accumulator_result)
+        if accumulator_dlg.is_save_mat():
+            accumulator_result.save_mat(folder_name)
+        if accumulator_dlg.is_save_png():
+            result_dlg.save_png(folder_name)

@@ -1,7 +1,9 @@
 # -*- coding: utf-8
 
 import os
+import json
 import xml.etree.ElementTree as ET
+import scipy.io
 
 
 class ImagingData:
@@ -12,6 +14,7 @@ class ImagingData:
     """
 
     __features = None
+    __filename = None
 
     def __init__(self, arg, major_name=None):
         """
@@ -96,3 +99,51 @@ class ImagingData:
         Map full name that contains its major and minor names
         """
         return "%s_%s" % (self.__features["major_name"], self.__features["minor_name"])
+
+    def save_npz(self, folder_name):
+        """
+        Saves the data to the NPZ and JSON files
+
+        Arguments:
+            folder_name - folder where all files will be located. Names of these files will be the same as names
+            of the animal
+        """
+        json_features = json.JSONEncoder().encode(self.__features)
+        json_filename = os.path.join(folder_name, self.get_full_name() + ".json")
+        npz_filename = os.path.join(folder_name, self.get_full_name() + ".npz")
+        json_file = open(json_filename, "w")
+        json_file.write(json_features)
+        json_file.close()
+        self._save_data(npz_filename)
+        self.__filename = npz_filename
+
+    def save_mat(self, folder_name):
+        """
+        Saves the data to MAT file
+
+         Arguments:
+            folder_name - folder where all files will be located. Names of these files will be the same as names
+            of the animal
+        """
+        output = self.__features
+        output.update(self._get_data_to_save())
+        filename = os.path.join(folder_name, self.get_full_name() + ".mat")
+        scipy.io.savemat(filename, output)
+
+    def _save_data(self, npz_filename):
+        """
+        Creates the NPZ file itself
+
+        Arguments:
+            npz_filename - full name of the NPZ file
+        """
+        raise NotImplementedError("self._save_data " + npz_filename)
+
+    def _get_data_to_save(self):
+        raise NotImplementedError("_get_data_to_save")
+
+    def get_filename(self):
+        """
+        Full name of the NPZ file where the data were saved or None when the data were not associated with any file
+        """
+        return self.__filename

@@ -19,3 +19,6 @@ class LinearFitIsolineEditor(IsolineEditor):
     def create_isoline(self, train, sync):
         isoline = LinearFitIsoline(train, sync)
         return isoline
+
+    def get_options(self):
+        return "linear fit"

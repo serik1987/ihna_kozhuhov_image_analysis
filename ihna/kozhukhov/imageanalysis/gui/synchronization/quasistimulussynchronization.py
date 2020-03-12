@@ -100,3 +100,6 @@ class QuasiStimulusSynchronizationEditor(SynchronizationEditor):
             except ValueError:
                 raise ValueError("Please, enter a correct value of the final cycle or unckeck this option")
         return sync
+
+    def get_options(self):
+        return "quasi-stimulus, period " + self.__stimulusPeriodBox.GetValue()

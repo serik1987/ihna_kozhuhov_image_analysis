@@ -133,12 +133,36 @@ extern "C" {
         }
     }
 
+    static PyObject* PyImanA_TraceAutoReader_GetSynchronizationSignal(PyImanA_TraceAutoReaderObject* self, void*){
+        using namespace GLOBAL_NAMESPACE;
+        auto* reader = (TraceAutoReader*)self->parent.handle;
+
+        try{
+            auto& sync = reader->getIsoline().sync();
+            const double* referenceCos = sync.getReferenceSignalCos();
+            int n = reader->getIsoline().getAnalysisFrameNumber();
+            npy_intp dims[] = {n};
+            PyObject* result = PyArray_SimpleNew(1, dims, NPY_DOUBLE);
+            for (int i=0; i < n; ++i){
+                *(double*)PyArray_GETPTR1((PyArrayObject*)result, i) = referenceCos[i];
+            }
+            return result;
+        } catch (std::exception& e){
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyGetSetDef PyImanA_TraceAutoReader_Properties[] = {
             {(char*)"times", (getter)PyImanA_TraceAutoReader_GetTimes, NULL,
                     (char*)"Returns vector that contains arrival times in ms"},
 
             {(char*)"averaged_signal", (getter)PyImanA_TraceAutoReader_GetAveragedSignal, NULL,
              (char*)"Returns the averaged signal after processing"},
+
+            {(char*)"synchronization_signal", (getter)PyImanA_TraceAutoReader_GetSynchronizationSignal, NULL,
+                    (char*)"Returns the synchronization signal or 'reference cosine\n"
+                           "The synchronization signal show how the stimulus was oscillated during the experiment"},
 
             {NULL}
     };

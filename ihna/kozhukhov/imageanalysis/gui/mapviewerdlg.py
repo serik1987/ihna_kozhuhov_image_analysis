@@ -1,5 +1,6 @@
 # -*- coding: utf8
 
+import os
 import wx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,6 +11,9 @@ from ihna.kozhukhov.imageanalysis import ImagingMap
 
 
 class MapViewerDlg(wx.Dialog):
+
+    __figure = None
+    __full_name = None
 
     def __init__(self, parent, complexMap: ImagingMap):
         super().__init__(parent, title="Map view: " + complexMap.get_full_name(), size=(800, 500))
@@ -43,5 +47,12 @@ class MapViewerDlg(wx.Dialog):
         self.Centre()
         self.Fit()
 
+        self.__figure = figure
+        self.__full_name = complexMap.get_full_name()
+
     def _plot_graphs(self, figure, data):
         raise NotImplementedError("_plot_graphs")
+
+    def save_png(self, folder_name):
+        filename = os.path.join(folder_name, self.__full_name + ".png")
+        self.__figure.savefig(filename)

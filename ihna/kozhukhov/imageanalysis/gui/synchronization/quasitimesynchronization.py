@@ -101,3 +101,6 @@ class QuasiTimeSynchronizationEditor(SynchronizationEditor):
             except ValueError:
                 raise ValueError("Please, enter a correct value of the final cycle or don't check this option")
         return sync
+
+    def get_options(self):
+        return "quasi-time, period {0} ms".format(self.__stimulus_period_box.GetValue())

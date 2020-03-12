@@ -66,3 +66,15 @@ class FrameAccumulatorDlg(AccumulatorDlg):
             accumulator.preprocess_filter = False
         accumulator.divide_by_average = self.__divide_by_average_box.IsChecked()
         return accumulator
+
+    def get_options(self):
+        options = super().get_options()
+        if self.__preprocess_filter_box.IsChecked():
+            options["preprocess_filter"] = self.__preprocess_filter_radius_box.GetValue()
+        else:
+            options["preprocess_filter"] = "off"
+        if self.__divide_by_average_box:
+            options["divide_by_average"] = "on"
+        else:
+            options["divide_by_average"] = "off"
+        return options

@@ -157,3 +157,21 @@ class AccumulatorDlg(wx.Dialog):
 
     def get_postfix_name(self):
         return self.__postfix_name_box.GetValue()
+
+    def get_options(self):
+        return {
+            "synchronization": self.__synchronization_box.get_options(),
+            "isoline": self.__isoline_box.get_options()
+        }
+
+    def is_save_npz(self):
+        return self.__save_npz_box.IsChecked()
+
+    def is_save_mat(self):
+        return self.__save_mat_box.IsChecked()
+
+    def is_save_png(self):
+        return self.__save_png_box.IsChecked()
+
+    def is_add_to_manifest(self):
+        return self.__add_to_manifest_box.IsChecked()

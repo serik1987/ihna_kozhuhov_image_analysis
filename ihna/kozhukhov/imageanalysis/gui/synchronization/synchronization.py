@@ -69,3 +69,6 @@ class SynchronizationEditor(wx.BoxSizer):
 
     def get_synchronization(self):
         raise NotImplementedError("Synchronization")
+
+    def get_options(self):
+        return "sample synchronization options"

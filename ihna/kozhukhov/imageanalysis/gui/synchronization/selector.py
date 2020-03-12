@@ -64,3 +64,8 @@ class SynchronizationSelector(wx.StaticBoxSizer):
                 except ValueError:
                     raise ValueError("Please, enter a correct value of the harmonic in the Synchronization section")
                 return sync
+
+    def get_options(self):
+        for editor in self.__sync_editors:
+            if editor.is_selected():
+                return editor.get_options()

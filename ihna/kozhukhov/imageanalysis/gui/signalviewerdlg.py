@@ -1,6 +1,8 @@
 # -*- coding: utf-8
 
+import os
 import wx
+import numpy as np
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
 from ihna.kozhukhov.imageanalysis import ImagingSignal
@@ -12,6 +14,8 @@ class SignalViewerDlg(wx.Dialog):
     __prefix_name_box = None
     __postfix_name_box = None
     __signal = None
+
+    __figure = None
 
     def __init__(self, parent, signal: ImagingSignal, ask_names=False):
         super().__init__(parent, title="Signal view: " + signal.get_full_name(), size=(800, 1000))
@@ -30,6 +34,13 @@ class SignalViewerDlg(wx.Dialog):
         signal_axes.set_ylabel("Signal, %")
         spectrum_axes = figure.add_subplot(122)
         spectrum_axes.plot(signal.get_frequencies(), signal.get_spectrum())
+        F = []
+        P = []
+        for f in signal.get_synchronization_peaks():
+            F.append(f)
+            i0 = np.abs(signal.get_frequencies() - f).argmin()
+            P.append(signal.get_spectrum()[i0])
+        spectrum_axes.plot(F, P, 'r*', markersize=3)
         spectrum_axes.set_xlabel("Frequency, Hz")
         spectrum_axes.set_ylabel("Power")
         spectrum_axes.set_xscale("log")
@@ -76,6 +87,8 @@ class SignalViewerDlg(wx.Dialog):
         self.Centre()
         self.Fit()
 
+        self.__figure = figure
+
     def finalize_dlg(self):
         if self.__ask_names:
             prefix = self.__prefix_name_box.GetValue()
@@ -83,3 +96,7 @@ class SignalViewerDlg(wx.Dialog):
             animal_name, short_name = self.__signal.get_features()["major_name"].split("_")
             self.__signal.get_features()["major_name"] = "%s_%s%s%s" % (animal_name, prefix, short_name, postfix)
         self.Close()
+
+    def save_png(self, folder_name):
+        full_name = os.path.join(folder_name, self.__signal.get_full_name() + ".png")
+        self.__figure.savefig(full_name)

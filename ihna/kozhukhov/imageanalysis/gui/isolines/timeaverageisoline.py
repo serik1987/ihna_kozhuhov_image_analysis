@@ -57,3 +57,6 @@ class TimeAverageIsolineEditor(IsolineEditor):
         except ValueError:
             raise ValueError("Please, specify a correct value in the 'Average radius' box")
         return isoline
+
+    def get_options(self):
+        return "time average: {0} cycles".format(self.__cycles_box.GetValue())

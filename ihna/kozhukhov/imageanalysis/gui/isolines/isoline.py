@@ -55,7 +55,6 @@ class IsolineEditor(wx.BoxSizer):
         self._parent = None
         self._train = None
         self._sync = None
-        self._rb = None
 
     def has_properties(self):
         return False
@@ -77,3 +76,6 @@ class IsolineEditor(wx.BoxSizer):
 
     def create_isoline(self, train, sync):
         raise NotImplementedError("create_isoline(sync)")
+
+    def get_options(self):
+        return "sample isoline options"
