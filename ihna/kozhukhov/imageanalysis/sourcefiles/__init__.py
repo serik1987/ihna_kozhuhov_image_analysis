@@ -533,7 +533,7 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
             })
             is_valid = True
             done_files.append(filename)
-            print("{0}\tanalysis".format(filename))
+            # print("{0}\tanalysis".format(filename))
         except IoError:
             pass
         try:
@@ -547,7 +547,7 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
             })
             is_valid = True
             done_files.append(filename)
-            print("{0}\tgreen".format(filename))
+            # print("{0}\tgreen".format(filename))
         except IoError:
             pass
         try:
@@ -560,15 +560,15 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
                 "filetype": "compressed",
                 "tail_files": []
             }
-            print("{0}\tcompressed".format(filename), end="\t")
+            # print("{0}\tcompressed".format(filename), end="\t")
             for file in compressed_file_train:
                 if file.full_name != head_filename:
                     valid_file['tail_files'].append(file.full_name)
-                    print(file.filename, end=" ")
+                    # print(file.filename, end=" ")
                 done_files.append(file.full_name)
             valid_files.append(valid_file)
             is_valid = True
-            print("")
+            # print("")
         except IoError:
             pass
         try:
@@ -581,21 +581,21 @@ def get_file_info(selected_files, discarded_files=None, progress_bar=None):
                 "filetype": "stream",
                 "tail_files": []
             }
-            print("{0}\tstream".format(head_filename), end="\t\t")
+            # print("{0}\tstream".format(head_filename), end="\t\t")
             for file in stream_file_train:
                 if file.full_name != head_filename:
                     valid_file['tail_files'].append(file.full_name)
-                    print(file.filename, end=" ")
+                    # print(file.filename, end=" ")
                 done_files.append(file.full_name)
             valid_files.append(valid_file)
             is_valid = True
-            print("")
+            # print("")
         except IoError:
             pass
         if not is_valid:
             invalid_files.append(filename)
             done_files.append(filename)
-            print("{0}\tINVALID".format(filename))
+            # print("{0}\tINVALID".format(filename))
         idx += 1
         if idx % 10 == 0 and progress_bar is not None:
             progress_bar(idx, len(selected_files))

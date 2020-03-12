@@ -22,10 +22,14 @@ class ImagingData:
             imaging_map = ImagingMap(plotter, major_name)
             where: plotter is MapPlotter instance where all the data have been accumulated
             major_name - a string containing animal name, case short name, name prefix and name postfix
-            'src' will be added as a minor name
+            'src' will be added as a minor name by default.
+
+            imaging_map = ImagingMap(json_file)
+            will load the imaging element from the JSON file. This file will be created when you use save_npz function
+            Actually, this option will load previously saved data
         """
         self.__features = {}
-        if isinstance(arg, ET.Element):
+        if isinstance(arg, str):
             self.__load_from_file(arg)
         else:
             self.__load_from_plotter(arg, major_name)
@@ -65,6 +69,15 @@ class ImagingData:
         ]:
             self.__features[property_name] = str(hard[property_name])
         self._load_imaging_data_from_plotter(plotter)
+
+    def __load_from_file(self, filename):
+        json_filename = filename
+        npz_filename = filename[:-4] + "npz"
+        json_file = open(json_filename, "r")
+        json_data = json_file.read()
+        self.__features = json.loads(json_data)
+        json_file.close()
+        self.__filename = npz_filename
 
     def get_features(self):
         """
@@ -136,8 +149,25 @@ class ImagingData:
 
         Arguments:
             npz_filename - full name of the NPZ file
+
+        The method shall consider the case when NPZ file is not loaded.
         """
         raise NotImplementedError("self._save_data " + npz_filename)
+
+    def load_data(self):
+        """
+        All the ImagingData stores in two files: json and npz. json file stores small scalar values while
+        npz file stores large numpy arrays. when calling ImagingData(json_file) you load only small scalar
+        data from the json file. In order to load large numpy arrays from the npz file please, call this
+        method
+        """
+        self._load_data(self.__filename)
+
+    def _load_data(self, npz_filename):
+        """
+        Loads the data from NPZ file itself assuming that all data features have already been loaded
+        """
+        raise NotImplementedError("self._load_data " + npz_filename)
 
     def _get_data_to_save(self):
         raise NotImplementedError("_get_data_to_save")

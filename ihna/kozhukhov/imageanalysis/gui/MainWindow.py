@@ -742,11 +742,11 @@ class MainWindow(wx.Frame):
                 self.set_roi_not_found()
             else:
                 self.set_roi_ready()
-            if not self.__case.traces_exist():
+            if not self.__case.auto_traces_exist():
                 self.set_traces_not_found()
             else:
                 self.set_traces_ready()
-            if self.__case['averaged_maps'] is None:
+            if not self.__case.averaged_maps_exist():
                 self.set_averaged_maps_not_found()
             else:
                 self.set_averaged_maps_ready()

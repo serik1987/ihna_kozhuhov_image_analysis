@@ -3,6 +3,7 @@
 import copy
 import os.path
 import xml.etree.ElementTree as ET
+from ihna.kozhukhov.imageanalysis import imaging_data_classes, ImagingSignal, ImagingMap
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
 from ihna.kozhukhov.imageanalysis.tracereading import Traces
 from .roilist import RoiList
@@ -60,6 +61,7 @@ class Case:
         self.__properties['imported'] = False
         self.__roi_list = RoiList()
         self.__traces_list = []
+        self.__result_list = []
         if isinstance(input_object, dict):
             self.import_case(input_object)
         elif isinstance(input_object, ET.Element):
@@ -67,7 +69,6 @@ class Case:
         else:
             raise ValueError("Unrecognized argument type for the case")
         self.__animal_name = animal_name
-        self.__result_list = []
 
     def get_animal_name(self):
         """
@@ -139,6 +140,10 @@ class Case:
             self.__load_traces(xml.find('traces'))
         else:
             self.__traces_list = []
+        if xml.find("results"):
+            self.__load_results(xml.find("results"))
+        else:
+            self.__result_list = []
 
     def __read_file_list(self, xml, element_name):
         filelist = []
@@ -164,6 +169,16 @@ class Case:
             output_file = os.path.join(self['pathname'], trace_info.attrib['src'])
             trace.set_output_file(output_file)
             self.__traces_list.append(trace)
+
+    def __load_results(self, parent_xml):
+        self.__result_list = []
+        for result_element in parent_xml.findall("result"):
+            result_name = result_element.attrib["name"]
+            result_type = result_element.attrib["type"]
+            result_class = imaging_data_classes[result_type]
+            json_filename = os.path.join(self["pathname"], result_name + ".json")
+            result = result_class(json_filename)
+            self.__result_list.append(result)
 
     def save_case(self, parent_xml):
         """
@@ -247,7 +262,6 @@ class Case:
                 "name": name,
                 "src": filename
             })
-            result_xml.text = "\n"
             result_xml.tail = "\n"
 
     def __add_file_list(self, root, list_name, list_element_name, filelist):
@@ -401,6 +415,9 @@ class Case:
         return len(self.__roi_list) > 0
 
     def traces_exist(self):
+        """
+        Returns True if traces obtained manually exist
+        """
         return self.get_traces_number() > 0
 
     def add_data(self, data):
@@ -423,3 +440,25 @@ class Case:
         Returns iterator over all data participated in the analysis
         """
         return iter(self.__result_list)
+
+    def auto_traces_exist(self):
+        """
+        Returns True if at least one trace revealed after 'Autoprocess' option exist, False otherwise
+        """
+        exist = False
+        for data in self.data():
+            if data.__class__ == ImagingSignal:
+                exist = True
+                break
+        return exist
+
+    def averaged_maps_exist(self):
+        """
+        Returns True if at least one averaged map exist for this case
+        """
+        exist = False
+        for data in self.data():
+            if data.__class__ == ImagingMap:
+                exist = True
+                break
+        return exist

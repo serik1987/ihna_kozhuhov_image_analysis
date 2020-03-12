@@ -95,14 +95,15 @@ class ImagingSignal(ImagingData):
         return self.__synchronization_peaks
 
     def _save_data(self, npz_filename):
-        np.savez(npz_filename,
-                 time=self.get_times(),
-                 average_signal=self.get_values(),
-                 frequency=self.get_frequencies(),
-                 average_psd=self.get_spectrum(),
-                 synchronization_signal=self.get_synchronization_signal(),
-                 synchronization_peaks=self.get_synchronization_peaks(),
-                 synchronization_psd=self.get_synchronization_psd())
+        if self.__times is not None:
+            np.savez(npz_filename,
+                     time=self.get_times(),
+                     average_signal=self.get_values(),
+                     frequency=self.get_frequencies(),
+                     average_psd=self.get_spectrum(),
+                     synchronization_signal=self.get_synchronization_signal(),
+                     synchronization_peaks=self.get_synchronization_peaks(),
+                     synchronization_psd=self.get_synchronization_psd())
 
     def _get_data_to_save(self):
         return {
@@ -114,3 +115,13 @@ class ImagingSignal(ImagingData):
             "SYNCHRONIZATION_PEAKS": self.get_synchronization_peaks(),
             "SYNCHRONIZATION_PSD": self.get_synchronization_psd()
         }
+
+    def _load_data(self, npz_filename):
+        file_data = np.load(npz_filename)
+        self.__times = file_data['time']
+        self.__values = file_data['average_signal']
+        self.__frequencies = file_data["frequency"]
+        self.__spectrum = file_data["average_psd"]
+        self.__synchronization_signal = file_data["synchronization_signal"]
+        self.__synchronization_psd = file_data["synchronization_psd"]
+        self.__synchronization_peaks = file_data["synchronization_peaks"]

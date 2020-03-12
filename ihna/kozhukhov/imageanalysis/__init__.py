@@ -10,3 +10,8 @@ except ImportError:
 from .imagingdata import ImagingData
 from .imagingmap import ImagingMap
 from .imagingsignal import ImagingSignal
+
+imaging_data_classes = {
+    "ImagingMap": ImagingMap,
+    "ImagingSignal": ImagingSignal
+}
