@@ -27,12 +27,31 @@ class ImagingData:
             imaging_map = ImagingMap(json_file)
             will load the imaging element from the JSON file. This file will be created when you use save_npz function
             Actually, this option will load previously saved data
+
+            imaging_map = ImagingMap(features, data)
+            Constructs the imaging_map using particular features and data
         """
         self.__features = {}
         if isinstance(arg, str):
             self.__load_from_file(arg)
+        elif isinstance(arg, dict):
+            self.__copy_constructor(arg, major_name)
         else:
             self.__load_from_plotter(arg, major_name)
+
+    def __copy_constructor(self, features, data):
+        self.__filename = None
+        self.__features = features.copy()
+        self._copy_data(data)
+
+    def _copy_data(self, data):
+        """
+        Copies a certain data during the application of the copy constructor
+
+        Arguments:
+             data - the input data, that shall be tuple of all large NUMPY arrays
+        """
+        raise NotImplementedError("_copy_data")
 
     def __load_from_plotter(self, plotter, major_name):
         self.__features["major_name"] = major_name

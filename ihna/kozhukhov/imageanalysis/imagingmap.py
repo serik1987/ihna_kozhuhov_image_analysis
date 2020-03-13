@@ -44,3 +44,6 @@ class ImagingMap(ImagingData):
     def _load_data(self, npz_filename):
         npz_file = np.load(npz_filename)
         self.__data = npz_file["data"]
+
+    def _copy_data(self, data):
+        self.__data = data

@@ -24,10 +24,79 @@ extern "C" {
     }
     #endif
 
+    static PyObject* PyIman_Convolve(PyObject* self, PyObject* args, PyObject* kwds){
+        using namespace GLOBAL_NAMESPACE;
+        using namespace std;
+        PyArrayObject* input_data_object = NULL;
+        npy_intp* dims;
+        PyArrayObject* output_data_object = NULL;
+        double dradius;
+        int r;
+        int* aindex_x = nullptr;
+        int* aindex_y = nullptr;
+        int aindex_n = 0;
+
+        try{
+            if (!PyArg_ParseTuple(args, "Od", &input_data_object, &dradius)){
+                return NULL;
+            }
+            if (PyArray_NDIM(input_data_object) != 2){
+                PyErr_SetString(PyExc_ValueError, "The data matrix shall have two dimensions");
+            }
+            dims = PyArray_DIMS(input_data_object);
+
+            r = (int)floor(dradius);
+            aindex_x = new int[(1+2*r) * (1+2*r)];
+            aindex_y = new int[(1+2*r) * (1+2*r)];
+            for (int j=-r; j<=r; j++){
+                for (int k=-r; k<=r; k++){
+                    if (hypot((double)j, (double)k) <= dradius){
+                        aindex_x[aindex_n] = k;
+                        aindex_y[aindex_n++] = j;
+                    }
+                }
+            }
+
+            output_data_object = (PyArrayObject*)PyArray_SimpleNew(2, dims, NPY_DOUBLE);
+            for (int y0=0; y0 < dims[0]; ++y0){
+                for (int x0=0; x0 < dims[1]; ++x0){
+                    auto* output_value = (double*)PyArray_GETPTR2(output_data_object, y0, x0);
+                    double dumd = 0.0;
+                    int m = 0;
+                    for (int j=0; j < aindex_n; ++j){
+                        int x = x0 + aindex_x[j];
+                        int y = y0 + aindex_y[j];
+                        if (x > 0 && y > 0 && x < dims[1] && y < dims[0]){
+                            auto* input_value = (double*)PyArray_GETPTR2(input_data_object, y, x);
+                            dumd += *input_value;
+                            m++;
+                        }
+                    }
+                    if (m == 0){
+                        *output_value = 0.0;
+                    } else {
+                        *output_value = dumd / m;
+                    }
+                }
+            }
+
+            delete [] aindex_x;
+            delete [] aindex_y;
+            return (PyObject*)output_data_object;
+        } catch (std::exception& e){
+            delete [] aindex_x;
+            delete [] aindex_y;
+            Py_XDECREF(output_data_object);
+            PyIman_Exception_process(&e);
+            return NULL;
+        }
+    }
+
     static PyMethodDef PyIman_Methods[] = {
     #ifdef C_EXCEPTION_TEST
             {"test_exception", PyIman_Test_exception, METH_NOARGS, ""},
     #endif
+            {"convolve", (PyCFunction)PyIman_Convolve, METH_VARARGS, ""},
             {NULL}
     };
 

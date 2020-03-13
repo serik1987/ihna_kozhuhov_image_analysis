@@ -63,7 +63,7 @@ class ResultListDlg(wx.Dialog):
             data_dlg.ShowModal()
         except Exception as err:
             from .MainWindow import MainWindow
-            MainWindow.show_error_message(self, str(err), "Map view")
+            MainWindow.show_error_message(self, err, "Map view")
 
     def delete_map(self):
         try:
@@ -72,15 +72,20 @@ class ResultListDlg(wx.Dialog):
             self.__map_list.SetItems(self.get_data_names())
         except Exception as err:
             from .MainWindow import MainWindow
-            MainWindow.show_error_message(self, str(err), "Delete map")
+            MainWindow.show_error_message(self, err, "Delete map")
 
     def process(self):
         try:
+            from ihna.kozhukhov.imageanalysis.mapprocessing import spatial_filter
+            from .complexmapviewerdlg import ComplexMapViewerDlg
             data = self.__case.get_data(self.get_map_name())
-            print(data)
+            data.load_data()
+            output_data = spatial_filter(data, 3, 30)
+            output_data_dlg = ComplexMapViewerDlg(self, output_data)
+            output_data_dlg.ShowModal()
         except Exception as err:
             from .MainWindow import MainWindow
-            MainWindow.show_error_message(self, str(err), "Process map data")
+            MainWindow.show_error_message(self, err, "Process map data")
 
     def get_data_names(self):
         data_names = []

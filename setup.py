@@ -108,6 +108,7 @@ setup(
         "ihna.kozhukhov.imageanalysis.gui.synchronization",
         "ihna.kozhukhov.imageanalysis.isolines",
         "ihna.kozhukhov.imageanalysis.manifest",
+        "ihna.kozhukhov.imageanalysis.mapprocessing",
         "ihna.kozhukhov.imageanalysis.sourcefiles",
         "ihna.kozhukhov.imageanalysis.synchronization",
         "ihna.kozhukhov.imageanalysis.tracereading"
