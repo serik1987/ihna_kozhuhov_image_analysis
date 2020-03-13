@@ -10,6 +10,8 @@ from .roimanager import RoiManager
 from .animalfilterdlg import AnimalFilterDlg
 from .casefilterdlg import CaseFilterDlg
 from .autoprocess import *
+from .tracesresultlistdlg import TraceResultListDlg
+from .mapresultlistdlg import MapResultListDlg
 
 
 class MainWindow(wx.Frame):
@@ -198,7 +200,7 @@ class MainWindow(wx.Frame):
         case_info_caption = wx.StaticText(panel, label="Case info")
         right_panel_main_layout.Add(case_info_caption, 1, wx.EXPAND, 0)
 
-        self.__case_info_label = wx.StaticText(panel, label="Some status")
+        self.__case_info_label = wx.StaticText(panel, label="")
         font = self.__case_info_label.GetFont()
         font.SetWeight(wx.FONTWEIGHT_BOLD)
         self.__case_info_label.SetFont(font)
@@ -207,7 +209,7 @@ class MainWindow(wx.Frame):
         native_data_caption = wx.StaticText(panel, label="Native data")
         right_panel_main_layout.Add(native_data_caption, 1, wx.EXPAND, 0)
 
-        self.__native_data_label = wx.StaticText(panel, label="Some status")
+        self.__native_data_label = wx.StaticText(panel, label="")
         self.__native_data_label.SetFont(font)
         right_panel_main_layout.Add(self.__native_data_label, 1, wx.EXPAND, 0)
 
@@ -222,7 +224,7 @@ class MainWindow(wx.Frame):
         roi_caption = wx.StaticText(panel, label="ROI")
         right_panel_main_layout.Add(roi_caption, 0, wx.EXPAND, 0)
 
-        self.__roi_label = wx.StaticText(panel, label="Some status")
+        self.__roi_label = wx.StaticText(panel, label="")
         self.__roi_label.SetFont(font)
         right_panel_main_layout.Add(self.__roi_label, 1, wx.EXPAND, 0)
 
@@ -234,32 +236,32 @@ class MainWindow(wx.Frame):
         self.__roi_data_manager.Enable(False)
         right_panel_main_layout.Add(self.__roi_data_manager, 0, wx.EXPAND, 0)
 
-        trace_analysis_caption = wx.StaticText(panel, label="Trace analysis")
+        trace_analysis_caption = wx.StaticText(panel, label="Trace list")
         right_panel_main_layout.Add(trace_analysis_caption, 0, wx.EXPAND, 0)
 
-        self.__trace_analysis_label = wx.StaticText(panel, label="Some status")
+        self.__trace_analysis_label = wx.StaticText(panel, label="")
         self.__trace_analysis_label.SetFont(font)
         right_panel_main_layout.Add(self.__trace_analysis_label, 0, wx.EXPAND, 0)
 
         aux_label = wx.StaticText(panel, label="")
         right_panel_main_layout.Add(aux_label, 0, wx.EXPAND, 0)
 
-        self.__trace_analysis_manager = wx.Button(panel, label="Open manager")
+        self.__trace_analysis_manager = wx.Button(panel, label="Open list")
         self.Bind(wx.EVT_BUTTON, lambda evt: self.open_trace_analysis_manager(), self.__trace_analysis_manager)
         self.__trace_analysis_manager.Enable(False)
         right_panel_main_layout.Add(self.__trace_analysis_manager, 0, wx.EXPAND, 0)
 
-        averaged_maps_caption = wx.StaticText(panel, label="Averaged maps")
+        averaged_maps_caption = wx.StaticText(panel, label="Map list")
         right_panel_main_layout.Add(averaged_maps_caption, 0, wx.EXPAND, 0)
 
-        self.__averaged_maps_label = wx.StaticText(panel, label="Some status")
+        self.__averaged_maps_label = wx.StaticText(panel, label="")
         self.__averaged_maps_label.SetFont(font)
         right_panel_main_layout.Add(self.__averaged_maps_label, 0, wx.EXPAND, 0)
 
         aux_label = wx.StaticText(panel, label="")
         right_panel_main_layout.Add(aux_label, 0, wx.EXPAND, 0)
 
-        self.__averaged_maps_manager = wx.Button(panel, label="Open manager")
+        self.__averaged_maps_manager = wx.Button(panel, label="Open list")
         self.Bind(wx.EVT_BUTTON, lambda evt: self.open_averaged_maps_manager(), self.__averaged_maps_manager)
         self.__averaged_maps_manager.Enable(False)
         right_panel_main_layout.Add(self.__averaged_maps_manager, 0, wx.EXPAND, 0)
@@ -502,12 +504,18 @@ class MainWindow(wx.Frame):
             dlg.ShowModal()
 
     def open_trace_analysis_manager(self):
-        print("Open trace analysis manager")
-        for trace in self.__case['traces']:
-            print(trace)
+        try:
+            dlg = TraceResultListDlg(self, self.__case)
+            dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Trace list")
 
     def open_averaged_maps_manager(self):
-        print("Averaged maps manager")
+        try:
+            dlg = MapResultListDlg(self, self.__case)
+            dlg.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Map list")
 
     def set_autoprocess(self, evt):
         checked = evt.IsChecked()
