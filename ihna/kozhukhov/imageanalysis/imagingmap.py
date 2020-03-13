@@ -40,3 +40,7 @@ class ImagingMap(ImagingData):
         return {
             "DATA": self.__data
         }
+
+    def _load_data(self, npz_filename):
+        npz_file = np.load(npz_filename)
+        self.__data = npz_file["data"]

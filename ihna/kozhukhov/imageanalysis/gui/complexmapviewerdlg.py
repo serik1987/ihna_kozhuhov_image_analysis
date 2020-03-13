@@ -3,6 +3,7 @@
 import numpy as np
 from .mapviewerdlg import MapViewerDlg
 
+
 class ComplexMapViewerDlg(MapViewerDlg):
 
     def _plot_graphs(self, figure, data):

@@ -177,8 +177,11 @@ class Case:
             result_type = result_element.attrib["type"]
             result_class = imaging_data_classes[result_type]
             json_filename = os.path.join(self["pathname"], result_name + ".json")
-            result = result_class(json_filename)
-            self.__result_list.append(result)
+            try:
+                result = result_class(json_filename)
+                self.__result_list.append(result)
+            except FileNotFoundError:
+                pass
 
     def save_case(self, parent_xml):
         """
@@ -428,6 +431,40 @@ class Case:
              data - the object that represents results. The object shall be an instance of the ImagingData
         """
         self.__result_list.append(data)
+
+    def delete_data(self, data_name):
+        """
+        Deletes data from the list. Also, deletes JSON and NPZ files
+
+        Arguments:
+            data_name - name of the data to delete
+        """
+        current_data = None
+        for data in self.data():
+            if data.get_full_name() == data_name:
+                current_data = data
+        if current_data is None:
+            raise IndexError("The argument doesn't refer to a valid data name")
+        base_file = os.path.join(self["pathname"], data_name)
+        json_file = base_file + ".json"
+        npz_file = base_file + ".npz"
+        try:
+            os.unlink(json_file)
+        except Exception as err:
+            print("Failed to delete {0} due to {1}".format(json_file, err))
+        try:
+            os.unlink(npz_file)
+        except Exception as err:
+            print("Failed to delete {0} due to {1}".format(npz_file, err))
+        self.__result_list.remove(current_data)
+
+    def get_data(self, data_name):
+        """
+        Returns the data object that corresponds to a certain data name
+        """
+        for data in self.data():
+            if data.get_full_name() == data_name:
+                return data
 
     def data_exists(self):
         """

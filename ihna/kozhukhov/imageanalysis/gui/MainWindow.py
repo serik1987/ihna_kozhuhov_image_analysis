@@ -507,6 +507,8 @@ class MainWindow(wx.Frame):
         try:
             dlg = TraceResultListDlg(self, self.__case)
             dlg.ShowModal()
+            self.__cases.save()
+            self.load_cases()
         except Exception as err:
             self.show_error_message(self, err, "Trace list")
 
@@ -514,6 +516,8 @@ class MainWindow(wx.Frame):
         try:
             dlg = MapResultListDlg(self, self.__case)
             dlg.ShowModal()
+            self.__cases.save()
+            self.load_cases()
         except Exception as err:
             self.show_error_message(self, err, "Map list")
 
