@@ -31,8 +31,8 @@ the original IMAN:
     (a) The program has been built under Linux v. 5.3 operating system while the original version of the
         program was built under older versions of Linux and failed to run in newer Linux'es.
 
-    (b) A convenient feature of the program is existence of this its build for 64-bit Windows operating
-        system.
+    (b) A convenient feature of the program is possibility of its usage under Microsoft Windows. However,
+        this is not true for the GUI interface.
 
     (c) When we treat about the IMAN program this was possible to make its builds under newer versions of
         any POSIX-compliant operating system (including Linux and Mac OS X) but such builds are not able
@@ -394,15 +394,6 @@ the installation script will check whether the provided build is suitable for yo
 the compiler to be installed on your PC. If this check is OK this command will be completed successful. However
 if the existent build is not suitable for your PC, this command will try to create a new build and this process will
 of course requires the compiler to be installed.
-
-3.4. INSTALLATION FOR 64-BIT LINUX UBUNTU
-
-If you have 64-bit linux operating system, you can download the package from another location:
-
-https://drive.google.com/open?id=1akwNx2NYx62yXB7Xk6fDk8JWDAZ9KEVw
-
-This package already contains the build for this operating system, so, you can follow instructions mentioned in
-Section 3.2 and skip Sections 3.2.3 and 3.2.4.
 
 4. USING GUI
 
