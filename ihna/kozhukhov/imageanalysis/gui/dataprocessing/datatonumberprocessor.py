@@ -13,3 +13,6 @@ class DataToNumberProcessor(DataProcessDlg):
     def _check_input_data(self):
         if not isinstance(self._input_data, ImagingData):
             raise ValueError("This processor requires a single imaging data as an input")
+
+    def _place_general_options(self, parent):
+        return self._place_value_save_details(parent)

@@ -13,3 +13,14 @@ class DataToDataProcessor(DataProcessDlg):
     def _check_input_data(self):
         if not isinstance(self._input_data, ImagingData):
             raise ValueError("Please, select an appropriate imaging data for processing")
+
+    def _place_general_options(self, parent):
+        general_options = wx.BoxSizer(wx.VERTICAL)
+
+        output_file_box = self._place_output_file_box(parent)
+        general_options.Add(output_file_box, 0, wx.BOTTOM | wx.EXPAND, 5)
+
+        save_details = self._place_save_details(parent)
+        general_options.Add(save_details, 0, wx.EXPAND)
+
+        return general_options

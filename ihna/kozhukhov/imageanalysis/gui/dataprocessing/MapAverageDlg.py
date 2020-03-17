@@ -12,11 +12,7 @@ class MapAverageDlg(DataToNumberProcessor):
         return "Map average value"
 
     def _check_input_data(self):
-        if not isinstance(self._input_data, ImagingMap):
-            raise ValueError("The average data can be computed for maps only")
-        if self._input_data.get_data().dtype == np.complex:
-            dlg = wx.MessageDialog(self._parent,
-                                   "The average value for complex maps is some meaningless complex value",
-                                   "Map average",
-                                   wx.OK | wx.CENTRE | wx.ICON_WARNING)
-            dlg.ShowModal()
+        return self._check_imaging_map(True)
+
+    def _get_default_minor_name(self):
+        return "average"

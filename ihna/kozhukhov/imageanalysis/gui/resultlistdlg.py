@@ -89,7 +89,6 @@ class ResultListDlg(wx.Dialog):
                 raise ValueError("Please, select an appropriate processor from list on the right")
             input_data_dlg = self.__all_dialogs[input_data_dlg_selection](self, input_data)
             input_data_dlg.ShowModal()
-            print(input_data_dlg)
         except Exception as err:
             from .MainWindow import MainWindow
             MainWindow.show_error_message(self, err, "Process map data")

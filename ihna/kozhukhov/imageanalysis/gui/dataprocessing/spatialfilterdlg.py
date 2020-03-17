@@ -15,3 +15,6 @@ class SpatialFilterDlg(DataToDataProcessor):
             raise ValueError("The input shall be complex imaging map")
         if self._input_data.get_data().dtype != np.complex:
             raise ValueError("The input map shall be complex imaging map")
+
+    def _get_default_minor_name(self):
+        return "filt"

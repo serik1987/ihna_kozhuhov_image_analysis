@@ -6,10 +6,14 @@ from .mapfillterdlg import MapFillterDlg
 
 
 def get_data_processors(parent):
-    processors = {
-        "Map filter": SpatialFilterDlg,
-        "Compute average value": MapAverageDlg,
-        "New map with predefined valued": MapFillterDlg
-    }
+    from ihna.kozhukhov.imageanalysis.gui.mapresultlistdlg import MapResultListDlg
+
+    processors = {}
+    if isinstance(parent, MapResultListDlg):
+        processors.update({
+            "Map filter": SpatialFilterDlg,
+            "Compute average value": MapAverageDlg,
+            "New map with predefined valued": MapFillterDlg
+        })
 
     return processors
