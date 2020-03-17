@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from .dataprocessing import get_data_processors
 
 
 class ResultListDlg(wx.Dialog):
@@ -9,6 +10,7 @@ class ResultListDlg(wx.Dialog):
 
     __map_list = None
     __map_processors_list = None
+    __all_dialogs = None
 
     def __init__(self, parent, case):
         self.__case = case
@@ -22,7 +24,9 @@ class ResultListDlg(wx.Dialog):
                                      style=wx.LB_SINGLE | wx.LB_NEEDED_SB | wx.LB_SORT)
         upper_sizer.Add(self.__map_list, 1, wx.EXPAND | wx.RIGHT, 10)
 
-        self.__map_processors_list = wx.ListBox(main_panel, choices=["processor1", "processor2", "processor3"],
+        self.__all_dialogs = get_data_processors(self)
+        choices = list(self.__all_dialogs.keys())
+        self.__map_processors_list = wx.ListBox(main_panel, choices=choices,
                                                 style=wx.LB_SINGLE | wx.LB_NEEDED_SB | wx.LB_SORT)
         upper_sizer.Add(self.__map_processors_list, 1, wx.EXPAND)
 
@@ -78,11 +82,14 @@ class ResultListDlg(wx.Dialog):
         try:
             from ihna.kozhukhov.imageanalysis.mapprocessing import spatial_filter
             from .complexmapviewerdlg import ComplexMapViewerDlg
-            data = self.__case.get_data(self.get_map_name())
-            data.load_data()
-            output_data = spatial_filter(data, 3, 30)
-            output_data_dlg = ComplexMapViewerDlg(self, output_data)
-            output_data_dlg.ShowModal()
+            input_data = self.__case.get_data(self.get_map_name())
+            input_data.load_data()
+            input_data_dlg_selection = self.__map_processors_list.GetStringSelection()
+            if input_data_dlg_selection == "":
+                raise ValueError("Please, select an appropriate processor from list on the right")
+            input_data_dlg = self.__all_dialogs[input_data_dlg_selection](self, input_data)
+            input_data_dlg.ShowModal()
+            print(input_data_dlg)
         except Exception as err:
             from .MainWindow import MainWindow
             MainWindow.show_error_message(self, err, "Process map data")

@@ -103,6 +103,7 @@ setup(
         "ihna.kozhukhov.imageanalysis.compression",
         "ihna.kozhukhov.imageanalysis.gui",
         "ihna.kozhukhov.imageanalysis.gui.autoprocess",
+        "ihna.kozhukhov.imageanalysis.gui.dataprocessing",
         "ihna.kozhukhov.imageanalysis.gui.isolines",
         "ihna.kozhukhov.imageanalysis.gui.mapfilterdlg",
         "ihna.kozhukhov.imageanalysis.gui.synchronization",
