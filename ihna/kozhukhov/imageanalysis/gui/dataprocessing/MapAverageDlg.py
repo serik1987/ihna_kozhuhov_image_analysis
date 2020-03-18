@@ -8,6 +8,8 @@ from .datatonumberprocessor import DataToNumberProcessor
 
 class MapAverageDlg(DataToNumberProcessor):
 
+    __compute_circular_average = None
+
     def _get_processor_title(self):
         return "Map average value"
 
@@ -16,3 +18,8 @@ class MapAverageDlg(DataToNumberProcessor):
 
     def _get_default_minor_name(self):
         return "average"
+
+    def _place_additional_options(self, parent):
+        self.__compute_circular_average = wx.CheckBox(parent, label="Compute a circular average")
+
+        return self.__compute_circular_average

@@ -2,7 +2,7 @@
 
 from .spatialfilterdlg import SpatialFilterDlg
 from .MapAverageDlg import MapAverageDlg
-from .mapfillterdlg import MapFillterDlg
+from .mapfillerdlg import MapFillerDlg
 
 
 def get_data_processors(parent):
@@ -13,7 +13,7 @@ def get_data_processors(parent):
         processors.update({
             "Map filter": SpatialFilterDlg,
             "Compute average value": MapAverageDlg,
-            "New map with predefined valued": MapFillterDlg
+            "New map with predefined valued": MapFillerDlg
         })
 
     return processors

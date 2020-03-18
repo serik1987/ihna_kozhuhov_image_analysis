@@ -83,10 +83,7 @@ class DataProcessDlg(wx.Dialog):
         raise NotImplementedError("DataProcessDlg._place_general_options(parent)")
 
     def _place_additional_options(self, parent):
-        additional_options = wx.Panel(parent, size=(200, 30))
-        additional_options.SetBackgroundColour("blue")
-
-        return additional_options
+        raise NotImplementedError("DataProcessDlg._place_additional_options(parent)")
 
     def _place_output_file_box(self, parent):
         output_file_layout = wx.BoxSizer(wx.HORIZONTAL)
@@ -120,7 +117,7 @@ class DataProcessDlg(wx.Dialog):
         save_details.Add(add_to_manifest_layout, 0, wx.EXPAND | wx.BOTTOM, 5)
 
         self.__save_to_mat_box = wx.CheckBox(parent, label="Save to MAT")
-        save_details.Add(self.__save_to_mat_box, 0, wx.EXPAND | wx.BOTTOM, 5)
+        save_details.Add(self.__save_to_mat_box, 0, wx.EXPAND | wx.BOTTOM, 0)
 
         self.__save_to_png = wx.CheckBox(parent, label="Save to PNG")
         save_details.Add(self.__save_to_png, 0, wx.EXPAND)
@@ -138,7 +135,7 @@ class DataProcessDlg(wx.Dialog):
         value_save_details.Add(value_layout, 0, wx.EXPAND | wx.BOTTOM, 5)
 
         self.__add_to_features = wx.CheckBox(parent, label="Add to map features")
-        value_save_details.Add(self.__add_to_features, 0, wx.EXPAND | wx.BOTTOM, 5)
+        value_save_details.Add(self.__add_to_features, 0, wx.EXPAND | wx.BOTTOM, 0)
 
         return value_save_details
 
