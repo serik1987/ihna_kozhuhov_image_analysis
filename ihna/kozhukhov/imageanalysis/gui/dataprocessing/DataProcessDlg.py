@@ -18,7 +18,7 @@ class DataProcessDlg(wx.Dialog):
     __add_to_manifest_box = None
     __save_to_mat_box = None
 
-    __value_caption = None
+    __value_box = None
     __add_to_features = None
 
     __prefix_box = None
@@ -137,6 +137,7 @@ class DataProcessDlg(wx.Dialog):
         self.__add_to_features = wx.CheckBox(parent, label="Add to map features")
         value_save_details.Add(self.__add_to_features, 0, wx.EXPAND | wx.BOTTOM, 0)
 
+        self.__value_box = value_box
         return value_save_details
 
     def _place_major_name(self, parent):
@@ -225,6 +226,16 @@ class DataProcessDlg(wx.Dialog):
         if self.__save_to_png is None:
             raise AttributeError("To enable this option please, apply _place_save_details method")
         return self.__save_to_png.IsChecked()
+
+    def is_add_to_map_features(self):
+        if self.__add_to_features is None:
+            raise AttributeError("To enable this option please, place _value_save_details method")
+        return self.__add_to_features.IsChecked()
+
+    def get_value_key(self):
+        if self.__value_box is None:
+            raise AttributeError("To enable this option please, place _value_save_details method")
+        return self.__value_box.GetValue()
 
     def _get_result_viewer(self):
         raise NotImplementedError("DataProcessDlg._get_result_viewer()")

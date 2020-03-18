@@ -1,7 +1,8 @@
 # -*-  coding: utf-8
 
 import wx
-import numpy as np
+from numpy import mean, pi, isnan
+from scipy.stats import circmean
 from ihna.kozhukhov.imageanalysis import ImagingMap
 from .datatonumberprocessor import DataToNumberProcessor
 
@@ -23,3 +24,17 @@ class MapAverageDlg(DataToNumberProcessor):
         self.__compute_circular_average = wx.CheckBox(parent, label="Compute a circular average")
 
         return self.__compute_circular_average
+
+    def _process(self):
+        input_data = self._input_data.get_data()
+        if self.__compute_circular_average.IsChecked():
+            harmonic = self._input_data.get_harmonic()
+            value = circmean(input_data, high=pi/harmonic, low=-pi/harmonic, nan_policy="omit")
+        else:
+            input_vector = input_data.reshape(input_data.size)
+            input_vector[isnan(input_vector)] = []
+            value = mean(input_vector)
+        self._output_data = value
+
+    def _print_output_value(self):
+        return "Average value: " + str(self._output_data)
