@@ -239,3 +239,13 @@ class DataProcessDlg(wx.Dialog):
 
     def _get_result_viewer(self):
         raise NotImplementedError("DataProcessDlg._get_result_viewer()")
+
+    def _get_desired_major_name(self):
+        if self.__prefix_box is None:
+            raise AttributeError("This option is available only when you user _place_major_name function")
+        return "%s_%s%s%s" % (
+            self._considering_case.get_animal_name(),
+            self.__prefix_box.GetValue(),
+            self._considering_case['short_name'],
+            self.__postfix_box.GetValue()
+        )

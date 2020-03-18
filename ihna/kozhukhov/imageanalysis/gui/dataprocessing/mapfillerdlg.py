@@ -1,6 +1,8 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis.mapprocessing import fill_map
+from ihna.kozhukhov.imageanalysis.gui.amplitudemapviewerdlg import AmplitudeMapViewerDlg
 from .numbertodataprocessor import NumberToDataProcessor
 
 
@@ -41,3 +43,31 @@ class MapFillerDlg(NumberToDataProcessor):
         additional_options.Add(filling_value_layout, 0, wx.EXPAND)
 
         return additional_options
+
+    def _process(self):
+        major_name = self._get_desired_major_name()
+        minor_name = self.get_output_file()
+
+        try:
+            map_size_x = int(self.__map_size_y_box.GetValue())
+            if map_size_x <= 0:
+                raise ValueError("Map size on X shall be positive")
+        except ValueError:
+            raise ValueError("Map size on X must be integer")
+
+        try:
+            map_size_y = int(self.__map_size_y_box.GetValue())
+            if map_size_y <= 0:
+                raise ValueError("Map size on Y shall be positive")
+        except ValueError:
+            raise ValueError("Map size on Y must be integer")
+
+        try:
+            fill_value = float(self.__filling_value.GetValue())
+        except ValueError:
+            raise ValueError("The filling value must be a number")
+
+        self._output_data = fill_map(major_name, minor_name, map_size_x, map_size_y, fill_value)
+
+    def _get_result_viewer(self):
+        return AmplitudeMapViewerDlg

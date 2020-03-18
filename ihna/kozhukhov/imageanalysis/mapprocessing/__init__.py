@@ -44,3 +44,17 @@ def spatial_filter(complex_map: ImagingMap, dradius=0, dradiusbig=0):
     result_map = ImagingMap(features, result_data)
 
     return result_map
+
+
+def fill_map(major_name, minor_name, x_size, y_size, fill_value=3):
+    map_features = {
+        "major_name": major_name,
+        "minor_name": minor_name,
+        "native_data": "fill_map",
+        "x_size": x_size,
+        "y_size": y_size,
+        "fill_value": fill_value
+    }
+    map_data = np.full((y_size, x_size), fill_value)
+    result_map = ImagingMap(map_features, map_data)
+    return result_map
