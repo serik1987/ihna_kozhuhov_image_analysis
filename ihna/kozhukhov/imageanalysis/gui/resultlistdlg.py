@@ -87,8 +87,9 @@ class ResultListDlg(wx.Dialog):
             input_data_dlg_selection = self.__map_processors_list.GetStringSelection()
             if input_data_dlg_selection == "":
                 raise ValueError("Please, select an appropriate processor from list on the right")
-            input_data_dlg = self.__all_dialogs[input_data_dlg_selection](self, input_data)
+            input_data_dlg = self.__all_dialogs[input_data_dlg_selection](self, input_data, self.__case)
             input_data_dlg.ShowModal()
+            self.__map_list.SetItems(self.get_data_names())
         except Exception as err:
             from .MainWindow import MainWindow
             MainWindow.show_error_message(self, err, "Process map data")

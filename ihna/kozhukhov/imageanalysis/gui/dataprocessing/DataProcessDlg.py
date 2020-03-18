@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+from time import sleep
 import numpy as np
 import wx
 from ihna.kozhukhov.imageanalysis import ImagingMap
@@ -7,9 +8,10 @@ from ihna.kozhukhov.imageanalysis import ImagingMap
 
 class DataProcessDlg(wx.Dialog):
 
+    _considering_case = None
     _input_data = None
     _parent = None
-    __output_data = None
+    _output_data = None
 
     __output_file_box = None
     __save_to_npz_box = None
@@ -22,9 +24,10 @@ class DataProcessDlg(wx.Dialog):
     __prefix_box = None
     __postfix_box = None
 
-    def __init__(self, parent, input_data):
+    def __init__(self, parent, input_data, considering_case):
         self._input_data = input_data
         self._parent = parent
+        self._considering_case = considering_case
         self._check_input_data()
         super().__init__(parent,
                          title="%s: %s" % (self._get_processor_title(), input_data.get_full_name()),
@@ -75,9 +78,6 @@ class DataProcessDlg(wx.Dialog):
                                    "Map average",
                                    wx.OK | wx.CENTRE | wx.ICON_WARNING)
             dlg.ShowModal()
-
-    def __continue_processing(self):
-        print("CONTINUE PROCESSING")
 
     def _place_general_options(self, parent):
         raise NotImplementedError("DataProcessDlg._place_general_options(parent)")
@@ -157,3 +157,74 @@ class DataProcessDlg(wx.Dialog):
         major_name.Add(postfix_name_layout, 0, wx.EXPAND)
 
         return major_name
+
+    def get_output_file(self):
+        if self.__output_file_box is None:
+            raise AttributeError("The output file box is not added by _place_output_file_box")
+        else:
+            return self.__output_file_box.GetValue()
+
+    def __continue_processing(self):
+        try:
+            progress_dlg = wx.ProgressDialog(self._get_processor_title(),
+                                             self._get_processor_title() + " is going on...",
+                                             maximum=100,
+                                             parent=self)
+            progress_dlg.Update(0)
+            try:
+                self._process()
+                self._save_processed_data()
+            except Exception as err:
+                progress_dlg.Destroy()
+                raise err
+            progress_dlg.Destroy()
+            self.EndModal(wx.ID_OK)
+        except Exception as err:
+            from ihna.kozhukhov.imageanalysis.gui import MainWindow
+            MainWindow.show_error_message(self, err, self._get_processor_title())
+
+    def _process(self):
+        raise NotImplementedError("DataProcessDlg._process()")
+
+    def _save_processed_data(self):
+        raise NotImplementedError("DataProcessDlg._save_processed_data()")
+
+    def get_output_data(self):
+        return self._output_data
+
+    def _save_output_data(self):
+        self._output_data.get_features()['minor_name'] = self.get_output_file()
+        folder_name = self._considering_case['pathname']
+        result_dlg = self._get_result_viewer()(self, self._output_data)
+        result_dlg.ShowModal()
+        if self.is_save_npz_selected():
+            self._output_data.save_npz(folder_name)
+            if self.is_add_to_manifest_selected():
+                self._considering_case.add_data(self._output_data)
+        if self.is_save_mat_selected():
+            self._output_data.save_mat(folder_name)
+        if self.is_save_png_selected():
+            result_dlg.save_png(folder_name)
+
+    def is_save_npz_selected(self):
+        if self.__save_to_npz_box is None:
+            raise AttributeError("To enable this option please, apply _place_save_details method")
+        return self.__save_to_npz_box.IsChecked()
+
+    def is_add_to_manifest_selected(self):
+        if self.__add_to_manifest_box is None:
+            raise AttributeError("To enable this option please, apply _place_save_details method")
+        return self.__save_to_npz_box.IsChecked() and self.__add_to_manifest_box.IsChecked()
+
+    def is_save_mat_selected(self):
+        if self.__save_to_mat_box is None:
+            raise AttributeError("To enable this option please, apply _place_save_details method")
+        return self.__save_to_mat_box.IsChecked()
+
+    def is_save_png_selected(self):
+        if self.__save_to_png is None:
+            raise AttributeError("To enable this option please, apply _place_save_details method")
+        return self.__save_to_png.IsChecked()
+
+    def _get_result_viewer(self):
+        raise NotImplementedError("DataProcessDlg._get_result_viewer()")

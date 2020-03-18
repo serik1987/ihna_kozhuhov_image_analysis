@@ -24,3 +24,8 @@ class DataToDataProcessor(DataProcessDlg):
         general_options.Add(save_details, 0, wx.EXPAND)
 
         return general_options
+
+    def _save_processed_data(self):
+        if self._output_data is None:
+            raise AttributeError("The data-to-data processor shall put the output map into _output_map field")
+        self._save_output_data()

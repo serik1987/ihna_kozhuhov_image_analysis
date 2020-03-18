@@ -3,6 +3,8 @@
 import numpy as np
 import wx
 from ihna.kozhukhov.imageanalysis import ImagingMap
+from ihna.kozhukhov.imageanalysis.mapprocessing import spatial_filter
+from ihna.kozhukhov.imageanalysis.gui.complexmapviewerdlg import ComplexMapViewerDlg
 from .datatodataprocessor import DataToDataProcessor
 
 
@@ -24,7 +26,7 @@ class SpatialFilterDlg(DataToDataProcessor):
             raise ValueError("The input map shall be complex imaging map")
 
     def _get_default_minor_name(self):
-        return "filt"
+        return "mapfilt"
 
     def _place_additional_options(self, parent):
         additional_options = wx.BoxSizer(wx.VERTICAL)
@@ -69,3 +71,37 @@ class SpatialFilterDlg(DataToDataProcessor):
         else:
             self.__radius_big_box.Enable(False)
             self.__radius_big_box.SetValue("")
+
+    def get_inner_radius(self):
+        if self.__radius_checkbox.IsChecked():
+            radius = 0
+        else:
+            try:
+                radius = int(self.__radius_box.GetValue())
+                if radius <= 0:
+                    raise ValueError("The inner radius must be positive")
+            except ValueError:
+                raise ValueError("Please, enter a correct name of an inner radius")
+        return radius
+
+    def get_outer_radius(self):
+        if self.__radius_big_checkbox.IsChecked():
+            radius_big = 0
+        else:
+            try:
+                radius_big = int(self.__radius_big_box.GetValue())
+                if radius_big <= 0:
+                    raise ValueError("The outer radius must be positive")
+            except ValueError:
+                raise ValueError("Please, enter a correct value of the outer radius")
+        return radius_big
+
+    def _process(self):
+        radius = self.get_inner_radius()
+        radius_big = self.get_outer_radius()
+        if radius > 0 and 0 < radius_big <= radius:
+            raise ValueError("The outer radius shall be greater than the inner radius")
+        self._output_data = spatial_filter(self._input_data, radius, radius_big)
+
+    def _get_result_viewer(self):
+        return ComplexMapViewerDlg
