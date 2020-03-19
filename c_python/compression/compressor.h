@@ -91,7 +91,10 @@ extern "C" {
             return NULL;
         }
         Py_DECREF(result);
+
+        Py_XDECREF(self->progress_bar);
         self->progress_bar = f;
+        Py_INCREF(f);
 
         auto* compressor = (Compressor*)self->compressor_handle;
         try{
@@ -100,6 +103,8 @@ extern "C" {
             PyIman_Exception_process(&e);
             return NULL;
         }
+
+        printf("Number of references: %ld\n", Py_REFCNT(f));
 
         return Py_BuildValue("");
     }
@@ -122,7 +127,9 @@ extern "C" {
         using namespace GLOBAL_NAMESPACE;
 
         Py_XDECREF(self->source_train);
+        printf("SO Source train destroyed\n");
         Py_XDECREF(self->progress_bar);
+        printf("SO Progress bar destroyed\n");
 
         if (self->compressor_handle != NULL){
             auto* compressor = (Compressor*)self->compressor_handle;

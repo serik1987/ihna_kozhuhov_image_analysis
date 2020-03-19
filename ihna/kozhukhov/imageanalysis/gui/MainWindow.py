@@ -596,6 +596,7 @@ class MainWindow(wx.Frame):
         try:
             autocompress_dlg = AutocompressDlg(self, self.__animals.get_animal_filter())
             autocompress_dlg.ShowModal()
+            self.load_cases()
         except Exception as err:
             self.show_error_message(self, err, "Autocompress")
 
@@ -603,6 +604,7 @@ class MainWindow(wx.Frame):
         try:
             autodecompress_dlg = AutodecompressDlg(self, self.__animals.get_animal_filter())
             autodecompress_dlg.ShowModal()
+            self.load_cases()
         except Exception as err:
             self.show_error_message(self, err, "Autodecompress")
 
@@ -631,6 +633,7 @@ class MainWindow(wx.Frame):
             autotrace_dlg = AutotraceDlg(self, self.__animals.get_animal_filter(), autodecompress)
             if autotrace_dlg.get_ready():
                 autotrace_dlg.ShowModal()
+            self.load_cases()
         except Exception as err:
             self.show_error_message(self, err, "Auto trace")
 
@@ -640,6 +643,7 @@ class MainWindow(wx.Frame):
             autoaverage_dlg = AutoaverageDlg(self, self.__animals.get_animal_filter(), autodecompress)
             if autoaverage_dlg.get_ready():
                 autoaverage_dlg.ShowModal()
+            self.load_cases()
         except Exception as err:
             self.show_error_message(self, err, "Autoaverage")
 
@@ -649,6 +653,7 @@ class MainWindow(wx.Frame):
             autofilter_dlg = AutofilterDlg(self, self.__animals.get_animal_filter(), autodecompress)
             if autofilter_dlg.get_ready():
                 autofilter_dlg.ShowModal()
+            self.load_cases()
         except Exception as err:
             self.show_error_message(self, err, "Autofilter")
 

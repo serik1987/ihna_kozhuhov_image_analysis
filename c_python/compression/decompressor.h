@@ -61,11 +61,14 @@ extern "C" {
     static void PyImanC_Decompressor_Destroy(PyImanC_DecompressorObject* self){
         using namespace GLOBAL_NAMESPACE;
         Py_XDECREF(self->source_train);
+        printf("SO Source train destroyed\n");
         Py_XDECREF(self->progress_bar);
+        printf("SO Progress bar destroyed\n");
 
         if (self->decompressor_handle != NULL){
             auto* decompressor = (Decompressor*)self->decompressor_handle;
             delete decompressor;
+            printf("SO C++ Decompressor object destroyed\n");
         }
 
         Py_TYPE(self)->tp_free(self);
@@ -102,7 +105,9 @@ extern "C" {
         Py_DECREF(result);
 
         try{
+            Py_XDECREF(self->progress_bar);
             self->progress_bar = f;
+            Py_INCREF(f);
             auto* decompressor = (Decompressor*)self->decompressor_handle;
             decompressor->setProgressFunction(PyImanC_Decompressor_ProgressBar, self);
         } catch (std::exception& e){

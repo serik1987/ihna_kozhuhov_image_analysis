@@ -46,7 +46,7 @@ class CasesList:
         source_files.sort()
         valid_files = get_file_info(source_files, self.__discarded_list)[0]
         for valid_file in valid_files:
-            self.__all_cases.append(Case(valid_file, animal_name=self.__animal_name))
+            self.__all_cases.append(Case(valid_file, animal_name=self.__animal_name, case_list=self))
 
     def load(self):
         self.__discarded_list = [self.get_manifest_file()]
@@ -54,7 +54,7 @@ class CasesList:
         pathname = self.__corresponding_animal['folder_full_name']
         root = ET.parse(self.get_manifest_file()).getroot()
         for case_element in root.findall("case"):
-            case = Case(case_element, pathname=pathname, animal_name=self.__animal_name)
+            case = Case(case_element, pathname=pathname, animal_name=self.__animal_name, case_list=self)
             self.__discarded_list.extend(case.get_discarded_list())
             self.__all_cases.append(case)
         self.__filter = CaseFilter(self, root.find("case-filter"))

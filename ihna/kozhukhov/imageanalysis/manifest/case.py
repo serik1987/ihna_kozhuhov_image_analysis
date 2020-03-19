@@ -48,12 +48,13 @@ class Case:
                       'averaged_maps', 'auto', 'imported', 'special_conditions']
 
     __animal_name = None
+    __case_list = None
     __properties = None
     __roi_list = None
     __traces_list = None
     __result_list = None
 
-    def __init__(self, input_object, pathname=None, animal_name=None):
+    def __init__(self, input_object, pathname=None, animal_name=None, case_list=None):
         self.__properties = {}
         for property_name in self.property_names:
             self.__properties[property_name] = None
@@ -69,6 +70,10 @@ class Case:
         else:
             raise ValueError("Unrecognized argument type for the case")
         self.__animal_name = animal_name
+        self.__case_list = case_list
+
+    def get_case_list(self):
+        return self.__case_list
 
     def get_animal_name(self):
         """

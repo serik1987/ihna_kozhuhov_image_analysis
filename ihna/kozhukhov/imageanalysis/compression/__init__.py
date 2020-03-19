@@ -51,7 +51,7 @@ def decompress(case, progress_bar=None, fail_on_decompress=False, delete_after_d
     Provides the data decompression
 
     Arguments:
-        case - the case to be decompressed
+        case - the case to be decompressed (instance of ihna.kozhukhov.imageanalysis.manifest.Case)
         Don't forget to save the case list after decompression
         progress_bar - the function that requires float parameter. Total percent completed will be passed to this
         function
@@ -100,7 +100,7 @@ def compress(case, progress_bar=None, fail_on_compress=False, delete_after_compr
     Compresses the file train
 
     Arguments:
-        case - the case to compress (instance of ihna.kozhukhov.imageanalysis.manifest.Compress)
+        case - the case to compress (instance of ihna.kozhukhov.imageanalysis.manifest.Case)
         Don't forget to save the case list after compression
         progress_bar - the function like progress_bar(f) where f is float that runs every time the progress is
         achieved. Total percents completed will be passed as an input argument

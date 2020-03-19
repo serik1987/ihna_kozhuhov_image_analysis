@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis.compression import compress
 from ihna.kozhukhov.imageanalysis.gui.compressiondlg import CompressionDlg
 from .trainautocompressdlg import TrainAutocompressDlg
 
@@ -16,3 +17,6 @@ class AutocompressDlg(TrainAutocompressDlg):
                                        "Delete decompressed files after compression",
                                        "Compress")
         self._sub_dlg.ShowModal()
+
+    def _get_processing_function(self):
+        return compress
