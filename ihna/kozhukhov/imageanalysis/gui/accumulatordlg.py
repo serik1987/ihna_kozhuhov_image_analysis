@@ -142,9 +142,12 @@ class AccumulatorDlg(wx.Dialog):
     def _get_accumulator_class(self):
         raise NotImplementedError("Attempt to use purely abstract class")
 
-    def create_accumulator(self):
-        synchronization = self.__synchronization_box.create_synchronization()
-        isoline = self.__isoline_box.create_isoline(synchronization)
+    def create_accumulator(self, train=None):
+        print(train)
+        if train is None:
+            train = self.__train
+        synchronization = self.__synchronization_box.create_synchronization(train)
+        isoline = self.__isoline_box.create_isoline(synchronization, train)
         AccumulatorClass = self._get_accumulator_class()
         accumulator = AccumulatorClass(isoline)
         return accumulator

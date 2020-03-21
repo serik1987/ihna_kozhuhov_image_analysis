@@ -46,10 +46,11 @@ class AutoprocessEditor(wx.BoxSizer):
         self.__parent.Refresh()
 
     def progress_function(self, completed, total, message):
-        self.__case_status_box.SetLabel("{0} ({1}% completed)".format(message, 100 * completed / total))
+        self.__case_status_box.SetLabel("{0} ({1:.2f}% completed)".format(message, 100 * completed / total))
         self.__parent.Refresh()
         self.__parent.Update()
         print("{0} ({1}% completed)".format(message, 100 * completed / total))
+        return True
 
 
 class AutoprocessDlg(wx.Dialog):
@@ -126,6 +127,8 @@ class AutoprocessDlg(wx.Dialog):
                 case_box.done()
             except Exception as err:
                 case_box.error(err)
+                print("Exception name:", err.__class__.__name__)
+                print("Exception:", err)
         self.__close_button.Show(True)
         self.__panel.Layout()
         self.Layout()

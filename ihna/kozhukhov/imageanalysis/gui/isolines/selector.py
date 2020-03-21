@@ -45,10 +45,12 @@ class IsolineSelector(wx.StaticBoxSizer):
             if not editor.is_selected() and editor.has_properties():
                 editor.disable()
 
-    def create_isoline(self, sync):
+    def create_isoline(self, sync, train=None):
+        if train is None:
+            train = self.__train
         for editor in self.__editors:
             if editor.is_selected():
-                return editor.create_isoline(self.__train, sync)
+                return editor.create_isoline(train, sync)
 
     def get_options(self):
         for editor in self.__editors:

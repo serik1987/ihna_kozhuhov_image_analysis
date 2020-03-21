@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis.accumulators import TraceAutoReader
 from .accumulatordlg import AccumulatorDlg
 
 
@@ -23,3 +24,9 @@ class AutotraceReaderDlg(AccumulatorDlg):
 
         panel.Add(layout, 1, wx.ALL | wx.EXPAND, 5)
         return panel
+
+    def _get_accumulator_class(self):
+        return TraceAutoReader
+
+    def get_roi_name(self):
+        return self.__roi_box.GetValue()

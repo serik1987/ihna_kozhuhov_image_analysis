@@ -504,3 +504,11 @@ class Case:
                 exist = True
                 break
         return exist
+
+    def delete_native_files(self):
+        folder_name = self['pathname']
+        if self['native_data_files'] is not None:
+            for native_file in self['native_data_files']:
+                native_full_name = os.path.join(folder_name, native_file)
+                os.unlink(native_full_name)
+        self['native_data_files'] = None

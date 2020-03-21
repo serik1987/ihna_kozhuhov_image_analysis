@@ -630,6 +630,7 @@ class MainWindow(wx.Frame):
 
     def auto_trace_analysis(self):
         try:
+            autodecompress = self.is_decompress_before_processing()
             autotrace_dlg = AutotraceDlg(self, self.__animals.get_animal_filter(), autodecompress)
             if autotrace_dlg.get_ready():
                 autotrace_dlg.ShowModal()

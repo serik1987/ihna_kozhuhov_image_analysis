@@ -53,8 +53,8 @@ class FrameAccumulatorDlg(AccumulatorDlg):
         frame_accumulator_box.SetBackgroundColour("red")
         return frame_accumulator_box
 
-    def create_accumulator(self):
-        accumulator = super().create_accumulator()
+    def create_accumulator(self, train=None):
+        accumulator = super().create_accumulator(train)
         if self.__preprocess_filter_box.IsChecked():
             accumulator.preprocess_filter = True
             try:

@@ -67,8 +67,8 @@ class BasicWindow(FrameAccumulatorDlg):
     def get_sample_rate(self):
         return self.__fs
 
-    def create_accumulator(self):
-        map_filter = super().create_accumulator()
+    def create_accumulator(self, train=None):
+        map_filter = super().create_accumulator(train)
         b, a = self.__filter_dlg.get_filter_coefficients()
         map_filter.set_filter(b, a)
         return map_filter

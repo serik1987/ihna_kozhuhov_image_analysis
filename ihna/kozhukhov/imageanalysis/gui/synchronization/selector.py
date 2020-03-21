@@ -54,10 +54,12 @@ class SynchronizationSelector(wx.StaticBoxSizer):
             if editor.has_parameters() and not editor.is_selected():
                 editor.disable()
 
-    def create_synchronization(self):
+    def create_synchronization(self, train=None):
+        if train is None:
+            train = self.__train
         for editor in self.__sync_editors:
             if editor.is_selected():
-                sync = editor.create_synchronization(self.__train)
+                sync = editor.create_synchronization(train)
                 sync.do_precise = self.__do_precise_box.IsChecked()
                 try:
                     sync.harmonic = float(self.__harmonic_box.GetValue())
