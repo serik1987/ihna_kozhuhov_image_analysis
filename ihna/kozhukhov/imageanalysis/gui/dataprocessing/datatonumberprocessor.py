@@ -18,9 +18,15 @@ class DataToNumberProcessor(DataProcessDlg):
         return self._place_value_save_details(parent)
 
     def _print_output_value(self):
+        """
+        Returns the string containing body of the message with information about output value
+        """
         raise NotImplementedError("DataToNumberProcessor._print_output_value()")
 
     def _save_processed_data(self):
+        if self._output_data is None:
+            raise NotImplementedError("The _process function shall save the value received to _output_data field")
+
         dlg = wx.MessageDialog(self, self._print_output_value(), self._get_processor_title(),
                                wx.OK | wx.CENTRE | wx.ICON_INFORMATION)
         dlg.ShowModal()

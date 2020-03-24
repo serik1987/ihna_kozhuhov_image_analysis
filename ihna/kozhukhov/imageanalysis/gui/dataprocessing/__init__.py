@@ -4,6 +4,7 @@ from .spatialfilterdlg import SpatialFilterDlg
 from .MapAverageDlg import MapAverageDlg
 from .mapfillerdlg import MapFillerDlg
 from .tracefilter import TraceFilterDlg
+from .tracepower import TracePower
 
 
 def get_data_processors(parent):
@@ -20,7 +21,8 @@ def get_data_processors(parent):
 
     if isinstance(parent, TraceResultListDlg):
         processors.update({
-            "Trace filter": TraceFilterDlg
+            "Trace filter": TraceFilterDlg,
+            "Trace power": TracePower
         })
 
     return processors

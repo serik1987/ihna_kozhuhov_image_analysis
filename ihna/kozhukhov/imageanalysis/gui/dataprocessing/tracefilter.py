@@ -1,6 +1,7 @@
 # -*- coding: utf-8
 
 import wx
+from ihna.kozhukhov.imageanalysis import ImagingSignal
 from ihna.kozhukhov.imageanalysis.traceprocessing import filter_trace
 from ihna.kozhukhov.imageanalysis.gui.signalviewerdlg import SignalViewerDlg
 from ihna.kozhukhov.imageanalysis.gui.mapfilterdlg.filterdlg import FilterDlg
@@ -16,6 +17,11 @@ class TraceFilterDlg(DataToDataProcessor):
         super().__init__(parent, input_data, considering_case)
         self.__filter_button = None
         self.__filter_dlg = None
+
+    def _check_input_data(self):
+        super()._check_input_data()
+        if not isinstance(self._input_data, ImagingSignal):
+            raise RuntimeError("This processor is suitable for traces only")
 
     def _get_default_minor_name(self):
         roi_name = self._input_data.get_features()["ROI"]
