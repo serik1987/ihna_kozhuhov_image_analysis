@@ -16,6 +16,12 @@ class ImagingSignal(ImagingData):
     __synchronization_psd = None
     __synchronization_peaks = None
 
+    def _copy_data(self, data):
+        times = data[0]
+        signal = data[1]
+        synchronization_signal = data[2]
+        self.__do_fft(times, signal, synchronization_signal)
+
     def _load_imaging_data_from_plotter(self, reader):
         times = reader.times
         signal = reader.averaged_signal
@@ -23,14 +29,17 @@ class ImagingSignal(ImagingData):
         regress_result = linregress(frames, times)
         dt = regress_result.slope
         times = frames * dt
+        synchronization_signal = reader.synchronization_signal
+        self.__do_fft(times, signal, synchronization_signal)
+
+    def __do_fft(self, times, signal, synchronization_signal):
         spectrum = np.abs(fft(signal))
-        F = 1000.0 / dt
+        F = 1000.0 / np.diff(times).mean()
         frequencies = np.arange(0, spectrum.size) * F / spectrum.size
         idx = frequencies < 0.5 * F
         frequencies = frequencies[idx]
         spectrum = spectrum[idx]
 
-        synchronization_signal = reader.synchronization_signal
         synchronization_spectrum = np.abs(fft(synchronization_signal))[idx]
         i0 = synchronization_spectrum.argmax()
         F0 = frequencies[i0]
@@ -50,6 +59,12 @@ class ImagingSignal(ImagingData):
         return self.__times, self.__values
 
     def get_times(self):
+        """
+        Returns vector containing times (in ms)
+        """
+        return self.__times
+
+    def get_time(self):
         """
         Returns vector containing times (in ms)
         """
@@ -125,3 +140,10 @@ class ImagingSignal(ImagingData):
         self.__synchronization_signal = file_data["synchronization_signal"]
         self.__synchronization_psd = file_data["synchronization_psd"]
         self.__synchronization_peaks = file_data["synchronization_peaks"]
+
+    def get_sample_rate(self):
+        """
+        Returns sample rate of the imaging signal in Hz
+        """
+        time_diffs = np.diff(self.get_time()).mean()
+        return 1000/time_diffs

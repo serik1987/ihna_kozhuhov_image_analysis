@@ -27,5 +27,5 @@ class DataToDataProcessor(DataProcessDlg):
 
     def _save_processed_data(self):
         if self._output_data is None:
-            raise AttributeError("The data-to-data processor shall put the output map into _output_map field")
+            raise AttributeError("The data-to-data processor shall put the output map into _output_data field")
         self._save_output_data()

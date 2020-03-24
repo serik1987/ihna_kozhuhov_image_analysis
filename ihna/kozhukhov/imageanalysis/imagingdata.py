@@ -157,7 +157,7 @@ class ImagingData:
             folder_name - folder where all files will be located. Names of these files will be the same as names
             of the animal
         """
-        output = self.__features
+        output = self.__features.copy()
         output.update(self._get_data_to_save())
         filename = os.path.join(folder_name, self.get_full_name() + ".mat")
         scipy.io.savemat(filename, output)

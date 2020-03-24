@@ -112,6 +112,7 @@ setup(
         "ihna.kozhukhov.imageanalysis.mapprocessing",
         "ihna.kozhukhov.imageanalysis.sourcefiles",
         "ihna.kozhukhov.imageanalysis.synchronization",
+        "ihna.kozhukhov.imageanalysis.traceprocessing",
         "ihna.kozhukhov.imageanalysis.tracereading"
     ],
     ext_modules=[imageanalysis],

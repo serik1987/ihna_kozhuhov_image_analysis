@@ -444,3 +444,32 @@ class FilterBox(wx.BoxSizer):
                 ws[0] = ws[1] - 1e-10
 
         return wp, ws
+
+    def get_filter_description(self):
+        descriptions = []
+        if "manual" in self._filter_properties:
+            descriptions.append("%dth order %s" % (self.get_order(), self._get_filter_name()))
+        else:
+            descriptions.append(self._get_filter_name())
+        if "broadband" in self._filter_properties:
+            if self.get_filter_mode() == "low-pass":
+                descriptions.append("low-pass (HF=%1.2f Hz)" % self.get_high_frequency())
+            elif self.get_filter_mode() == "high-pass":
+                descriptions.append("high-pass (LF=%1.2f Hz)" % self.get_low_frequency())
+            elif self.get_filter_mode() == "band-pass":
+                filter_range = self.get_filter_mode(), self.get_low_frequency(), self.get_high_frequency()
+                descriptions.append("%s (LF = %1.2f Hz, HF = %1.2f) Hz" % filter_range)
+        if "narrowband" in self._filter_properties:
+            Fc = self.get_center_frequency()
+            dF = self.get_bandwidth()
+            descriptions.append("narrow (Fc = %1.2f Hz, dF = %1.2f Hz)".format(Fc, dF))
+        if "standard" in self._filter_properties:
+            tb = self.get_transition_band()
+            attenuation = self.get_attenuation()
+            descriptions.append("auto order select (transition band %1.2f Hz, attenuation %1.2f Hz)"
+                                % (tb, attenuation))
+        if "rippable" in self._filter_properties:
+            descriptions.append("band-pass ripples %1.2f dB" % self.get_ripples())
+        if "self_attenuatable" in self._filter_properties:
+            descriptions.append("min. attenuation %1.2f dB" % self.get_min_attenuation())
+        return ", ".join(descriptions)

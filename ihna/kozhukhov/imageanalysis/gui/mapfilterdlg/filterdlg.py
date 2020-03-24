@@ -169,3 +169,8 @@ class FilterDlg(wx.Dialog):
             raise AttributeError("Please, set filter properties by pressing 'Open filter properties' button")
         else:
             return self.__coefficients
+
+    def get_filter_description(self):
+        filter_name = self.__filter_type_box.GetStringSelection()
+        filter_editor = self.__filter_editors[filter_name]
+        return filter_editor.get_filter_description()
