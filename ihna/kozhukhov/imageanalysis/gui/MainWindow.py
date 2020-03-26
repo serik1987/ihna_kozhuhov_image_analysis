@@ -12,6 +12,7 @@ from .casefilterdlg import CaseFilterDlg
 from .autoprocess import *
 from .tracesresultlistdlg import TraceResultListDlg
 from .mapresultlistdlg import MapResultListDlg
+from ihna.kozhukhov.imageanalysis.gui.pandas.pandasbox import PandasBox
 
 
 class MainWindow(wx.Frame):
@@ -318,7 +319,14 @@ class MainWindow(wx.Frame):
         self.Bind(wx.EVT_BUTTON, lambda evt: self.auto_average_maps(), self.__auto_average_maps_box)
         actions_box.Add(self.__auto_average_maps_box, 0, 0, 0)
 
-        main_layout.Add(actions_box, 0, 0, 0)
+        main_layout.Add(actions_box, 0, wx.EXPAND | wx.BOTTOM, 5)
+        pandas_layout = wx.BoxSizer(wx.HORIZONTAL)
+
+        pandas_button = wx.Button(panel, label="Result table")
+        pandas_button.Bind(wx.EVT_BUTTON, lambda event: self.create_pandas_table())
+        pandas_layout.Add(pandas_button, 0, wx.RIGHT)
+
+        main_layout.Add(pandas_layout, 0, wx.EXPAND)
         autoprocess_box.Add(main_layout, 0, wx.ALL | wx.EXPAND, 5)
         return autoprocess_box
 
@@ -792,3 +800,9 @@ class MainWindow(wx.Frame):
                        self.__trace_analysis_manager]:
             button.Enable(False)
 
+    def create_pandas_table(self):
+        try:
+            pandas_box = PandasBox(self, self.__animals)
+            pandas_box.ShowModal()
+        except Exception as err:
+            self.show_error_message(self, err, "Create table")

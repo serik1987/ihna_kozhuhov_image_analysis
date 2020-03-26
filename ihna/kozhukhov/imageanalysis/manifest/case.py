@@ -29,6 +29,7 @@ class Case:
     case['long_name'] - long name of the case
     case['stimulation'] - the stimulus info
     case['additional_stimulation'] - additional stimulus info
+    case['special_conditions'] - special conditions
     case['additional_information'] - additional information about the case
     case['native_data_files'] - list of all native files
     case['compressed_data_files'] - list of all compressed files

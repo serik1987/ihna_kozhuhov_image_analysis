@@ -122,7 +122,9 @@ setup(
         "matplotlib",
         "scipy",
         "wxpython",
-        "pypng"
+        "pypng",
+        "xlwt",
+        "pandas"
     ],
     provides=["ihna_kozhukhov_iman"],
     scripts=["iman"]

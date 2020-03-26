@@ -107,3 +107,9 @@ class CasesList:
         Returns the animal to which the specimen belongs
         """
         return self.__animal_name
+
+    def __str__(self):
+        case_names = [case['short_name'] for case in self]
+        while None in case_names:
+            case_names.remove(None)
+        return "\n".join(case_names)

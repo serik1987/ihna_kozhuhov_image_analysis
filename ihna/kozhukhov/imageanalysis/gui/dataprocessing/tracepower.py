@@ -7,6 +7,9 @@ from .datatonumberprocessor import DataToNumberProcessor
 
 class TracePower(DataToNumberProcessor):
 
+    def _get_processor_title(self):
+        return "Trace power"
+
     def _check_input_data(self):
         super()._check_input_data()
         if not isinstance(self._input_data, ImagingSignal):

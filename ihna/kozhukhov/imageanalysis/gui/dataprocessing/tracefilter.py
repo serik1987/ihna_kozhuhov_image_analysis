@@ -18,6 +18,9 @@ class TraceFilterDlg(DataToDataProcessor):
         self.__filter_button = None
         self.__filter_dlg = None
 
+    def _get_processor_title(self):
+        return "Trace filter"
+
     def _check_input_data(self):
         super()._check_input_data()
         if not isinstance(self._input_data, ImagingSignal):
