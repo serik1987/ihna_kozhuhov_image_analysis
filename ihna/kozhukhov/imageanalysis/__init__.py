@@ -1,5 +1,22 @@
+# -*- coding: utf-8
 """
-The module contains all functions that processes the optical imaging data
+This package contains all scripts for imageanalysis.
+
+Particularly:
+gui - working in graphical interface with wxPython
+
+manifest - dealing with electronic lab journal
+sourcefiles - dealing with native data files
+compression - turning native data into compressed mode and returning them from the compressed mode
+synchronization, isolines, tracereading, accumulators - responsible for conversion of the native data into
+averaged maps, oscillatory maps, averaged and individual traces
+mapprocessing - processing of the averaged and oscillatory maps
+traceprocessing - processing of the result traces
+
+Besides these packages the package contains three main classes
+ImagingMap - represents averaged and oscillatory maps
+ImagingSignal - represents averaged traces
+ImagingData - base class for ImagingMap and ImagingSignal
 """
 
 try:

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+git clone https://github.com/serik1987/ihna_kozhuhov_image_analysis
+cd ihna_kozhuhov_image_analysis
+python3 setup.py build
+sudo python3 setup.py install
+cd ..
+rm -rf ihna_kozhuhov_image_analysis
+echo Обновление программы прошло успешно. Нажмите Enter для выхода.
+read

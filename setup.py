@@ -105,6 +105,7 @@ setup(
         "ihna.kozhukhov.imageanalysis.gui.autoprocess",
         "ihna.kozhukhov.imageanalysis.gui.dataprocessing",
         "ihna.kozhukhov.imageanalysis.gui.isolines",
+        "ihna.kozhukhov.imageanalysis.gui.pandas",
         "ihna.kozhukhov.imageanalysis.gui.mapfilterdlg",
         "ihna.kozhukhov.imageanalysis.gui.synchronization",
         "ihna.kozhukhov.imageanalysis.isolines",
@@ -127,7 +128,7 @@ setup(
         "pandas"
     ],
     provides=["ihna_kozhukhov_iman"],
-    scripts=["iman"]
+    scripts=["iman", "iman-update"]
 )
 
 print("This action has been accomplished successfully!")
