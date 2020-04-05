@@ -38,7 +38,7 @@ class NoSynchronizationEditor(SynchronizationEditor):
         self.__initFrameBox.Enable(False)
         controls.Add(self.__initFrameBox)
 
-        self.__isFinalFrameBox = wx.CheckBox(self._parent, label="Finish analysis by frame #")
+        self.__isFinalFrameBox = wx.CheckBox(self._parent, label="Finish analysis at frame #")
         self.__isFinalFrameBox.Bind(wx.EVT_CHECKBOX, lambda event: self.change_final_frame_enability())
         controls.Add(self.__isFinalFrameBox, 0, wx.ALIGN_CENTER_VERTICAL)
 

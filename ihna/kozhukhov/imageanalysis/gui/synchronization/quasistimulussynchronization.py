@@ -43,7 +43,7 @@ class QuasiStimulusSynchronizationEditor(SynchronizationEditor):
         self.__initialCycleBox.Enable(False)
         controls.Add(self.__initialCycleBox, 1, wx.EXPAND)
 
-        self.__finalCycleSetBox = wx.CheckBox(self._parent, label="Finish analysis at the cycle #")
+        self.__finalCycleSetBox = wx.CheckBox(self._parent, label="Finish analysis at cycle #")
         self.__finalCycleSetBox.Bind(wx.EVT_CHECKBOX, lambda event: self.set_final_frame_enability())
         controls.Add(self.__finalCycleSetBox, 0, wx.ALIGN_CENTER_VERTICAL)
 

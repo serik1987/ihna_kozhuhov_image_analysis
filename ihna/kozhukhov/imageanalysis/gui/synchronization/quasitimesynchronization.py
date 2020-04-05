@@ -44,7 +44,7 @@ class QuasiTimeSynchronizationEditor(SynchronizationEditor):
         self.__initial_cycle_box.Enable(False)
         controls.Add(self.__initial_cycle_box, 1, wx.EXPAND)
 
-        self.__final_cycle_set_box = wx.CheckBox(self._parent, label="Finish analysis at the cycle #")
+        self.__final_cycle_set_box = wx.CheckBox(self._parent, label="Finish analysis at cycle #")
         self.__final_cycle_set_box.Bind(wx.EVT_CHECKBOX, lambda event: self.set_final_frame_enability())
         controls.Add(self.__final_cycle_set_box, 0, wx.ALIGN_CENTER_VERTICAL)
 
