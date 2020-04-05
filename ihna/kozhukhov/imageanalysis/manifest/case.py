@@ -513,3 +513,11 @@ class Case:
                 native_full_name = os.path.join(folder_name, native_file)
                 os.unlink(native_full_name)
         self['native_data_files'] = None
+
+    def delete_compressed_files(self):
+        folder_name = self['pathname']
+        if self['compressed_data_files'] is not None:
+            for compressed_file in self['compressed_data_files']:
+                compressed_full_name = os.path.join(folder_name, compressed_file)
+                os.unlink(compressed_full_name)
+        self['compressed_data_files'] = None

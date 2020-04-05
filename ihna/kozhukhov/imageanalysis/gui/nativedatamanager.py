@@ -241,11 +241,12 @@ class NativeDataManager(wx.Dialog):
 
     def __create_right_panel(self, main_panel):
         right_panel = wx.BoxSizer(wx.VERTICAL)
-        compression_box = wx.StaticBoxSizer(wx.HORIZONTAL, main_panel, label="Compression")
+        compression_box = wx.StaticBoxSizer(wx.VERTICAL, main_panel, label="Compression")
+        compression_subbox_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         compress_button = wx.Button(main_panel, label="Compress")
         self.Bind(wx.EVT_BUTTON, lambda event: self.compress(), compress_button)
-        compression_box.Add(compress_button, 1, wx.EXPAND | wx.RIGHT, 5)
+        compression_subbox_sizer.Add(compress_button, 1, wx.EXPAND | wx.RIGHT, 5)
         if self.__case['native_data_files'] is None:
             compress_button.Enable(False)
             processing_enabled = False
@@ -254,9 +255,23 @@ class NativeDataManager(wx.Dialog):
 
         decompress_button = wx.Button(main_panel, label="Decompress")
         self.Bind(wx.EVT_BUTTON, lambda event: self.decompress(), decompress_button)
-        compression_box.Add(decompress_button, 1, wx.EXPAND)
+        compression_subbox_sizer.Add(decompress_button, 1, wx.EXPAND)
         if self.__case['compressed_data_files'] is None:
             decompress_button.Enable(False)
+
+        compression_box.Add(compression_subbox_sizer, 0, wx.EXPAND | wx.BOTTOM, 5)
+
+        delete_compressed_files = wx.Button(main_panel, label="Delete compressed files")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.delete_compressed_files(), delete_compressed_files)
+        if self.__case['compressed_data_files'] is None:
+            delete_compressed_files.Enable(False)
+        compression_box.Add(delete_compressed_files, 0, wx.BOTTOM, 5)
+
+        delete_decompressed_files = wx.Button(main_panel, label="Delete decompressed files")
+        self.Bind(wx.EVT_BUTTON, lambda event: self.delete_decompressed_files(), delete_decompressed_files)
+        if self.__case['native_data_files'] is None:
+            delete_decompressed_files.Enable(False)
+        compression_box.Add(delete_decompressed_files)
 
         right_panel.Add(compression_box, 0, wx.BOTTOM | wx.EXPAND, 5)
         processing_box = wx.StaticBoxSizer(wx.VERTICAL, main_panel, label="Processing")
@@ -565,3 +580,11 @@ class NativeDataManager(wx.Dialog):
             accumulator_result.save_mat(folder_name)
         if accumulator_dlg.is_save_png():
             result_dlg.save_png(folder_name)
+
+    def delete_compressed_files(self):
+        self.__case.delete_compressed_files()
+        self.Close()
+
+    def delete_decompressed_files(self):
+        self.__case.delete_native_files()
+        self.Close()
