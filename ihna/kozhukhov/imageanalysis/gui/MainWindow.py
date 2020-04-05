@@ -1,5 +1,7 @@
 # -*- coding: utf-8
 
+import os
+import time
 import wx
 import ihna.kozhukhov.imageanalysis.manifest as manifest
 import ihna.kozhukhov.imageanalysis.sourcefiles as sfiles
@@ -342,6 +344,13 @@ class MainWindow(wx.Frame):
         autoprocess_box = self.__create_auto_process(panel)
         right_panel.Add(autoprocess_box, 0, wx.EXPAND, 0)
 
+        service_box = wx.StaticBoxSizer(wx.VERTICAL, panel, label="Service")
+
+        update = wx.Button(panel, label="Update")
+        update.Bind(wx.EVT_BUTTON, lambda event: self.update_iman())
+        service_box.Add(update, 0)
+
+        right_panel.Add(service_box, 0, wx.EXPAND | wx.TOP, 5)
         return right_panel
 
     def __init__(self):
@@ -806,3 +815,47 @@ class MainWindow(wx.Frame):
             pandas_box.ShowModal()
         except Exception as err:
             self.show_error_message(self, err, "Create table")
+
+    def update_iman(self):
+        try:
+            print("Update iman...")
+            password_dlg = wx.PasswordEntryDialog(self, "Please, enter your account password ",
+                                                  "Update IMAN")
+            if password_dlg.ShowModal() == wx.ID_CANCEL:
+                return
+            password = password_dlg.GetValue()
+            pdlg = wx.ProgressDialog("Update", "Update of IMAN", maximum=3, parent=self)
+            try:
+                pdlg.Update(0, "Downloading new version of the package")
+                self.__git()
+                os.chdir("ihna_kozhuhov_image_analysis")
+                pdlg.Update(1, "Building the package from sources")
+                self.__build()
+                pdlg.Update(2, "Installation of the package from sources")
+                self.__install(password)
+                os.chdir("..")
+                os.system("rm -rf ihna_kozhuhov_image_analysis")
+                final_dlg = wx.MessageDialog(self, "Update completed successfully. Press OK to close the program\n"
+                                                   "Next, run the program again",
+                                             style=wx.OK | wx.CENTRE | wx.ICON_INFORMATION)
+                final_dlg.ShowModal()
+                self.Close()
+            except Exception as err:
+                pdlg.Destroy()
+                raise err
+            pdlg.Destroy()
+        except Exception as err:
+            self.show_error_message(self, err, "Update IMAN")
+
+    def __git(self):
+        if os.system("git clone https://github.com/serik1987/ihna_kozhuhov_image_analysis") != 0:
+            raise RuntimeError("Failure to download the package. Install the package manually")
+
+    def __build(self):
+        if os.system("python3 setup.py build") != 0:
+            raise RuntimeError("Failure to build the package. Install the package manually")
+
+    def __install(self, password):
+        command = "echo %s | sudo -k -S python3 setup.py install" % password
+        if os.system(command) != 0:
+            raise RuntimeError("Failure to install the package. May be, you entered incorrect password")
