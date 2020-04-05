@@ -168,8 +168,17 @@ class FinalTracesDlg(wx.Dialog):
         if self.__save_mat_box.IsChecked():
             self.__traces.save_mat(folder)
         if self.__save_png_box.IsChecked():
-            png_file = self.__traces.get_fullname() + "_new.png"
+            png_file = self.__traces.get_fullname() + "_traceall.png"
             png_fullfile = os.path.join(folder, png_file)
             self.__fig.savefig(png_fullfile)
 
         return npz_file
+
+    def is_save_npz(self):
+        return self.__save_npz_box.IsChecked()
+
+    def is_save_mat(self):
+        return self.__save_mat_box.IsChecked()
+
+    def is_save_png(self):
+        return self.__save_png_box.IsChecked()

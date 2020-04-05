@@ -137,11 +137,30 @@ class Traces:
         """
         Returns the full name of the train
         """
-        return "{0}_{1}{2}{3}_traces({4})".format(
+        return "{0}_{1}{2}{3}_trace({4})".format(
             self.get_animal_name(),
             self.get_prefix_name(),
             self.get_case_name(),
             self.get_postfix_name(),
+            self.get_roi_name()
+        )
+
+    def get_major_name(self):
+        """
+        Returns the major name of the train
+        """
+        return "{0}_{1}{2}{3}".format(
+            self.get_animal_name(),
+            self.get_prefix_name(),
+            self.get_case_name(),
+            self.get_postfix_name()
+        )
+
+    def get_minor_name(self):
+        """
+        Returns the minor name of the train
+        """
+        return "trace({0})".format(
             self.get_roi_name()
         )
 
@@ -391,7 +410,7 @@ Reference PSD: {7} {15}
         """
         Saves the traces to the NPZ file
         """
-        filename = self.get_fullname() + "_new.npz"
+        filename = self.get_fullname() + "_traceall.npz"
         full_file = os.path.join(folder, filename)
         np.savez_compressed(full_file,
                             times=self.get_times(),
@@ -410,7 +429,7 @@ Reference PSD: {7} {15}
         """
         Saves the traces to the MAT file
         """
-        filename = self.get_fullname() + "_new.mat"
+        filename = self.get_fullname() + "_traceall.mat"
         full_file = os.path.join(folder, filename)
         mdict = {
             "animal_name": self.get_animal_name(),

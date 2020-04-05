@@ -83,6 +83,8 @@ class ResultListDlg(wx.Dialog):
             from ihna.kozhukhov.imageanalysis.mapprocessing import spatial_filter
             from .complexmapviewerdlg import ComplexMapViewerDlg
             input_data = self.__case.get_data(self.get_map_name())
+            if input_data is None:
+                raise ValueError("Please, select an appropriate data from the left list")
             input_data.load_data()
             input_data_dlg_selection = self.__map_processors_list.GetStringSelection()
             if input_data_dlg_selection == "":

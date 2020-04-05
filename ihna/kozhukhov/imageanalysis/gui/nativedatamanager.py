@@ -560,16 +560,24 @@ class NativeDataManager(wx.Dialog):
         save_dialog.Update(0)
         try:
             npz_file = final_traces_dlg.save_files(self.__case['pathname'])
-            if npz_file is not None:
-                self.__case['traces'].append(traces)
-                traces.clean()
-            else:
-                del traces
             final_traces_dlg.close()
             save_dialog.Destroy()
+
         except Exception as err:
             save_dialog.Destroy()
             raise err
+
+        data = (traces.get_times(), traces.get_avg_trace())
+        features = {
+            "major_name": traces.get_major_name(),
+            "minor_name": traces.get_minor_name(),
+            "ROI": properties_dlg.get_roi_name()
+        }
+        signal = ImagingSignal(features, data)
+        self.__save_data(final_traces_dlg, signal, final_traces_dlg, self.__case['pathname'])
+        traces.clean()
+
+        del traces
 
     def __save_data(self, accumulator_dlg, accumulator_result, result_dlg, folder_name):
         if accumulator_dlg.is_save_npz():
