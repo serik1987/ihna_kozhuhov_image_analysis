@@ -16,7 +16,9 @@ class AutocompressDlg(TrainAutocompressDlg):
                                        "Don't compress if target exists",
                                        "Delete decompressed files after compression",
                                        "Compress")
-        self._sub_dlg.ShowModal()
+        if self._sub_dlg.ShowModal() == wx.ID_CANCEL:
+            return False
+        return True
 
     def _get_processing_function(self):
         return compress

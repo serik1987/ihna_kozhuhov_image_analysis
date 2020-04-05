@@ -15,7 +15,10 @@ class AutodecompressDlg(TrainAutocompressDlg):
         self._sub_dlg = CompressionDlg(self._parent, "Decompression",
                                        "Don't decompressed file is native data exists",
                                        "Delete compressed files after decompression", "Decompress")
-        self._sub_dlg.ShowModal()
+
+        if self._sub_dlg.ShowModal() == wx.ID_CANCEL:
+            return False
+        return True
 
     def _get_processing_function(self):
         return decompress

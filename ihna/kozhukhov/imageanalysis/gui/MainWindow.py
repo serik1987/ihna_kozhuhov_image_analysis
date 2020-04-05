@@ -612,6 +612,8 @@ class MainWindow(wx.Frame):
     def autocompress(self):
         try:
             autocompress_dlg = AutocompressDlg(self, self.__animals.get_animal_filter())
+            if not autocompress_dlg.get_ready():
+                return
             autocompress_dlg.ShowModal()
             self.load_cases()
         except Exception as err:
@@ -620,6 +622,8 @@ class MainWindow(wx.Frame):
     def autodecompress(self):
         try:
             autodecompress_dlg = AutodecompressDlg(self, self.__animals.get_animal_filter())
+            if not autodecompress_dlg.get_ready():
+                return
             autodecompress_dlg.ShowModal()
             self.load_cases()
         except Exception as err:
