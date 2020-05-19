@@ -667,7 +667,7 @@ reading. Wait for a bit until the process is finished.
 In the preliminary trace view, you will check the correctness of the parameters selected and select new parameters of
 the further processing. You will see the following graphs.
 
-(1) Time arrival differences will notify you about erros in defining the temporal characteristics of the signal
+(1) Time arrival differences will notify you about errors in defining the temporal characteristics of the signal
 
 (2) The reference signal will show you how your trace activity is related to the visual stimulus.
 
@@ -695,3 +695,7 @@ All traces will be saved to a folder containing information about the animal. Th
 
 Additionally you shall give the prefix and postfix - some name the will be applied to the traces full name in order to
 distinguish these traces from another ones.
+
+5. LOOKING FOR MORE INFORMATION
+
+To look for more information please, look for GIT wiki.
