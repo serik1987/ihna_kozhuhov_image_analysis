@@ -31,6 +31,12 @@ class ComplexRoi(Roi):
         for subroi in subroi_list:
             self.__roi_list.append(self.__parent[subroi])
 
+    def get_subroi_list(self):
+        """
+        Returns list of all sub-roi's
+        """
+        return self.__roi_list
+
     def get_left(self):
         """
         Returns the left border of the ROI

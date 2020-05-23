@@ -83,7 +83,7 @@ imageanalysis = Extension("ihna.kozhukhov.imageanalysis._imageanalysis",
 
 setup(
     name="ihna.kozhukhov.imageanalysis",
-    version='1.1',
+    version='1.2',
     description="Processing of intrinsic-signal imaging data revealed under continuous stimulation",
     author="Sergei A. Kozhukhov, Valery Kalatsky",
     author_email="serik1987@gmail.com",
