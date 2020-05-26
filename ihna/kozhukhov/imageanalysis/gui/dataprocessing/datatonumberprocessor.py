@@ -1,4 +1,5 @@
 # -*- coding: utf-8
+from abc import ABC
 
 import wx
 from ihna.kozhukhov.imageanalysis import ImagingData
@@ -34,3 +35,6 @@ class DataToNumberProcessor(DataProcessDlg):
             self._input_data.get_features()[feature_name] = feature_value
             folder_name = self._considering_case['pathname']
             self._input_data.save_npz(folder_name)
+
+    def _get_result_viewer(self):
+        pass

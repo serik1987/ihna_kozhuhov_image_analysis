@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import numpy as np
 import wx
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.figure import Figure
@@ -19,7 +20,7 @@ class ShowRoiDlg(wx.Dialog):
         phase_map - the phase ap or None if not available
     """
 
-    def __init__(self, parent, fullname, roi, vessel_map=None, amplitude_map=None, phase_map=None):
+    def __init__(self, parent, fullname, roi, vessel_map=None, amplitude_map=None, phase_map=None, harmonic=1.0):
         super().__init__(parent, title="Maps after ROI application: " + fullname, size=(800, 800))
         main_panel = wx.Panel(self)
         main_panel.SetBackgroundColour("red")
@@ -37,8 +38,9 @@ class ShowRoiDlg(wx.Dialog):
 
         amplitude_axes = fig.add_subplot(2, 2, 3)
         if amplitude_map is not None:
-            amplitude_map.imshow(amplitude_map)
-            self.__draw_roi(vessel_axes, roi)
+            img = amplitude_axes.imshow(amplitude_map, cmap='gray', vmin=0)
+            self.__draw_roi(amplitude_axes, roi)
+            fig.colorbar(img, ax=amplitude_axes)
         amplitude_axes.set_aspect('equal')
         amplitude_axes.set_title("Amplitude map")
         amplitude_axes.set_ylabel("Y")
@@ -46,8 +48,11 @@ class ShowRoiDlg(wx.Dialog):
 
         phase_axes = fig.add_subplot(2, 2, 4)
         if phase_map is not None:
-            phase_map.imshow(phase_map)
-            self.__draw_roi(vessel_axes, roi)
+            phase_map *= 180/np.pi
+            phase_map[phase_map < 0] += 360 / harmonic
+            img = phase_axes.imshow(phase_map, cmap='hsv', vmin=0, vmax=360/harmonic)
+            self.__draw_roi(phase_axes, roi)
+            fig.colorbar(img, ax=phase_axes)
         phase_axes.set_aspect('equal')
         phase_axes.set_title("Phase map")
         phase_axes.set_xlabel("X")
@@ -59,7 +64,6 @@ class ShowRoiDlg(wx.Dialog):
 
     def __draw_roi(self, ax, roi, color="red"):
         if roi.get_type() == "simple":
-            print("Simple ROI detected:", roi.get_name())
             xy = (roi.get_left(), roi.get_top())
             width = roi.get_right() - roi.get_left()
             height = roi.get_bottom() - roi.get_top()

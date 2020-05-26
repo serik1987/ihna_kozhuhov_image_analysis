@@ -6,7 +6,6 @@ import numpy as np
 from ihna.kozhukhov.imageanalysis.manifest import SimpleRoi
 
 
-
 class DefineSimpleRoiDlg(wx.Dialog):
     """
     This dialog is to define the simple ROI
@@ -30,7 +29,7 @@ class DefineSimpleRoiDlg(wx.Dialog):
     __current_border = "left"
     __roi = None
 
-    def __init__(self, parent, fullname, vessel_map=None, amplitude_map=None, phase_map=None):
+    def __init__(self, parent, fullname, vessel_map=None, amplitude_map=None, phase_map=None, harmonic=1.0):
         """
         Creates new dialog
 
@@ -40,6 +39,7 @@ class DefineSimpleRoiDlg(wx.Dialog):
             vessel_map - some frame from the native data or None if this is not available
             amplitude_map - the amplitude map or None if not available
             phase_map - the phase map or None if not available
+            harmonic - the harmonic ratio
 
         After you ShowModal it:
             get_roi() - ROI that was defined by the user
@@ -50,7 +50,7 @@ class DefineSimpleRoiDlg(wx.Dialog):
         general_layout = wx.BoxSizer(wx.VERTICAL)
         main_layout = wx.BoxSizer(wx.HORIZONTAL)
 
-        maps = self.__create_maps(main_panel, vessel_map, amplitude_map, phase_map)
+        maps = self.__create_maps(main_panel, vessel_map, amplitude_map, phase_map, harmonic)
         main_layout.Add(maps, 6, wx.RIGHT | wx.EXPAND, 10)
 
         controls = self.__create_controls(main_panel)
@@ -62,7 +62,7 @@ class DefineSimpleRoiDlg(wx.Dialog):
 
         self.reload_roi()
 
-    def __create_maps(self, parent, vessel_map, amplitude_map, phase_map):
+    def __create_maps(self, parent, vessel_map, amplitude_map, phase_map, harmonic):
         if vessel_map is not None:
             vessel_map = (vessel_map - vessel_map.min()) / (vessel_map.max() - vessel_map.min())
 
@@ -70,7 +70,7 @@ class DefineSimpleRoiDlg(wx.Dialog):
             amplitude_map = (amplitude_map - amplitude_map.min()) / (amplitude_map.max() - amplitude_map.min())
 
         if phase_map is not None:
-            phase_map = np.exp(1j * phase_map)
+            phase_map = np.exp(1j * phase_map * harmonic)
 
         if amplitude_map is not None and phase_map is not None:
             complex_map = amplitude_map * phase_map
@@ -79,23 +79,17 @@ class DefineSimpleRoiDlg(wx.Dialog):
 
         maps = wx.GridSizer(2, 5, 5)
 
-        print("PY Drawing vessel map")
         self.__vessel_map_widget = DefineSimpleRoiPanel(self, parent, vessel_map, "gray", "red", self.__roi)
         maps.Add(self.__vessel_map_widget, 1, wx.EXPAND)
 
-        print("PY Drawing complex map")
         self.__complex_map_widget = DefineSimpleRoiPanel(self, parent, complex_map, "hsv", "green", self.__roi)
         maps.Add(self.__complex_map_widget, 1, wx.EXPAND)
 
-        print("PY Drawing amplitude map")
         self.__amplitude_map_widget = DefineSimpleRoiPanel(self, parent, amplitude_map, "gray", "blue", self.__roi)
         maps.Add(self.__amplitude_map_widget, 1, wx.EXPAND)
 
-        print("PY Drawing phase map")
         self.__phase_map_widget = DefineSimpleRoiPanel(self, parent, phase_map, "hsv", "yellow", self.__roi)
         maps.Add(self.__phase_map_widget, 1, wx.EXPAND)
-
-        print("PY Drawing completed")
 
         return maps
 

@@ -2,6 +2,7 @@
 
 import os
 import xml.etree.ElementTree as ET
+import numpy as np
 import wx
 from wx.grid import Grid
 from ihna.kozhukhov.imageanalysis.manifest import SimpleRoi
@@ -171,10 +172,25 @@ class RoiManager(wx.Dialog):
         del train
         return frame_data
 
+    def get_f_maps(self):
+        amap = None
+        pmap = None
+        harmonic = 1.0
+        for avg_map in self.__data.data():
+            features = avg_map.get_features()
+            if 'is_main' in features and features['is_main'] == 'yes':
+                avg_map.load_data()
+                cmap = avg_map.get_data()
+                harmonic = avg_map.get_harmonic()
+                amap = np.abs(cmap)
+                pmap = np.angle(cmap) / harmonic
+        return amap, pmap, harmonic
+
     def define_simple_roi(self):
         try:
             vessel_map = self.get_vessel_map()
-            dlg = DefineSimpleRoiDlg(self, self.__fullname, vessel_map)
+            amap, pmap, harm = self.get_f_maps()
+            dlg = DefineSimpleRoiDlg(self, self.__fullname, vessel_map, amap, pmap, harm)
             if dlg.ShowModal() == wx.ID_CANCEL:
                 return
             roi = dlg.get_roi()
@@ -244,7 +260,8 @@ class RoiManager(wx.Dialog):
                 raise ValueError("Please, select a ROI to show")
             roi = self.__data['roi'][names[0]]
             vessel_map = self.get_vessel_map()
-            dlg = ShowRoiDlg(self, self.__fullname, roi, vessel_map)
+            amplitude_map, phase_map, h = self.get_f_maps()
+            dlg = ShowRoiDlg(self, self.__fullname, roi, vessel_map, amplitude_map, phase_map, h)
             dlg.ShowModal()
         except Exception as err:
             dlg = wx.MessageDialog(self, str(err), "Show ROI", wx.OK | wx.CENTRE | wx.ICON_ERROR)
