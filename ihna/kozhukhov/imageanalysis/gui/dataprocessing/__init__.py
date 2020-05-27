@@ -9,6 +9,7 @@ from .setmainprocessor import SetMainProcessor
 from .amplitudemap import AmplitudeMap
 from .phasemap import PhaseMap
 from .complexmap import ComplexMap
+from .cutmap import CutMap
 
 
 def get_data_processors(parent):
@@ -24,7 +25,8 @@ def get_data_processors(parent):
             "Set ROI using this map": SetMainProcessor,
             "Get amplitude map": AmplitudeMap,
             "Get phase map": PhaseMap,
-            "Get complex map": ComplexMap
+            "Get complex map": ComplexMap,
+            "Cut map": CutMap
         })
 
     if isinstance(parent, TraceResultListDlg):
