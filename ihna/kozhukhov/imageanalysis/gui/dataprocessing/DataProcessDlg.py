@@ -28,6 +28,7 @@ class DataProcessDlg(wx.Dialog):
         self._input_data = input_data
         self._parent = parent
         self._considering_case = considering_case
+        self._considering_case = considering_case
         self._check_input_data()
         super().__init__(parent,
                          title="%s: %s" % (self._get_processor_title(), input_data.get_full_name()),
@@ -249,3 +250,6 @@ class DataProcessDlg(wx.Dialog):
             self._considering_case['short_name'],
             self.__postfix_box.GetValue()
         )
+
+    def get_input_data(self):
+        return self._input_data

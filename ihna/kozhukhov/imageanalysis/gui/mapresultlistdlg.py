@@ -6,6 +6,7 @@ from ihna.kozhukhov.imageanalysis import ImagingMap
 from .resultlistdlg import ResultListDlg
 from .complexmapviewerdlg import ComplexMapViewerDlg
 from .amplitudemapviewerdlg import AmplitudeMapViewerDlg
+from .phasemapviewer import PhaseMapViewer
 
 
 class MapResultListDlg(ResultListDlg):
@@ -19,11 +20,13 @@ class MapResultListDlg(ResultListDlg):
     def get_data_class(self):
         return ImagingMap
 
-    def _create_map_viewer_dlg(self, data: ImagingMap):
-        if data.get_data().dtype == np.complex128:
-            return ComplexMapViewerDlg(self, data)
-        else:
-            if "map_type" in data.get_features().keys():
-                raise NotImplementedError("Can't work with map_type")
-            else:
+    def _create_map_viewer_dlg(self, data):
+        if isinstance(data, ImagingMap):
+            if data.is_amplitude_map():
                 return AmplitudeMapViewerDlg(self, data)
+            elif data.is_phase_map():
+                return PhaseMapViewer(self, data)
+            elif data.is_complex_map():
+                return ComplexMapViewerDlg(self, data)
+            else:
+                raise NotImplementedError("Can't work with this type of map")

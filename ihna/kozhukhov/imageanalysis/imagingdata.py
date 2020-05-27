@@ -196,3 +196,21 @@ class ImagingData:
         Full name of the NPZ file where the data were saved or None when the data were not associated with any file
         """
         return self.__filename
+
+    def is_amplitude_map(self):
+        """
+        returns True if this is an amplitude map
+        """
+        return False
+
+    def is_phase_map(self):
+        """
+        returns True if this is a phase map
+        """
+        return False
+
+    def is_complex_map(self):
+        """
+        returns True if this map is complex
+        """
+        return False

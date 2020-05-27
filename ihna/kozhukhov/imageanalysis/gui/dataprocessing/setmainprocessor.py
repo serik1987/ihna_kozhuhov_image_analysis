@@ -1,12 +1,19 @@
 # -*- coding: utf-8
 
+import numpy as np
 import wx
 from .datatonumberprocessor import DataToNumberProcessor
+from ihna.kozhukhov.imageanalysis import ImagingMap
 
 
 class SetMainProcessor(DataToNumberProcessor):
 
     __is_main_box = None
+
+    def _check_input_data(self):
+        if isinstance(self._input_data, ImagingMap) and self._input_data.get_data().dtype == np.complex:
+            return
+        raise ValueError("This processor requires complex maps only")
 
     def _get_processor_title(self):
         return "Map average value"

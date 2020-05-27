@@ -6,6 +6,9 @@ from .mapfillerdlg import MapFillerDlg
 from .tracefilter import TraceFilterDlg
 from .tracepower import TracePower
 from .setmainprocessor import SetMainProcessor
+from .amplitudemap import AmplitudeMap
+from .phasemap import PhaseMap
+from .complexmap import ComplexMap
 
 
 def get_data_processors(parent):
@@ -17,8 +20,11 @@ def get_data_processors(parent):
         processors.update({
             "Map filter": SpatialFilterDlg,
             "Compute average value": MapAverageDlg,
-            "New map with predefined valued": MapFillerDlg,
-            "Set ROI using this map": SetMainProcessor
+            "New map with predefined values": MapFillerDlg,
+            "Set ROI using this map": SetMainProcessor,
+            "Get amplitude map": AmplitudeMap,
+            "Get phase map": PhaseMap,
+            "Get complex map": ComplexMap
         })
 
     if isinstance(parent, TraceResultListDlg):

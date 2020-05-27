@@ -178,7 +178,7 @@ class RoiManager(wx.Dialog):
         harmonic = 1.0
         for avg_map in self.__data.data():
             features = avg_map.get_features()
-            if 'is_main' in features and features['is_main'] == 'yes':
+            if 'is_main' in features and features['is_main'] == 'yes' and avg_map.is_complex_map():
                 avg_map.load_data()
                 cmap = avg_map.get_data()
                 harmonic = avg_map.get_harmonic()

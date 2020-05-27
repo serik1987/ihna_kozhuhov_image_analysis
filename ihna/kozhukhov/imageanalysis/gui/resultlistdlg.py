@@ -90,6 +90,8 @@ class ResultListDlg(wx.Dialog):
             if input_data_dlg_selection == "":
                 raise ValueError("Please, select an appropriate processor from list on the right")
             input_data_dlg = self.__all_dialogs[input_data_dlg_selection](self, input_data, self.__case)
+            if input_data_dlg.get_input_data() is None:
+                return
             input_data_dlg.ShowModal()
             self.__map_list.SetItems(self.get_data_names())
         except Exception as err:
