@@ -125,7 +125,8 @@ setup(
         "wxpython",
         "pypng",
         "xlwt",
-        "pandas"
+        "pandas",
+        "astropy"
     ],
     provides=["ihna_kozhukhov_iman"],
     scripts=["iman", "iman-update"]

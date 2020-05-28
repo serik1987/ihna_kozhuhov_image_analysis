@@ -10,6 +10,7 @@ from .amplitudemap import AmplitudeMap
 from .phasemap import PhaseMap
 from .complexmap import ComplexMap
 from .cutmap import CutMap
+from .mapcorrelationprocessor import MapCorrelationProcessor
 
 
 def get_data_processors(parent):
@@ -26,7 +27,8 @@ def get_data_processors(parent):
             "Get amplitude map": AmplitudeMap,
             "Get phase map": PhaseMap,
             "Get complex map": ComplexMap,
-            "Cut map": CutMap
+            "Cut map": CutMap,
+            "Map correlation": MapCorrelationProcessor
         })
 
     if isinstance(parent, TraceResultListDlg):

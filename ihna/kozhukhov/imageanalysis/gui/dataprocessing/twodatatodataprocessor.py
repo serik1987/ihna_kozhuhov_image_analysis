@@ -17,6 +17,7 @@ class TwoDataToDataProcessor(DataToDataProcessor):
             return
         self._input_data = dlg.get_first_map()
         self._second_map = dlg.get_second_map()
+        self._input_data.load_data()
         self._second_map.load_data()
         self._check_two_maps()
 
