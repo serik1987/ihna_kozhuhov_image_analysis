@@ -19,6 +19,6 @@ class PhaseMap(DataToDataProcessor):
     def _get_result_viewer(self):
         return PhaseMapViewer
 
-    def _check_imaging_map(self, complex_warn=False):
+    def _check_input_data(self):
         if not self._input_data.is_complex():
             raise ValueError("Please, select any complex map")

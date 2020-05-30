@@ -14,9 +14,10 @@ mapprocessing - processing of the averaged and oscillatory maps
 traceprocessing - processing of the result traces
 
 Besides these packages the package contains three main classes
+PinwheelCenterList - represents list of all pinwheel centers for the map
 ImagingMap - represents averaged and oscillatory maps
 ImagingSignal - represents averaged traces
-ImagingData - base class for ImagingMap and ImagingSignal
+ImagingData - base class for all other imaging data
 """
 
 try:
@@ -27,8 +28,10 @@ except ImportError:
 from .imagingdata import ImagingData
 from .imagingmap import ImagingMap
 from .imagingsignal import ImagingSignal
+from .pinwheelcenterlist import PinwheelCenterList
 
 imaging_data_classes = {
     "ImagingMap": ImagingMap,
-    "ImagingSignal": ImagingSignal
+    "ImagingSignal": ImagingSignal,
+    "PinwheelCenterList": PinwheelCenterList
 }

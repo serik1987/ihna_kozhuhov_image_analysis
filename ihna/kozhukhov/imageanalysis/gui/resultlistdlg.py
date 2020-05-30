@@ -100,9 +100,14 @@ class ResultListDlg(wx.Dialog):
 
     def get_data_names(self):
         data_names = []
+        data_class = self.get_data_class()
+        if not isinstance(data_class, list):
+            data_class = [data_class]
         for data in self.__case.data():
-            if data.__class__ == self.get_data_class():
-                data_names.append(data.get_full_name())
+            for cls in data_class:
+                if data.__class__ == cls:
+                    data_names.append(data.get_full_name())
+                    break
         return data_names
 
     def get_data_class(self):

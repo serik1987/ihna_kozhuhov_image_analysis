@@ -2,11 +2,12 @@
 
 import wx
 import numpy as np
-from ihna.kozhukhov.imageanalysis import ImagingMap
+from ihna.kozhukhov.imageanalysis import ImagingMap, PinwheelCenterList
 from .resultlistdlg import ResultListDlg
 from .complexmapviewerdlg import ComplexMapViewerDlg
 from .amplitudemapviewerdlg import AmplitudeMapViewerDlg
 from .phasemapviewer import PhaseMapViewer
+from .pinwheelviewerdlg import PinwheelViewerDlg
 
 
 class MapResultListDlg(ResultListDlg):
@@ -18,7 +19,7 @@ class MapResultListDlg(ResultListDlg):
         return "Map list"
 
     def get_data_class(self):
-        return ImagingMap
+        return [ImagingMap, PinwheelCenterList]
 
     def _create_map_viewer_dlg(self, data):
         if isinstance(data, ImagingMap):
@@ -30,3 +31,7 @@ class MapResultListDlg(ResultListDlg):
                 return ComplexMapViewerDlg(self, data)
             else:
                 raise NotImplementedError("Can't work with this type of map")
+        elif isinstance(data, PinwheelCenterList):
+            return PinwheelViewerDlg(self, data)
+        else:
+            raise NotImplementedError("No viewer specified for such type of data")

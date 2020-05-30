@@ -15,7 +15,7 @@ class MapViewerDlg(wx.Dialog):
     __figure = None
     __full_name = None
 
-    def __init__(self, parent, complexMap: ImagingMap):
+    def __init__(self, parent, complexMap):
         super().__init__(parent, title="Map view: " + complexMap.get_full_name(), size=(800, 500))
         panel = wx.Panel(self)
         general_sizer = wx.BoxSizer(wx.VERTICAL)

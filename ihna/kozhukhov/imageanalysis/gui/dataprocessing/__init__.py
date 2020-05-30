@@ -11,6 +11,7 @@ from .phasemap import PhaseMap
 from .complexmap import ComplexMap
 from .cutmap import CutMap
 from .mapcorrelationprocessor import MapCorrelationProcessor
+from .pinwheelselector import PinwheelSelector
 
 
 def get_data_processors(parent):
@@ -28,7 +29,8 @@ def get_data_processors(parent):
             "Get phase map": PhaseMap,
             "Get complex map": ComplexMap,
             "Cut map": CutMap,
-            "Map correlation": MapCorrelationProcessor
+            "Map correlation": MapCorrelationProcessor,
+            "Pinwheel selector": PinwheelSelector
         })
 
     if isinstance(parent, TraceResultListDlg):
