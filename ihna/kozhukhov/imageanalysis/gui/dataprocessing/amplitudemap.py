@@ -20,5 +20,5 @@ class AmplitudeMap(DataToDataProcessor):
         return AmplitudeMapViewerDlg
 
     def _check_input_data(self):
-        if not self._input_data.is_complex():
+        if not self._input_data.is_complex_map():
             raise ValueError("Please, select any complex map")

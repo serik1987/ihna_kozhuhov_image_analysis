@@ -8,6 +8,8 @@
           <option value="ihna.kozhukhov.imageanalysis.sourcefiles.*" />
           <option value="wx" />
           <option value="matplotlib" />
+          <option value="platform" />
+          <option value="ihna.kozhukhov.imageanalysis.traceprocessing.scipy" />
         </list>
       </option>
     </inspection_tool>

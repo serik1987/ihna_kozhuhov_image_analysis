@@ -25,6 +25,10 @@ class AutotraceDlg(TrainAutoprocessDlg):
             raise RuntimeError("ROI with a given name is not present")
         accumulator.set_roi(roi)
 
+    def _set_result_options(self, result_data, sub_dlg):
+        roi_name = sub_dlg.get_roi_name()
+        result_data.get_features()['ROI'] = roi_name
+
     def _get_imaging_class(self):
         return ImagingSignal
 

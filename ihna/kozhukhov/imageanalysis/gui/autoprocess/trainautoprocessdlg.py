@@ -81,6 +81,7 @@ class TrainAutoprocessDlg(AutoprocessDlg):
             result_data = self._get_imaging_class()(accumulator, major_name)
             result_data.get_features().update(self._sub_dlg.get_options())
             result_data.get_features()['minor_name'] = self._get_minor_name()
+            self._set_result_options(result_data, self._sub_dlg)
         except Exception as err:
             del accumulator
             train.close()
@@ -108,6 +109,9 @@ class TrainAutoprocessDlg(AutoprocessDlg):
             result_dlg.save_png(pathname)
 
     def _set_options(self, case, accumulator):
+        pass
+
+    def _set_result_options(self, result_data, sub_dlg):
         pass
 
     def _get_imaging_class(self):

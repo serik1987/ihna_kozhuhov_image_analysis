@@ -27,7 +27,12 @@ class TraceFilterDlg(DataToDataProcessor):
             raise RuntimeError("This processor is suitable for traces only")
 
     def _get_default_minor_name(self):
-        roi_name = self._input_data.get_features()["ROI"]
+        if 'ROI' in self._input_data.get_features():
+            roi_name = self._input_data.get_features()["ROI"]
+        else:
+            minor_name = self._input_data.get_mior_name()
+            roi_name = "undefined"
+            print(minor_name)
         return "tracefilt(%s)" % roi_name
 
     def _place_additional_options(self, parent):
@@ -51,4 +56,3 @@ class TraceFilterDlg(DataToDataProcessor):
 
     def _get_result_viewer(self):
         return SignalViewerDlg
-
