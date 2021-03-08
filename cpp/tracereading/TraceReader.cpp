@@ -47,11 +47,23 @@ namespace GLOBAL_NAMESPACE {
 
     TraceReader::~TraceReader() {
 #ifdef DEBUG_DELETE_CHECK
-        std::cout << "DELETE TRACE READER\n";
+        std::cout << "DELETE TRACE READER: dataDisplacements, dataTypes, traces\n";
+        std::cout << dataDisplacements << "\n";
 #endif
         delete [] dataDisplacements;
+#ifdef DEBUG_DELETE_CHECK
+        std::cout << "The data displacements were deleted\n";
+        std::cout << dataTypes << "\n";
+#endif
         delete [] dataTypes;
+#ifdef DEBUG_DELETE_CHECK
+        std::cout << "DELETE TRACES\n";
+        std::cout << traces << "\n";
+#endif
         delete [] traces;
+#ifdef DEBUG_DELETE_CHECK
+        std::cout << "Object destroyed\n";
+#endif
     }
 
     TraceReader &TraceReader::operator=(TraceReader &&other) noexcept {
@@ -134,6 +146,9 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void TraceReader::clearState(){
+#ifdef DEBUG_DELETE_CHECK
+        std::cout << "TRACE READER: CLEAR STATE\n";
+#endif
         initialDisplacement = 0;
         delete [] dataDisplacements;
         dataDisplacements = nullptr;

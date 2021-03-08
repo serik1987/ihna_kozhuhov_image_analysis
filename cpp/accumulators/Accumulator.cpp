@@ -97,13 +97,21 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void Accumulator::accumulate() {
+        std::cout << "ACCUMULATOR Clearing state...\n";
         clearState();
+        std::cout << "ACCUMULATOR State cleared\n";
         initialize();
+        std::cout << "ACCUMULATOR Accumulator initialized\n";
         int timestamp, frameNumber;
         int initFrame = isoline->getAnalysisInitialFrame();
         int finalFrame = isoline->getAnalysisFinalFrame();
         int totalFrames = finalFrame - initFrame + 1;
+        std::cout << "Initial frame: " << initFrame << std::endl;
+        std::cout << "Final frame: " << finalFrame << std::endl;
+        std::cout << "Total frames: " << totalFrames << std::endl;
         for (timestamp = 0, frameNumber = initFrame; frameNumber <= finalFrame; ++timestamp, ++frameNumber){
+            std:: cout << "ACCUMULATOR Processing timestamp..." << timestamp << " out of " <<
+            (finalFrame - initFrame + 1) << std::endl;
             readFrameData(frameNumber);
             framePreprocessing(frameNumber, timestamp);
             isoline->advance(*this, frameNumber);
@@ -116,32 +124,41 @@ namespace GLOBAL_NAMESPACE {
                 }
             }
         }
+        std::cout << "ACCUMULATOR All timestamps were processed. Finalization..." << std::endl;
         finalize();
+        std::cout << "ACCUMULATOR Finalization completed\n";
         accumulated = true;
     }
 
     void Accumulator::initialize() {
         isoline->extendRange();
+        std::cout << "ACCUMULATE INI Isoline range extended\n";
         if (progressFunction != nullptr){
             progressFunction(0, 1, "Synchronization", progressHandle);
             isoline->sync().setProgressFunction(progressFunction, progressHandle);
         }
         isoline->synchronizeIsolines();
+        std::cout << "ACCUMULATE INI Isolines were synchronized\n";
         if (!isoline->sync().isSynchronized()){
             clearState();
             throw InterruptedException();
         }
         isoline->sync().clearState();
+        std::cout << "ACCUMULATE INI Synchronization state was cleared\n";
         isoline->sacrifice();
+        std::cout << "ACCUMULATE INI Analysis range was sacrifices\n";
         isoline->synchronizeSignal();
+        std::cout << "ACCUMULATE INI Analysis epoch was synchronized\n";
         if (!isoline->sync().isSynchronized()){
             clearState();
             throw InterruptedException();
         }
         try {
             initializeBuffers();
+            std::cout << "ACCUMULATE INI Buffer were synchronized\n";
             isoline->setProgressFunction(progressFunction, progressHandle);
             isoline->initialize(*this);
+            std::cout << "ACCUMULATE INI Isolines were sychronized\n";
         } catch (std::exception& e){
             clearState();
             throw;

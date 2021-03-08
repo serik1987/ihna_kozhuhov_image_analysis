@@ -66,8 +66,10 @@ namespace GLOBAL_NAMESPACE {
 
     void ExternalSynchronization::clearState() {
         Synchronization::clearState();
+        std::cout << "SYNC parent state has been cleared\n";
         delete [] synchronizationSignal;
         synchronizationSignal = nullptr;
+        std::cout << "SYNC Synchronization signal was cleared\n";
     }
 
     ExternalSynchronization &ExternalSynchronization::operator=(ExternalSynchronization &&other) noexcept {
@@ -274,7 +276,8 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void ExternalSynchronization::setSynchronizationPhase() {
-        synchronizationPhase = new double[getFrameNumber() + 2];
+        synchronizationPhase = new double[getFrameNumber() + 1];
+        std::cout << "Synchronization phase was allocated. Address: " << synchronizationPhase << std::endl;
         synchronizationPhase[0] = 2 * M_PI * synchronizationSignal[initialFrame] / synchMax;
         int timestamp = 1;
         int cycle = 0;
@@ -299,6 +302,10 @@ namespace GLOBAL_NAMESPACE {
         double bbd = fit.getSlope(0) / 2 / M_PI;
         double residued = (double)getFrameNumber() - (double)getCycleNumber() / bbd;
 
+        std::cout << "aad = " << aad << std::endl;
+        std::cout << "bbd = " << bbd << std::endl;
+        std::cout << "residued = " << residued << std::endl;
+
         double additionalValue =
                 2 * M_PI * (synchronizationSignal[finalFrame + 1] + synchMax * getCycleNumber()) / synchMax;
         fit.add(&additionalValue);
@@ -307,6 +314,10 @@ namespace GLOBAL_NAMESPACE {
         double bbu = fit.getSlope(0) / 2 / M_PI;
         double residueu = (double)(getFrameNumber() + 1) - (double)getCycleNumber() / bbu;
 
+        std::cout << "aau = " << aau << std::endl;
+        std::cout << "bbu = " << bbu << std::endl;
+        std::cout << "residueu = " << residueu << std::endl;
+
         if (fabs(residued) < fabs(residueu)){
             aa = aad;
             bb = bbd;
@@ -314,7 +325,11 @@ namespace GLOBAL_NAMESPACE {
             aa = aau;
             bb = bbu;
             finalFrame++;
-            synchronizationPhase[finalFrame] = additionalValue;
+            synchronizationPhase[getFrameNumber()-1] = additionalValue;
+            for (int i=0; i <= getFrameNumber() + 1; ++i){
+                std::cout << synchronizationPhase[i] << "\t";
+            }
+            std::cout << std::endl;
         }
 
         cyclesPerFrame = fabs(bb) * getHarmonic();

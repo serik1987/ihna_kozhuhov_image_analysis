@@ -30,7 +30,7 @@ namespace GLOBAL_NAMESPACE{
     void FileTrain::clearCache(){
         while (!frameCache.empty()){
 #ifdef DEBUG_DELETE_CHECK
-            // std::cout << "CLEARING FRAME CACHE: ";
+            std::cout << "CLEARING FRAME CACHE: \n";
 #endif
             Frame* frame = frameCache.front();
             frameCache.pop_front();
@@ -72,7 +72,7 @@ namespace GLOBAL_NAMESPACE{
             return *frameCacheStatus[n];
         }
 #ifdef DEBUG_DELETE_CHECK
-        // std::cout << "READING NEW FRAME FROM THE HARD DISK DRIVE\n";
+        std::cout << "READING NEW FRAME FROM THE HARD DISK DRIVE\n";
 #endif
         Frame* frame;
         while (true){

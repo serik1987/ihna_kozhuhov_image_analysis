@@ -106,6 +106,8 @@ namespace GLOBAL_NAMESPACE {
 #endif
         delete [] referenceSignalCos;
         delete [] referenceSignalSin;
+        std::cout << "Synchronization phase de-allocation\n";
+        std::cout << "Synchronization phase address: " << synchronizationPhase << "\n";
         delete [] synchronizationPhase;
     }
 
@@ -215,10 +217,15 @@ namespace GLOBAL_NAMESPACE {
 
     void Synchronization::clearState() {
         synchronized = false;
+        std::cout << "SYNC Trying to delete referenceSignalCos...\n";
         delete [] referenceSignalCos;
         referenceSignalCos = nullptr;
+        std::cout << "SYNC Trying to delete referenceSignalSin...\n";
         delete [] referenceSignalSin;
         referenceSignalSin = nullptr;
+        std::cout << "SYNC Trying to delete synchronizationPhase...\n";
+        std::cout << "Synchronization phase address: " << synchronizationPhase << "\t" <<
+            (synchronizationPhase + getFrameNumber() + 1) << "\n";
         delete [] synchronizationPhase;
         synchronizationPhase = nullptr;
     }
