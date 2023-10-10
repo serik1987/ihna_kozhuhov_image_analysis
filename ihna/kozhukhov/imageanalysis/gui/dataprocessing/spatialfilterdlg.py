@@ -22,7 +22,7 @@ class SpatialFilterDlg(DataToDataProcessor):
     def _check_input_data(self):
         if not isinstance(self._input_data, ImagingMap):
             raise ValueError("The input shall be complex imaging map")
-        if self._input_data.get_data().dtype != np.complex:
+        if self._input_data.get_data().dtype != complex:
             raise ValueError("The input map shall be complex imaging map")
 
     def _get_default_minor_name(self):

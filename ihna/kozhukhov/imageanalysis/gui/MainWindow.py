@@ -65,6 +65,26 @@ class MainWindow(wx.Frame):
     __cases = None
     __case = None
 
+    def __init__(self):
+        super().__init__(None, title="Image Analysis", size=(1000, 700),
+                         style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        panel = wx.Panel(self)
+        general_layout = wx.BoxSizer(wx.HORIZONTAL)
+        main_layout = wx.BoxSizer(wx.HORIZONTAL)
+
+        left_panel = self.__create_left_panel(panel)
+        main_layout.Add(left_panel, 3, wx.RIGHT | wx.EXPAND, 5)
+
+        middle_panel = self.__create_middle_panel(panel)
+        main_layout.Add(middle_panel, 3, wx.RIGHT | wx.EXPAND, 5)
+
+        right_panel = self.__create_right_panel(panel)
+        main_layout.Add(right_panel, 3, wx.EXPAND, 0)
+
+        general_layout.Add(main_layout, 1, wx.ALL | wx.EXPAND, 10)
+        panel.SetSizer(general_layout)
+        self.Centre(wx.BOTH)
+
     def __create_left_panel(self, panel):
         left_panel = wx.BoxSizer(wx.VERTICAL)
         left_panel_caption = wx.StaticText(panel, label="Animals", style=wx.ALIGN_LEFT)
@@ -352,26 +372,6 @@ class MainWindow(wx.Frame):
 
         right_panel.Add(service_box, 0, wx.EXPAND | wx.TOP, 5)
         return right_panel
-
-    def __init__(self):
-        super().__init__(None, title="Image Analysis", size=(900, 700),
-                         style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
-        panel = wx.Panel(self)
-        general_layout = wx.BoxSizer(wx.HORIZONTAL)
-        main_layout = wx.BoxSizer(wx.HORIZONTAL)
-
-        left_panel = self.__create_left_panel(panel)
-        main_layout.Add(left_panel, 3, wx.RIGHT | wx.EXPAND, 5)
-
-        middle_panel = self.__create_middle_panel(panel)
-        main_layout.Add(middle_panel, 3, wx.RIGHT | wx.EXPAND, 5)
-
-        right_panel = self.__create_right_panel(panel)
-        main_layout.Add(right_panel, 3, wx.EXPAND, 0)
-
-        general_layout.Add(main_layout, 1, wx.ALL | wx.EXPAND, 10)
-        panel.SetSizer(general_layout)
-        self.Centre(wx.BOTH)
 
     def new_animal(self):
         animal_dlg = wx.TextEntryDialog(self, "Please, enter the valid folder name", "New animal")

@@ -97,11 +97,8 @@ namespace GLOBAL_NAMESPACE {
     }
 
     void Accumulator::accumulate() {
-        std::cout << "ACCUMULATOR Clearing state...\n";
         clearState();
-        std::cout << "ACCUMULATOR State cleared\n";
         initialize();
-        std::cout << "ACCUMULATOR Accumulator initialized\n";
         int timestamp, frameNumber;
         int initFrame = isoline->getAnalysisInitialFrame();
         int finalFrame = isoline->getAnalysisFinalFrame();
@@ -110,8 +107,6 @@ namespace GLOBAL_NAMESPACE {
         std::cout << "Final frame: " << finalFrame << std::endl;
         std::cout << "Total frames: " << totalFrames << std::endl;
         for (timestamp = 0, frameNumber = initFrame; frameNumber <= finalFrame; ++timestamp, ++frameNumber){
-            std:: cout << "ACCUMULATOR Processing timestamp..." << timestamp << " out of " <<
-            (finalFrame - initFrame + 1) << std::endl;
             readFrameData(frameNumber);
             framePreprocessing(frameNumber, timestamp);
             isoline->advance(*this, frameNumber);
@@ -124,9 +119,7 @@ namespace GLOBAL_NAMESPACE {
                 }
             }
         }
-        std::cout << "ACCUMULATOR All timestamps were processed. Finalization..." << std::endl;
         finalize();
-        std::cout << "ACCUMULATOR Finalization completed\n";
         accumulated = true;
     }
 

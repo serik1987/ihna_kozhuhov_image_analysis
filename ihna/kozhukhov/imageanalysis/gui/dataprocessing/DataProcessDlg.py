@@ -1,5 +1,6 @@
 # -*- coding: utf-8
 
+import traceback
 from time import sleep
 import numpy as np
 import wx
@@ -184,6 +185,7 @@ class DataProcessDlg(wx.Dialog):
         except Exception as err:
             from ihna.kozhukhov.imageanalysis.gui import MainWindow
             MainWindow.show_error_message(self, err, self._get_processor_title())
+            traceback.print_exc()
 
     def _process(self):
         raise NotImplementedError("DataProcessDlg._process()")

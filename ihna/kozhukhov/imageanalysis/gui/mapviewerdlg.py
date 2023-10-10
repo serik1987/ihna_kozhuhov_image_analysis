@@ -17,14 +17,14 @@ class MapViewerDlg(wx.Dialog):
 
     def __init__(self, parent, complexMap):
         super().__init__(parent, title="Map view: " + complexMap.get_full_name(), size=(800, 500))
-        panel = wx.Panel(self)
+        panel = wx.Panel(self, name="main_panel")
         general_sizer = wx.BoxSizer(wx.VERTICAL)
         main_sizer = wx.BoxSizer(wx.VERTICAL)
-
-        figure_panel = wx.Panel(panel, size=(800, 300))
+        
+        figure_panel = wx.Panel(panel, size=(800, 300), name="figure_panel")
         figure = Figure()
         self._plot_graphs(figure, complexMap)
-        canvas = FigureCanvas(panel, -1, figure)
+        canvas = FigureCanvas(figure_panel, -1, figure)
         figure_sizer = wx.BoxSizer(wx.VERTICAL)
         figure_sizer.Add(canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
         figure_panel.SetSizer(figure_sizer)
@@ -41,9 +41,10 @@ class MapViewerDlg(wx.Dialog):
         button.Bind(wx.EVT_BUTTON, lambda event: self.Close())
         button_sizer.Add(button, 0)
         main_sizer.Add(button_sizer, 0, wx.ALIGN_CENTER)
-
+        
         general_sizer.Add(main_sizer, 1, wx.EXPAND | wx.ALL, 10)
         panel.SetSizerAndFit(general_sizer)
+        
         self.Centre()
         self.Fit()
 

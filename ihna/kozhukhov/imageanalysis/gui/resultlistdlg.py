@@ -1,5 +1,7 @@
 # -*- coding: utf-8
 
+import traceback
+
 import wx
 from .dataprocessing import get_data_processors
 
@@ -97,6 +99,7 @@ class ResultListDlg(wx.Dialog):
         except Exception as err:
             from .MainWindow import MainWindow
             MainWindow.show_error_message(self, err, "Process map data")
+            traceback.print_exc()
 
     def get_data_names(self):
         data_names = []

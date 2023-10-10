@@ -18,7 +18,7 @@ def spatial_filter(complex_map: ImagingMap, dradius=0, dradiusbig=0):
         An instance of the ImagingMap which in turn represents a complex map
     """
     data = complex_map.get_data()
-    if data.dtype != np.complex:
+    if data.dtype != complex:
         raise ValueError("This processor works with maps expressed in complex numbers only")
     if dradius > 0:
         result_real = _convolve(data.real, dradius)
