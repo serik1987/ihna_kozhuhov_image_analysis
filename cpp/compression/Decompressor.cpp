@@ -71,7 +71,7 @@ namespace GLOBAL_NAMESPACE{
         for (unsigned int i=0; i < elements_in_frame; ++i){
             current_frame[i] = (uint16_t)((int)previous_frame[i] + (int8_t)compressed_frame[i]);
         }
-
+        
         in.read((char*)&extra_pixels_number, sizeof(extra_pixels_number));
         in.read((char*)extra_pixels, extra_pixels_number * sizeof(EXTRA_PIXEL_RECORD));
 
@@ -79,17 +79,25 @@ namespace GLOBAL_NAMESPACE{
             COMPRESSOR_RECORD rec;
 
             rec.S[1] = extra_pixels[i].S[3];
-            extra_pixels[i].S[3] = 0;
+            extra_pixels[i].S[3] = 0; 
             int idx = extra_pixels[i].L;
-            rec.S[0] = compressed_frame[idx];
-            current_frame[idx] = rec.L;
+
+            if (idx < 0 || idx > elements_in_frame){
+                std::cout << "Bad frame index (suspect for access violation error)" << std::endl;
+                std::cout << "Index to access: " << idx << std::endl;
+                std::cout << "Maximum available index: " << elements_in_frame-1 << std::endl;
+                std::cout << "Compressor record: " << rec.L << std::endl;
+                std::cout << "Extra pixel record: " << extra_pixels[i].L << std::endl;
+            } else {
+                rec.S[0] = compressed_frame[idx];
+                current_frame[idx] = rec.L;
+            }
         }
 
         out.write((char*)current_frame, original_frame_size);
         if (out.fail()){
             throw SourceFile::file_write_exception(full_output_file);
         }
-
         auto* temp_frame = current_frame;
         current_frame = previous_frame;
         previous_frame = temp_frame;

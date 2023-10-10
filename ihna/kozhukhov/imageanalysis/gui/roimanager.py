@@ -52,7 +52,7 @@ class RoiManager(wx.Dialog):
 
     def __create_table(self, parent):
         self.__table = Grid(parent)
-        self.__table.CreateGrid(0, 6, wx.grid.Grid.wxGridSelectRows)
+        self.__table.CreateGrid(0, 6, wx.grid.Grid.SelectRows)
         self.__table.SetColLabelValue(0, "type")
         self.__table.SetColLabelValue(1, "left")
         self.__table.SetColLabelValue(2, "right")
